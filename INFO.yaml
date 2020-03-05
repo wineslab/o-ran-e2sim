@@ -34,10 +34,15 @@ repositories:
     - 'sim/e2-interface'
 committers:
     - <<: *oran_sim_e2-interface_ptl
-    - name: 'Michael Drre'
+    - name: 'Michael Duerre'
       email: 'michael.duerre@highstreet-technologies.com'
       company: 'highstreet technologies GmbH'
       id: 'metaljackL'
       timezone: 'Germany/Berlin'
+    - name: 'Harry Tran'
+      email: 'tuyen@research.att.com'
+      company: 'AT&T'
+      id: 'harrytran'
+      timezone: 'America/New York (GMT -5)'
 tsc:
     approval: 'https://lists.o-ran-sc.org/g/toc/message/102'
