@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-e2sim-bin
+  namespace: {{ .Release.Namespace }}
+data:
+  e2sim-run.sh: |
+   {{- include "e2sim/templates/bin/_e2sim-run.sh.tpl" . | indent 4 }}

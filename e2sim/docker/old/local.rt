@@ -1,0 +1,9 @@
+newrt|start
+#RMR_RCV_PORT of the receiver is 6560
+rte|0|localhost:6560
+
+# this is needed so that receiver acks can be sent via rmr_rts_msg() calls
+# here e2 agent is the name of the machine
+# is the RMR_RCV_PORT of the sender
+rte|89|e2agent:48086
+newrt|end

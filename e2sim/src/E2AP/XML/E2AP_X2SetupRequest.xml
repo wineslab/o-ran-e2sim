@@ -1,0 +1,57 @@
+<E2AP-PDU>
+    <initiatingMessage>
+        <procedureCode>6</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <X2SetupRequest>
+                <protocolIEs>
+                    <X2SetupRequest-IEs>
+                        <id>21</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <GlobalENB-ID>
+                                <pLMN-Identity>13 30 23</pLMN-Identity>
+                                <eNB-ID>
+                                    <macro-eNB-ID>
+                                        11111111111111111111
+                                    </macro-eNB-ID>
+                                </eNB-ID>
+                            </GlobalENB-ID>
+                        </value>
+                    </X2SetupRequest-IEs>
+                    <X2SetupRequest-IEs>
+                        <id>20</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <ServedCells>
+                                <SEQUENCE>
+                                    <servedCellInfo>
+                                        <pCI>503</pCI>
+                                        <cellId>
+                                            <pLMN-Identity>13 30 23</pLMN-Identity>
+                                            <eUTRANcellIdentifier>
+                                                1111111111111111111100000000
+                                            </eUTRANcellIdentifier>
+                                        </cellId>
+                                        <tAC>00 00</tAC>
+                                        <broadcastPLMNs>
+                                            <PLMN-Identity>13 30 23</PLMN-Identity>
+                                        </broadcastPLMNs>
+                                        <eUTRA-Mode-Info>
+                                            <fDD>
+                                                <uL-EARFCN>0</uL-EARFCN>
+                                                <dL-EARFCN>0</dL-EARFCN>
+                                                <uL-Transmission-Bandwidth><bw6/></uL-Transmission-Bandwidth>
+                                                <dL-Transmission-Bandwidth><bw15/></dL-Transmission-Bandwidth>
+                                            </fDD>
+                                        </eUTRA-Mode-Info>
+                                    </servedCellInfo>
+                                </SEQUENCE>
+                            </ServedCells>
+                        </value>
+                    </X2SetupRequest-IEs>
+                </protocolIEs>
+            </X2SetupRequest>
+        </value>
+    </initiatingMessage>
+</E2AP-PDU>
