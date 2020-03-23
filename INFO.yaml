@@ -44,5 +44,10 @@ committers:
       company: 'AT&T'
       id: 'harrytran'
       timezone: 'America/New York (GMT -5)'
+    - name: 'Bharath Balasubramanian'
+      email: 'bharathb@research.att.com'
+      company: 'AT&T'
+      id: 'bharathb'
+      timezone: 'America/New York (GMT -5)'
 tsc:
     approval: 'https://lists.o-ran-sc.org/g/toc/message/102'
