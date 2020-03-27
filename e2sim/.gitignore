@@ -1,0 +1,12 @@
+build/
+rmr/
+temp/
+.tags
+.tags1
+.asn
+tools/asn1c
+tools/asn_defs/*.asn
+tools/asn_defs/*.asn1
+
+test/WLG/build/
+test/X2/build/

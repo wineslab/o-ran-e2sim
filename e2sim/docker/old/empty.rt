@@ -1,0 +1,5 @@
+# an empty route table to put into an image so there is some file there
+# if on image start nothing is mounted onto /usr/local/route
+
+newrt|start
+newrt|end
