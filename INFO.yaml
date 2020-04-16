@@ -49,5 +49,10 @@ committers:
       company: 'AT&T'
       id: 'bharathb'
       timezone: 'America/New York (GMT -5)'
+    - name: 'Ron Shacham'
+      email: 'rshacham@research.att.com'
+      company: 'AT&T'
+      id: 'rshacham'
+      timezone: 'America/New York (GMT -5)'
 tsc:
     approval: 'https://lists.o-ran-sc.org/g/toc/message/102'
