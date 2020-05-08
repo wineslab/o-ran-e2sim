@@ -1,0 +1,21 @@
+<E2AP-PDU>
+    <unsuccessfulOutcome>
+        <procedureCode>36</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <ENDCX2SetupFailure>
+                <protocolIEs>
+                    <ENDCX2SetupFailure-IEs>
+                        <id>5</id>
+                        <criticality><ignore/></criticality>
+                        <value>
+                            <Cause>
+                                <radioNetwork><ho-target-not-allowed/></radioNetwork>
+                            </Cause>
+                        </value>
+                    </ENDCX2SetupFailure-IEs>
+                </protocolIEs>
+            </ENDCX2SetupFailure>
+        </value>
+    </unsuccessfulOutcome>
+</E2AP-PDU>

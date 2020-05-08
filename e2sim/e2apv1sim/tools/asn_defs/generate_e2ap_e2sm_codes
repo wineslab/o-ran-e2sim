@@ -1,0 +1,39 @@
+#!/bin/bash
+#/*****************************************************************************
+#                                                                            *
+# Copyright 2019 AT&T Intellectual Property                                  *
+# Copyright 2019 Nokia                                                       *
+#                                                                            *
+# Licensed under the Apache License, Version 2.0 (the "License");            *
+# you may not use this file except in compliance with the License.           *
+# You may obtain a copy of the License at                                    *
+#                                                                            *
+#      http://www.apache.org/licenses/LICENSE-2.0                            *
+#                                                                            *
+# Unless required by applicable law or agreed to in writing, software        *
+# distributed under the License is distributed on an "AS IS" BASIS,          *
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+# See the License for the specific language governing permissions and        *
+# limitations under the License.                                             *
+#                                                                            *
+#******************************************************************************/
+
+E2AP_asn="e2ap-v031.asn"
+E2SM_asn="e2sm-gNB-X2-release-1-v041.asn"
+X2AP_asn="x2ap-no-desc-15-04.asn"
+
+GEN_DIR=../../src/ASN1c/
+
+rm -f $GEN_DIR/*.c $GEN_DIR/*.h
+
+asn1c -pdu=all -fcompound-names -gen-PER -no-gen-OER -no-gen-example \
+            -fno-include-deps -D $GEN_DIR $E2AP_asn $X2AP_asn  \
+            |& egrep -v "^Copied|^Compiled" | sort -u
+
+asn1c -pdu=all -fcompound-names -gen-PER -no-gen-OER -no-gen-example \
+            -fno-include-deps -D $GEN_DIR $E2SM_asn $X2AP_asn  \
+            |& egrep -v "^Copied|^Compiled" | sort -u
+
+echo "ASN1 C codes generated at $GEN_DIR"
+
+# asn1c -fcompound-names -fno-include-deps -findirect-choice -gen-PER -no-gen-OER  /tmp/e2ap-v031.asn /tmp/x2ap-no-desc-15-04.asn
