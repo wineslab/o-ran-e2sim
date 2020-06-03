@@ -29,5 +29,5 @@ clean:
 regen: regenerate-from-asn1-source
 
 regenerate-from-asn1-source:
-	/root/forkedasn/bin/asn1c -fcompound-names /home/rshacham/e2sm_kpm_approved.asn
+	asn1c -fcompound-names /home/rshacham/e2sm_kpm_approved.asn
 

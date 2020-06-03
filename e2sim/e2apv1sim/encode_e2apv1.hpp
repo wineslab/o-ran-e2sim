@@ -23,6 +23,7 @@ extern "C" {
 #include "RICactions-ToBeSetup-List.h"
 #include "RICeventTriggerDefinition.h"
 #include "RICsubscriptionRequest.h"
+#include "RICsubscriptionResponse.h"
 #include "ProtocolIE-SingleContainer.h"
 #include "RANfunctions-List.h"
 #include "RICindication.h"
@@ -40,6 +41,6 @@ void generate_e2apv1_setup_response(E2AP_PDU_t *setup_resp_pdu);
 
 void generate_e2apv1_subscription_request(E2AP_PDU_t *sub_req_pdu);
 
-void generate_e2apv1_subscription_response(E2AP_PDU_t *sub_resp_pdu);
+void generate_e2apv1_subscription_response(E2AP_PDU_t *sub_resp_pdu, E2AP_PDU_t *sub_req_pdu);
 
 void generate_e2apv1_indication_request(E2AP_PDU_t *ind_req_pdu);

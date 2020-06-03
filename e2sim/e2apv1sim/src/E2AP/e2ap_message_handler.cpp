@@ -1,3 +1,5 @@
+
+
 /*****************************************************************************
 #                                                                            *
 # Copyright 2019 AT&T Intellectual Property                                  *
@@ -18,7 +20,11 @@
 ******************************************************************************/
 #include "e2ap_message_handler.hpp"
 #include <unistd.h>
+//#include <iostream>
+//#include <vector>
 #include "encode_e2apv1.hpp"
+
+
 
 void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc)
 {
@@ -69,7 +75,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc)
           break;
 	  
         case E2AP_PDU_PR_successfulOutcome:
-          LOG_I("[E2AP] Received SETUP-RESPONSE-SUCCESS");	  
+          LOG_I("[E2AP] Received SETUP-RESPONSE-SUCCESS");
           break;
 	  
         case E2AP_PDU_PR_unsuccessfulOutcome:
@@ -149,30 +155,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc)
     default:
       
       LOG_E("[E2AP] No available handler for procedureCode=%d", procedureCode);
-      /*
-      fprintf(stderr, "sending subscription request\n");
-      E2AP_PDU_t* sub_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
-      generate_e2apv1_subscription_request(sub_pdu);
 
-      auto buffer_size = MAX_SCTP_BUFFER;
-      unsigned char buffer[MAX_SCTP_BUFFER];
-      
-      sctp_buffer_t data;
-
-      auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, sub_pdu, buffer, buffer_size);
-
-      data.len = er.encoded;
-      
-      fprintf(stderr, "er encded is %d\n", er.encoded);
-      
-      memcpy(data.buffer, buffer, er.encoded);
-
-      if(sctp_send_data(socket_fd, data) > 0) {
-	LOG_I("[SCTP] Sent E2-SUBSCRIPTION-REQUEST");
-      } else {
-	LOG_E("[SCTP] Unable to send E2-SUBSCRIPTION-REQUEST to peer");
-      }
-      */
       break;
     }
 }
@@ -203,9 +186,9 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
   //send response data over sctp
   if(sctp_send_data(socket_fd, data) > 0) {
-    LOG_I("[SCTP] Sent RIC-SUBSCRIPTION-RESPONSE");
+    LOG_I("[SCTP] Sent E2-SETUP-RESPONSE");
   } else {
-    LOG_E("[SCTP] Unable to send RIC-SUBSCRIPTION-RESPONSE to peer");
+    LOG_E("[SCTP] Unable to send E2-SETUP-RESPONSE to peer");
   }
 
   sleep(5);
@@ -214,7 +197,6 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
   E2AP_PDU_t* pdu_sub = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
 
-  //  generate_e2apv1_subscription_request(pdu_setup);
   generate_e2apv1_subscription_request(pdu_sub);
 
   xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_sub);
@@ -224,41 +206,12 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
   
   sctp_buffer_t data2;
 
-  //  auto er2 = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_sub, buffer, buffer_size);
-  auto er2 = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, pdu_sub, buffer, buffer_size);
+  auto er2 = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_sub, buffer2, buffer_size2);
   
   data2.len = er2.encoded;
   memcpy(data2.buffer, buffer2, er2.encoded);
   
   fprintf(stderr, "er encded is %d\n", er2.encoded);
-
-  /*
-  fprintf(stderr, "now that we've encoded....let's decode!!\n");
-  E2AP_PDU_t* pdu_sub2 = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
-
-  //  auto er3 = asn_decode(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, (void **) &pdu_sub2,  
-  auto er3 = asn_decode(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, (void **) &pdu_sub2,
-			 data2.buffer, data2.len);
-
-  int index = (int)pdu_sub2->present;
-  fprintf(stderr, "length of data %d\n", er3.consumed);
-  fprintf(stderr, "result %d\n", er3.code);
-  fprintf(stderr, "index is %d\n", index);
-  
-  fprintf(stderr, "showing xer of data\n");  
-  
-  xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_sub2);
-  int procedureCode = e2ap_asn1c_get_procedureCode(pdu_sub2);
-
-  LOG_D("[E2AP] Unpacked E2AP-PDU: index = %d, procedureCode = %d\n",
-	index, procedureCode);  
-
-
-  */  
-
-  
-  
-  
 
   if(sctp_send_data(socket_fd, data2) > 0) {
     LOG_I("[SCTP] Sent E2-SUBSCRIPTION-REQUEST");
@@ -272,21 +225,50 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
 void e2ap_handle_RICSubscriptionRequest(E2AP_PDU_t* pdu, int &socket_fd)
 {
+
+  //Send back Subscription Success Response
+
+  E2AP_PDU_t* pdu_resp = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
+
+  generate_e2apv1_subscription_response(pdu_resp, pdu);
+
+  fprintf(stderr, "Subscription Response\n");
+
+  xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_resp);
+
+  auto buffer_size2 = MAX_SCTP_BUFFER;
+  unsigned char buffer2[MAX_SCTP_BUFFER];
+  
+  sctp_buffer_t data2;
+
+  auto er2 = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_resp, buffer2, buffer_size2);
+  data2.len = er2.encoded;
+
+  fprintf(stderr, "er encded is %d\n", er2.encoded);
+
+  memcpy(data2.buffer, buffer2, er2.encoded);
+
+  if(sctp_send_data(socket_fd, data2) > 0) {
+    LOG_I("[SCTP] Sent RIC-SUBSCRIPTION-RESPONSE");
+  } else {
+    LOG_E("[SCTP] Unable to send RIC-SUBSCRIPTION-RESPONSE to peer");
+  }
+  
+  
   //Send back an Indication
 
+  E2AP_PDU_t* pdu_ind = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
 
-  E2AP_PDU_t* pdu_setup = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
+  generate_e2apv1_indication_request(pdu_ind);
 
-  generate_e2apv1_indication_request(pdu_setup);
-
-  xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_setup);
+  xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_ind);
 
   auto buffer_size = MAX_SCTP_BUFFER;
   unsigned char buffer[MAX_SCTP_BUFFER];
   
   sctp_buffer_t data;
 
-  auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_setup, buffer, buffer_size);
+  auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_ind, buffer, buffer_size);
   data.len = er.encoded;
 
   fprintf(stderr, "er encded is %d\n", er.encoded);
@@ -294,68 +276,13 @@ void e2ap_handle_RICSubscriptionRequest(E2AP_PDU_t* pdu, int &socket_fd)
   memcpy(data.buffer, buffer, er.encoded);
 
   if(sctp_send_data(socket_fd, data) > 0) {
-    LOG_I("[SCTP] Sent E2-SETUP-REQUEST");
+    LOG_I("[SCTP] Sent RIC-INDICATION-REQUEST");
   } else {
-    LOG_E("[SCTP] Unable to send E2-SETUP-REQUEST to peer");
+    LOG_E("[SCTP] Unable to send RIC-INDICATION-REQUEST to peer");
   }  
 
 }
 
-void e2ap_handle_RICSubscriptionRequest_securityDemo(E2AP_PDU_t* pdu, int &socket_fd)
-{
-  E2AP_PDU_t* res_pdu = e2ap_xml_to_pdu("E2AP_RICsubscriptionResponse.xml");
 
-  LOG_D("[E2AP] Created RIC-SUBSCRIPTION-RESPONSE");
-
-  e2ap_asn1c_print_pdu(res_pdu);
-
-  uint8_t       *buf;
-  sctp_buffer_t data;
-
-  data.len = e2ap_asn1c_encode_pdu(res_pdu, &buf);
-  memcpy(data.buffer, buf, min(data.len, MAX_SCTP_BUFFER));
-
-  //send response data over sctp
-  if(sctp_send_data(socket_fd, data) > 0) {
-    LOG_I("[SCTP] Sent RIC-SUBSCRIPTION-RESPONSE");
-  } else {
-    LOG_E("[SCTP] Unable to send RIC-SUBSCRIPTION-RESPONSE to peer");
-  }
-
-  //Start sending RIC Indication
-  int count1 = 0, count2 = 0;
-
-  E2AP_PDU_t* indication_type1 = e2ap_xml_to_pdu("E2AP_RICindication_type1.xml");
-  E2AP_PDU_t* indication_type2 = e2ap_xml_to_pdu("E2AP_RICindication_type2.xml");
-
-  uint8_t *buf1, *buf2;
-  sctp_buffer_t data1, data2;
-  data1.len = e2ap_asn1c_encode_pdu(indication_type1, &buf1);
-  memcpy(data1.buffer, buf1, min(data1.len, MAX_SCTP_BUFFER));
-
-  data2.len = e2ap_asn1c_encode_pdu(indication_type2, &buf2);
-  memcpy(data2.buffer, buf2, min(data2.len, MAX_SCTP_BUFFER));
-
-  while(1){
-    sleep(1);
-    //type1
-    if(sctp_send_data(socket_fd, data1) > 0) {
-      count1++;
-      LOG_I("[SCTP] Sent RIC-INDICATION SgNBAdditionRequest Type 1, count1 = %d", count1);
-    } else {
-      LOG_E("[SCTP] Unable to send RIC-INDICATION to peer");
-    }
-
-    sleep(1);
-    //type2
-    if(sctp_send_data(socket_fd, data2) > 0) {
-      count2++;
-      LOG_I("[SCTP] Sent RIC-INDICATION SgNBAdditionRequest Type 2, count2 = %d", count2);
-    } else {
-      LOG_E("[SCTP] Unable to send RIC-INDICATION to peer");
-    }
-  } //end while
-
-}
 
 

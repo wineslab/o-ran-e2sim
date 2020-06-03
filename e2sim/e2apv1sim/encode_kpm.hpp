@@ -5,3 +5,5 @@
 #include "FQIPERSlicesPerPlmnListItem.h"
 
 void encode_kpm(E2SM_KPM_IndicationMessage_t* indicationmessage);
+
+void encode_kpm_bak(E2SM_KPM_IndicationMessage_t* indicationmessage);
