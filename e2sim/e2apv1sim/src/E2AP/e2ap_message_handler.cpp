@@ -19,12 +19,13 @@
 #                                                                            *
 ******************************************************************************/
 #include "e2ap_message_handler.hpp"
-#include <unistd.h>
+
 //#include <iostream>
 //#include <vector>
 #include "encode_e2apv1.hpp"
+#include "kpm_callbacks.hpp"
 
-
+#include <unistd.h>
 
 void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc)
 {
@@ -37,11 +38,11 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc)
 
   asn_transfer_syntax syntax;
   
-  if (!xmlenc) 
-    syntax = ATS_ALIGNED_BASIC_PER;
-  else
-    syntax = ATS_BASIC_XER;
 
+  syntax = ATS_ALIGNED_BASIC_PER;
+  
+
+  fprintf(stderr, "full buffer\n%s\n", data.buffer);
   //  e2ap_asn1c_decode_pdu(pdu, data.buffer, data.len);
 
   auto rval = asn_decode(nullptr, syntax, &asn_DEF_E2AP_PDU, (void **) &pdu,
@@ -70,7 +71,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc)
       switch(index)
 	{
         case E2AP_PDU_PR_initiatingMessage:
-	  e2ap_handle_E2SetupRequest(pdu, socket_fd);	  
+	  e2ap_handle_E2SetupRequest(pdu, socket_fd);
           LOG_I("[E2AP] Received SETUP-REQUEST");
           break;
 	  
@@ -112,7 +113,8 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc)
 	{
         case E2AP_PDU_PR_initiatingMessage: //initiatingMessage
           LOG_I("[E2AP] Received RIC-SUBSCRIPTION-REQUEST");
-          e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
+	  //          e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
+	  callback_kpm_subscription_request(pdu, socket_fd);
 	  //          e2ap_handle_RICSubscriptionRequest_securityDemo(pdu, socket_fd);
           break;
 	  

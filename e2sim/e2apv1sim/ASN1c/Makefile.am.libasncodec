@@ -18,6 +18,7 @@ ASN_MODULE_SRCS=	\
 	PLMN-Identity.c	\
 	NRCellIdentity.c	\
 	SNSSAI.c	\
+	C-RNTI.c	\
 	RIC-Style-Type.c	\
 	RIC-Style-Name.c	\
 	RIC-Format-Type.c	\
@@ -32,6 +33,7 @@ ASN_MODULE_SRCS=	\
 	E2SM-KPM-RANfunction-Description.c	\
 	NI-Type.c	\
 	RAN-Container.c	\
+	Timestamp.c	\
 	Trigger-ConditionIE-Item.c	\
 	RT-Period-IE.c	\
 	RANcallProcess-ID-string.c	\
@@ -39,9 +41,11 @@ ASN_MODULE_SRCS=	\
 	RIC-EventTriggerStyle-List.c	\
 	RIC-ReportStyle-List.c	\
 	PF-Container.c	\
+	GNB-Name.c	\
 	GNB-CU-CP-Name.c	\
 	GNB-DU-Name.c	\
 	GNB-CU-UP-Name.c	\
+	UE-Report-Type.c	\
 	ODU-PF-Container.c	\
 	CellResourceReportListItem.c	\
 	ServedPlmnPerCellListItem.c	\
@@ -50,7 +54,13 @@ ASN_MODULE_SRCS=	\
 	FQIPERSlicesPerPlmnPerCellListItem.c	\
 	EPC-DU-PM-Container.c	\
 	PerQCIReportListItem.c	\
+	DU-Usage-Report-Per-UE.c	\
+	DU-Usage-Report-CellResourceReportItem.c	\
+	DU-Usage-Report-UeResourceReportItem.c	\
 	OCUCP-PF-Container.c	\
+	CU-CP-Usage-Report-Per-UE.c	\
+	CU-CP-Usage-Report-CellResourceReportItem.c	\
+	CU-CP-Usage-Report-UeResourceReportItem.c	\
 	OCUUP-PF-Container.c	\
 	PF-ContainerListItem.c	\
 	CUUPMeasurement-Container.c	\
@@ -59,7 +69,10 @@ ASN_MODULE_SRCS=	\
 	SliceToReportListItem.c	\
 	FQIPERSlicesPerPlmnListItem.c	\
 	EPC-CUUP-PM-Format.c	\
-	PerQCIReportListItemFormat.c
+	PerQCIReportListItemFormat.c	\
+	CU-UP-Usage-Report-Per-UE.c	\
+	CU-UP-Usage-Report-CellResourceReportItem.c	\
+	CU-UP-Usage-Report-UeResourceReportItem.c
 
 ASN_MODULE_HDRS=	\
 	GlobalKPMnode-ID.h	\
@@ -81,6 +94,7 @@ ASN_MODULE_HDRS=	\
 	PLMN-Identity.h	\
 	NRCellIdentity.h	\
 	SNSSAI.h	\
+	C-RNTI.h	\
 	RIC-Style-Type.h	\
 	RIC-Style-Name.h	\
 	RIC-Format-Type.h	\
@@ -95,6 +109,7 @@ ASN_MODULE_HDRS=	\
 	E2SM-KPM-RANfunction-Description.h	\
 	NI-Type.h	\
 	RAN-Container.h	\
+	Timestamp.h	\
 	Trigger-ConditionIE-Item.h	\
 	RT-Period-IE.h	\
 	RANcallProcess-ID-string.h	\
@@ -102,9 +117,11 @@ ASN_MODULE_HDRS=	\
 	RIC-EventTriggerStyle-List.h	\
 	RIC-ReportStyle-List.h	\
 	PF-Container.h	\
+	GNB-Name.h	\
 	GNB-CU-CP-Name.h	\
 	GNB-DU-Name.h	\
 	GNB-CU-UP-Name.h	\
+	UE-Report-Type.h	\
 	ODU-PF-Container.h	\
 	CellResourceReportListItem.h	\
 	ServedPlmnPerCellListItem.h	\
@@ -113,7 +130,13 @@ ASN_MODULE_HDRS=	\
 	FQIPERSlicesPerPlmnPerCellListItem.h	\
 	EPC-DU-PM-Container.h	\
 	PerQCIReportListItem.h	\
+	DU-Usage-Report-Per-UE.h	\
+	DU-Usage-Report-CellResourceReportItem.h	\
+	DU-Usage-Report-UeResourceReportItem.h	\
 	OCUCP-PF-Container.h	\
+	CU-CP-Usage-Report-Per-UE.h	\
+	CU-CP-Usage-Report-CellResourceReportItem.h	\
+	CU-CP-Usage-Report-UeResourceReportItem.h	\
 	OCUUP-PF-Container.h	\
 	PF-ContainerListItem.h	\
 	CUUPMeasurement-Container.h	\
@@ -122,7 +145,10 @@ ASN_MODULE_HDRS=	\
 	SliceToReportListItem.h	\
 	FQIPERSlicesPerPlmnListItem.h	\
 	EPC-CUUP-PM-Format.h	\
-	PerQCIReportListItemFormat.h
+	PerQCIReportListItemFormat.h	\
+	CU-UP-Usage-Report-Per-UE.h	\
+	CU-UP-Usage-Report-CellResourceReportItem.h	\
+	CU-UP-Usage-Report-UeResourceReportItem.h
 
 ASN_MODULE_HDRS+=OPEN_TYPE.h
 ASN_MODULE_SRCS+=OPEN_TYPE.c

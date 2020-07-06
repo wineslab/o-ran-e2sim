@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <string>
 #include <iostream>
+#include <fstream>
 
 
 #include "e2sim_defs.h"
@@ -30,7 +31,9 @@
 
 using namespace std;
 
-void encode_and_send_sctp_data(E2AP_PDU_t* pdu, int client_fd)
+int client_fd = 0;
+
+void encode_and_send_sctp_data(E2AP_PDU_t* pdu)
 {
   uint8_t       *buf;
   sctp_buffer_t data;
@@ -41,7 +44,27 @@ void encode_and_send_sctp_data(E2AP_PDU_t* pdu, int client_fd)
   sctp_send_data(client_fd, data);
 }
 
-void wait_for_sctp_data(int client_fd)
+void encode_and_send_sctp_data(E2AP_PDU_t* pdu, int client_fd)
+{
+  uint8_t       *buf;
+  sctp_buffer_t data;
+
+  printf("Calling encode_and_send_sctp_data\n");
+
+  printf("client_fd is %d\n", client_fd);
+
+  data.len = e2ap_asn1c_encode_pdu(pdu, &buf);
+
+  printf("after encoding pdu\n");
+
+  memcpy(data.buffer, buf, min(data.len, MAX_SCTP_BUFFER));
+
+  printf("calling sctp_send_data\n");
+
+  sctp_send_data(client_fd, data);
+}
+
+void wait_for_sctp_data()
 {
   sctp_buffer_t recv_buf;
   if(sctp_receive_data(client_fd, recv_buf) > 0)
@@ -53,29 +76,73 @@ void wait_for_sctp_data(int client_fd)
 
 
 int main(int argc, char* argv[]){
-  LOG_I("Start E2 Agent (E2 Simulator)");
 
-  bool xmlenc = true;
+  printf("Start E2 Agent (E2 Simulator\n");
+
+  ifstream simfile;
+  string line;
+
+  simfile.open("simulation.txt", ios::in);
+
+  if (simfile.is_open()) {
+
+    while (getline(simfile, line)) {
+      cout << line << "\n";
+    }
+
+    simfile.close();
+
+  }
+  
+
+  printf("encoding now the user level - DU\n");
+
+  E2SM_KPM_IndicationMessage_t *indMsg =
+    (E2SM_KPM_IndicationMessage_t*)calloc(1,sizeof(E2SM_KPM_IndicationMessage_t));
+
+  //encode_kpm_report_rancontainer_du(indMsg);
+  encode_kpm_report_style1(indMsg);
+
+  
+
+  bool xmlenc = false;
 
   options_t ops = read_input_options(argc, argv);
 
+  printf("After reading input options\n");
+
   //E2 Agent will automatically restart upon sctp disconnection
   //  int server_fd = sctp_start_server(ops.server_ip, ops.server_port);
-  int client_fd = sctp_start_client(ops.server_ip, ops.server_port);
+
+  client_fd = sctp_start_client(ops.server_ip, ops.server_port);
   E2AP_PDU_t* pdu_setup = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
 
+  printf("After starting client\n");
+  printf("client_fd value is %d\n", client_fd);
+  
   //  generate_e2apv1_subscription_request(pdu_setup);
   generate_e2apv1_setup_request(pdu_setup);
 
+  printf("After generating e2setup req\n");  
+
   xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_setup);
+
+  printf("After XER Encoding\n");
 
   auto buffer_size = MAX_SCTP_BUFFER;
   unsigned char buffer[MAX_SCTP_BUFFER];
   
   sctp_buffer_t data;
 
-  //  auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_setup, buffer, buffer_size);
-  auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, pdu_setup, buffer, buffer_size);
+  char *error_buf = (char*)calloc(300, sizeof(char));
+  size_t errlen;
+
+  asn_check_constraints(&asn_DEF_E2AP_PDU, pdu_setup, error_buf, &errlen);
+  printf("error length %d\n", errlen);
+  printf("error buf %s\n", error_buf);
+
+  auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_setup, buffer, buffer_size);
+  //auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, pdu_setup, buffer, buffer_size);
   data.len = er.encoded;
 
   fprintf(stderr, "er encded is %d\n", er.encoded);

@@ -62,7 +62,21 @@ struct {
 } 
 */
 
+int client_fd = 0;
+
 void encode_and_send_sctp_data(E2AP_PDU_t* pdu, int client_fd)
+{
+  uint8_t       *buf;
+  sctp_buffer_t data;
+
+  data.len = e2ap_asn1c_encode_pdu(pdu, &buf);
+  memcpy(data.buffer, buf, min(data.len, MAX_SCTP_BUFFER));
+
+  sctp_send_data(client_fd, data);
+}
+
+
+void encode_and_send_sctp_data(E2AP_PDU_t* pdu)
 {
   uint8_t       *buf;
   sctp_buffer_t data;
@@ -93,7 +107,7 @@ int main(int argc, char* argv[]){
   options_t ops = read_input_options(argc, argv);
 
   int server_fd = sctp_start_server(ops.server_ip, ops.server_port);
-  int client_fd = sctp_accept_connection(ops.server_ip, server_fd);
+  client_fd = sctp_accept_connection(ops.server_ip, server_fd);
 
   sctp_buffer_t recv_buf;
 

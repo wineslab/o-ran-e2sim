@@ -18,6 +18,9 @@ extern "C" {
 #define maxCellingNBDU (512)
 #define maxofContainers (8)
 #define maxPLMN (12)
+#define maxofRANparamters (65536)
+#define maxUeReport (32)
+#define maxCellingNB (16384)
 
 
 #ifdef __cplusplus
