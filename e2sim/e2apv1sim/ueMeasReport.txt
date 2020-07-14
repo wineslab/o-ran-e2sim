@@ -1,0 +1,65 @@
+{	
+    "ueMeasReport": {	
+        "du-id": 1000,                            
+        "ueMeasReportList":  [             
+           {                                      
+			  "measTimeStampRf": "2020-04-09 14:33:33,559", 
+			  "nrCellIdentity": 0,    
+              "servingCellRfReport": {
+                  "rsrp": 10,                     
+                  "rsrq": 0,                     
+                  "rssinr": 0                
+              },
+			  "neighbourCellList": [
+					{
+						"nbCellIdentity": 1,
+						"nbCellRfReport": {
+							"rsrp": 10,                     
+							"rsrq": 0,                     
+							"rssinr": 0 
+						}
+					}, 
+					{
+						"nbCellIdentity": 2,
+						"nbCellRfReport": {
+							"rsrp": 10,                     
+							"rsrq": 0,                     
+							"rssinr": 0 
+						}
+					}
+                ]
+              
+           },
+		   
+           {                                      
+			  "measTimeStampRf": "2020-04-09 14:33:33,559", 
+			  "nrCellIdentity": 1,                
+              "servingCellRfReport": {
+                  "rsrp": 10,                     
+                  "rsrq": 0,                     
+                  "rssinr": 0                
+              },
+			  "neighbourCellList": [
+					{
+						"nbCellIdentity": 0,
+						"nbCellRfReport": {
+							"rsrp": 10,                     
+							"rsrq": 0,                     
+							"rssinr": 0 
+						}
+					}, 
+					{
+						"nbCellIdentity": 2,
+						"nbCellRfReport": {
+							"rsrp": 10,                     
+							"rsrq": 0,                     
+							"rssinr": 0 
+						}
+					}
+                ]
+              
+           }
+        ]             
+    }
+}
+

@@ -1097,21 +1097,101 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
 
 
   //We need to convert bytes_dl into array of uint8_t
-  INTEGER_t *bytesdl = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
-  uint8_t buffer[1];
-  buffer[0]= 40000;
-  bytesdl->buf = (uint8_t*)calloc(1,1);
-  memcpy(bytesdl->buf, buffer,1);
-  bytesdl->size = 1;
 
+  int array_size_dl;
+
+  INTEGER_t *bytesdl = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
+
+  if (bytes_dl <= 64) {
+    array_size_dl = 1;
+
+    uint8_t buffer[array_size_dl];
+    buffer[0] = bytes_dl & 0xFF;
+    bytesdl->buf = (uint8_t*)calloc(1,1);
+    memcpy(bytesdl->buf,buffer,1);
+    bytesdl->size = 1;
+
+  } else if (bytes_dl <= 16384) {
+    array_size_dl = 2;
+
+    uint8_t buffer[array_size_dl];
+    buffer[0] = (bytes_dl >> 8) & 0xFF;
+    buffer[1] = bytes_dl & 0xFF;
+    bytesdl->buf = (uint8_t*)calloc(2,1);
+    memcpy(bytesdl->buf,buffer,2);
+    bytesdl->size = 2;
+    
+  } else if (bytes_dl <= 4194304) {
+    array_size_dl = 3;
+
+    uint8_t buffer[array_size_dl];
+    buffer[0] = (bytes_dl >> 16) & 0xFF;
+    buffer[1] = (bytes_dl >> 8) & 0xFF;
+    buffer[2] = bytes_dl & 0xFF;
+    bytesdl->buf = (uint8_t*)calloc(3,1);
+    memcpy(bytesdl->buf,buffer,3);
+    bytesdl->size = 3;    
+    
+  } else if (bytes_dl <= 1073741824) {
+    array_size_dl = 4;
+    uint8_t buffer[array_size_dl];
+    buffer[0] = (bytes_dl >> 24) & 0xFF;
+    buffer[1] = (bytes_dl >> 16) & 0xFF;
+    buffer[2] = (bytes_dl >> 8) & 0xFF;
+    buffer[3] = bytes_dl & 0xFF;
+    bytesdl->buf = (uint8_t*)calloc(4,1);
+    memcpy(bytesdl->buf,buffer,4);
+    bytesdl->size = 4;
+  }
+  
   
   //We need to convert bytes_ul into array of uint8_t
   INTEGER_t *bytesul = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
-  uint8_t buffer1[1];
-  buffer1[0] = 50000;
-  bytesul->buf = (uint8_t*)calloc(1,1);
-  memcpy(bytesul->buf, buffer1, 1);
-  bytesul->size = 1;
+
+  int array_size_ul;
+
+  if (bytes_ul <= 64) {
+    array_size_ul = 1;
+
+    uint8_t buffer[array_size_ul];
+    buffer[0] = bytes_ul & 0xFF;
+    bytesul->buf = (uint8_t*)calloc(1,1);
+    memcpy(bytesul->buf,buffer,1);
+    bytesul->size = 1;
+
+  } else if (bytes_ul <= 16384) {
+    array_size_ul = 2;
+
+    uint8_t buffer[array_size_ul];
+    buffer[0] = (bytes_ul >> 8) & 0xFF;
+    buffer[1] = bytes_ul & 0xFF;
+    bytesul->buf = (uint8_t*)calloc(2,1);
+    memcpy(bytesul->buf,buffer,2);
+    bytesul->size = 2;
+    
+  } else if (bytes_ul <= 4194304) {
+    array_size_ul = 3;
+
+    uint8_t buffer[array_size_ul];
+    buffer[0] = (bytes_ul >> 16) & 0xFF;
+    buffer[1] = (bytes_ul >> 8) & 0xFF;
+    buffer[2] = bytes_ul & 0xFF;
+    bytesul->buf = (uint8_t*)calloc(3,1);
+    memcpy(bytesul->buf,buffer,3);
+    bytesul->size = 3;    
+    
+  } else if (bytes_ul <= 1073741824) {
+    array_size_ul = 4;
+    uint8_t buffer[array_size_ul];
+    buffer[0] = (bytes_ul >> 24) & 0xFF;
+    buffer[1] = (bytes_ul >> 16) & 0xFF;
+    buffer[2] = (bytes_ul >> 8) & 0xFF;
+    buffer[3] = bytes_ul & 0xFF;
+    bytesul->buf = (uint8_t*)calloc(4,1);
+    memcpy(bytesul->buf,buffer,4);
+    bytesul->size = 4;
+  }
+  
 
   FQIPERSlicesPerPlmnListItem_t *fqilistitem = (FQIPERSlicesPerPlmnListItem_t*)calloc(1, sizeof(FQIPERSlicesPerPlmnListItem_t));
   ASN_STRUCT_RESET(asn_DEF_FQIPERSlicesPerPlmnListItem, fqilistitem);
