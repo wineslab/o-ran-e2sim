@@ -1,0 +1,12 @@
+<GlobalE2node-ID>
+  <gNB>
+    <global-gNB-ID>
+      <plmn-id>70 6C 6D 6E 33</plmn-id>
+      <gnb-id>
+	<gnb-ID>
+	  01100111011011100110001000110001
+	</gnb-ID>
+      </gnb-id>
+    </global-gNB-ID>
+  </gNB>
+</GlobalE2node-ID>

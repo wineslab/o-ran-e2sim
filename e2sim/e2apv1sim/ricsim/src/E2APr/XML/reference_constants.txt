@@ -1,0 +1,16 @@
+/* Dependencies */
+typedef enum Criticality {
+	Criticality_reject	= 0,
+	Criticality_ignore	= 1,
+	Criticality_notify	= 2
+} e_Criticality;
+
+
+-- Event Trigger Definition OCTET STRING contents
+E2SM-gNB-X2-eventTriggerDefinition ::= SEQUENCE{
+	interface-ID				Interface-ID,
+	interfaceDirection			InterfaceDirection,
+	interfaceMessageType		InterfaceMessageType,
+	interfaceProtocolIE-List	SEQUENCE (SIZE(1..maxofInterfaceProtocolIE)) OF InterfaceProtocolIE-Item OPTIONAL,
+	...
+}

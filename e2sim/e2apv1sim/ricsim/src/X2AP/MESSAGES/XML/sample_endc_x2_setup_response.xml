@@ -1,0 +1,36 @@
+<X2AP-PDU>
+    <successfulOutcome>
+        <procedureCode>36</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <ENDCX2SetupResponse>
+                <protocolIEs>
+                    <ENDCX2SetupResponse-IEs>
+                        <id>246</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RespondingNodeType-EndcX2Setup>
+                                <respond-en-gNB>
+                                    <En-gNB-ENDCX2SetupReqAckIEs>
+                                        <id>252</id>
+                                        <criticality><reject/></criticality>
+                                        <value>
+                                            <GlobalGNB-ID>
+                                                <pLMN-Identity>02 F8 29</pLMN-Identity>
+                                                <gNB-ID>
+                                                    <gNB-ID>
+                                                        01001010100101010010101010101010
+                                                    </gNB-ID>
+                                                </gNB-ID>
+                                            </GlobalGNB-ID>
+                                        </value>
+                                    </En-gNB-ENDCX2SetupReqAckIEs>
+                                </respond-en-gNB>
+                            </RespondingNodeType-EndcX2Setup>
+                        </value>
+                    </ENDCX2SetupResponse-IEs>
+                </protocolIEs>
+            </ENDCX2SetupResponse>
+        </value>
+    </successfulOutcome>
+</X2AP-PDU>

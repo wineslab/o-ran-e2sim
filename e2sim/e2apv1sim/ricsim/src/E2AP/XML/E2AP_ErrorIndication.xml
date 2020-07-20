@@ -1,0 +1,21 @@
+<E2AP-PDU>
+    <initiatingMessage>
+        <procedureCode>3</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <ErrorIndication>
+                <protocolIEs>
+                    <ErrorIndication-IEs>
+                        <id>5</id>
+                        <criticality><ignore/></criticality>
+                        <value>
+                            <Cause>
+                                <radioNetwork><ho-target-not-allowed/></radioNetwork>
+                            </Cause>
+                        </value>
+                    </ErrorIndication-IEs>
+                </protocolIEs>
+            </ErrorIndication>
+        </value>
+    </initiatingMessage>
+</E2AP-PDU>

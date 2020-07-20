@@ -1,0 +1,21 @@
+<X2AP-PDU>
+    <unsuccessfulOutcome>
+        <procedureCode>6</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <X2SetupFailure>
+                <protocolIEs>
+                    <X2SetupFailure-IEs>
+                        <id>5</id>
+                        <criticality><ignore/></criticality>
+                        <value>
+                            <Cause>
+                                <radioNetwork><ho-target-not-allowed/></radioNetwork>
+                            </Cause>
+                        </value>
+                    </X2SetupFailure-IEs>
+                </protocolIEs>
+            </X2SetupFailure>
+        </value>
+    </unsuccessfulOutcome>
+</X2AP-PDU>

@@ -1,0 +1,97 @@
+<E2AP-PDU>
+    <successfulOutcome>
+        <procedureCode>6</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <X2SetupResponse>
+                <protocolIEs>
+                    <X2SetupResponse-IEs>
+                        <id>21</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <GlobalENB-ID>
+                                <pLMN-Identity>13 30 23</pLMN-Identity>
+                                <eNB-ID>
+                                    <macro-eNB-ID>
+                                        00000010101100000011
+                                    </macro-eNB-ID>
+                                </eNB-ID>
+                            </GlobalENB-ID>
+                        </value>
+                    </X2SetupResponse-IEs>
+                    <X2SetupResponse-IEs>
+                        <id>20</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <ServedCells>
+                                <SEQUENCE>
+                                    <servedCellInfo>
+                                        <pCI>308</pCI>
+                                        <cellId>
+                                            <pLMN-Identity>13 30 23</pLMN-Identity>
+                                            <eUTRANcellIdentifier>
+                                                0000001010110000001100001010
+                                            </eUTRANcellIdentifier>
+                                        </cellId>
+                                        <tAC>64 03</tAC>
+                                        <broadcastPLMNs>
+                                            <PLMN-Identity>13 30 23</PLMN-Identity>
+                                        </broadcastPLMNs>
+                                        <eUTRA-Mode-Info>
+                                            <fDD>
+                                                <uL-EARFCN>18650</uL-EARFCN>
+                                                <dL-EARFCN>650</dL-EARFCN>
+                                                <uL-Transmission-Bandwidth><bw50/></uL-Transmission-Bandwidth>
+                                                <dL-Transmission-Bandwidth><bw50/></dL-Transmission-Bandwidth>
+                                            </fDD>
+                                        </eUTRA-Mode-Info>
+                                        <iE-Extensions>
+                                            <ServedCell-Information-ExtIEs>
+                                                <id>41</id>
+                                                <criticality><ignore/></criticality>
+                                                <extensionValue>
+                                                    <Number-of-Antennaports><an2/></Number-of-Antennaports>
+                                                </extensionValue>
+                                            </ServedCell-Information-ExtIEs>
+                                            <ServedCell-Information-ExtIEs>
+                                                <id>55</id>
+                                                <criticality><ignore/></criticality>
+                                                <extensionValue>
+                                                    <PRACH-Configuration>
+                                                        <rootSequenceIndex>344</rootSequenceIndex>
+                                                        <zeroCorrelationIndex>12</zeroCorrelationIndex>
+                                                        <highSpeedFlag><false/></highSpeedFlag>
+                                                        <prach-FreqOffset>5</prach-FreqOffset>
+                                                    </PRACH-Configuration>
+                                                </extensionValue>
+                                            </ServedCell-Information-ExtIEs>
+                                            <ServedCell-Information-ExtIEs>
+                                                <id>160</id>
+                                                <criticality><ignore/></criticality>
+                                                <extensionValue>
+                                                    <FreqBandIndicatorPriority><not-broadcasted/></FreqBandIndicatorPriority>
+                                                </extensionValue>
+                                            </ServedCell-Information-ExtIEs>
+                                        </iE-Extensions>
+                                    </servedCellInfo>
+                                </SEQUENCE>
+                            </ServedCells>
+                        </value>
+                    </X2SetupResponse-IEs>
+                    <X2SetupResponse-IEs>
+                        <id>24</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <GUGroupIDList>
+                                <GU-Group-ID>
+                                    <pLMN-Identity>13 30 23</pLMN-Identity>
+                                    <mME-Group-ID>80 00</mME-Group-ID>
+                                </GU-Group-ID>
+                            </GUGroupIDList>
+                        </value>
+                    </X2SetupResponse-IEs>
+                </protocolIEs>
+            </X2SetupResponse>
+        </value>
+    </successfulOutcome>
+</E2AP-PDU>

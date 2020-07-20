@@ -1,0 +1,14 @@
+# DEMO March 20, 2019
+  ## E2 Agent Laptop with IP x.x.x.x
+  - Connect to adruino via USB
+  - Connect to E2 Termination Desktop via Ethernet
+  - Run E2 Agent: $E2SIM_DIR/build/e2sim x.x.x.x
+
+  ## E2 Termination Desktop
+  - Run xApp
+    cd $E2SIM_DIR/rmr_interface/tests/pendulum_xapp
+    bash run_receiver
+
+  - Run E2 Termination
+    cd $E2SIM_DIR
+    ./build_and_run_e2sim

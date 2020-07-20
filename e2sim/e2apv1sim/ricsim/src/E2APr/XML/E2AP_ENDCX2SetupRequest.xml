@@ -1,0 +1,67 @@
+<E2AP-PDU>
+    <initiatingMessage>
+        <procedureCode>36</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <ENDCX2SetupRequest>
+                <protocolIEs>
+                    <ENDCX2SetupRequest-IEs>
+                        <id>244</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <InitiatingNodeType-EndcX2Setup>
+                                <init-eNB>
+                                    <ENB-ENDCX2SetupReqIEs>
+                                        <id>21</id>
+                                        <criticality><reject/></criticality>
+                                        <value>
+                                            <GlobalENB-ID>
+                                                <pLMN-Identity>61 62 63</pLMN-Identity>
+                                                <eNB-ID>
+                                                    <macro-eNB-ID>
+                                                        00110101000000000001
+                                                    </macro-eNB-ID>
+                                                </eNB-ID>
+                                            </GlobalENB-ID>
+                                        </value>
+                                    </ENB-ENDCX2SetupReqIEs>
+                                    <ENB-ENDCX2SetupReqIEs>
+                                        <id>250</id>
+                                        <criticality><reject/></criticality>
+                                        <value>
+                                            <ServedEUTRAcellsENDCX2ManagementList>
+                                                <SEQUENCE>
+                                                    <servedEUTRACellInfo>
+                                                        <pCI>0</pCI>
+                                                        <cellId>
+                                                            <pLMN-Identity>61 62 63</pLMN-Identity>
+                                                            <eUTRANcellIdentifier>
+                                                                0110010001100101011001100000
+                                                            </eUTRANcellIdentifier>
+                                                        </cellId>
+                                                        <tAC>61 62</tAC>
+                                                        <broadcastPLMNs>
+                                                            <PLMN-Identity>61 62 63</PLMN-Identity>
+                                                        </broadcastPLMNs>
+                                                        <eUTRA-Mode-Info>
+                                                            <fDD>
+                                                                <uL-EARFCN>21400</uL-EARFCN>
+                                                                <dL-EARFCN>3400</dL-EARFCN>
+                                                                <uL-Transmission-Bandwidth><bw25/></uL-Transmission-Bandwidth>
+                                                                <dL-Transmission-Bandwidth><bw50/></dL-Transmission-Bandwidth>
+                                                            </fDD>
+                                                        </eUTRA-Mode-Info>
+                                                    </servedEUTRACellInfo>
+                                                </SEQUENCE>
+                                            </ServedEUTRAcellsENDCX2ManagementList>
+                                        </value>
+                                    </ENB-ENDCX2SetupReqIEs>
+                                </init-eNB>
+                            </InitiatingNodeType-EndcX2Setup>
+                        </value>
+                    </ENDCX2SetupRequest-IEs>
+                </protocolIEs>
+            </ENDCX2SetupRequest>
+        </value>
+    </initiatingMessage>
+</E2AP-PDU>

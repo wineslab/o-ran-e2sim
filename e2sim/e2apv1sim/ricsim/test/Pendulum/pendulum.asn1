@@ -1,0 +1,12 @@
+PendulumModule DEFINITIONS AUTOMATIC TAGS ::=
+
+BEGIN
+
+Pendulum ::= SEQUENCE {
+  sequence  INTEGER         OPTIONAL,
+  angle     REAL            OPTIONAL,
+  torque    REAL            OPTIONAL,
+  strval    PrintableString OPTIONAL
+}
+
+END

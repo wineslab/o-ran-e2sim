@@ -1,0 +1,13 @@
+This is just a basic version of the README that the author of the E2 simulator can augment as he/she sees fit.
+
+Building rmr
+
+- Call the rmr_install.sh 
+
+
+# Running the sender and receiver
+
+- Create a route generate (.rt) file that is common to both the sender and receiver and place it in $HOME/global_rmr_files/global_rmr_routes.rt
+- Build the receiver in the /tests/pendulum_xapp folder by invoking build_recvr.sh. Run it using bash run_receiver
+- Build the sender in the /tests/sender folder by invoking build_sender.sh. Run it using bash run_sender.
+- You can see packets being exchanged. 

@@ -1,0 +1,74 @@
+<E2AP-PDU>
+    <initiatingMessage>
+        <procedureCode>205</procedureCode>
+        <criticality><ignore/></criticality>
+        <value>
+            <RICindication>
+                <protocolIEs>
+                    <RICindication-IEs>
+                        <id>60030</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICrequestID>
+                                <ricRequestorID>6</ricRequestorID>
+                                <ricRequestSequenceNumber>12</ricRequestSequenceNumber>
+                            </RICrequestID>
+                        </value>
+                    </RICindication-IEs>
+                    <RICindication-IEs>
+                        <id>60003</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RANfunctionID>10</RANfunctionID>
+                        </value>
+                    </RICindication-IEs>
+                    <RICindication-IEs>
+                        <id>60017</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICactionID>100</RICactionID>
+                        </value>
+                    </RICindication-IEs>
+                    <RICindication-IEs>
+                        <id>60028</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICindicationSN>100</RICindicationSN>
+                        </value>
+                    </RICindication-IEs>
+                    <RICindication-IEs>
+                        <id>60029</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICindicationType><report/></RICindicationType>
+                        </value>
+                    </RICindication-IEs>
+                    <RICindication-IEs>
+                        <id>60026</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICindicationHeader>10 74 68 65 10 68 65 6C 40</RICindicationHeader>
+                        </value>
+                    </RICindication-IEs>
+                    <RICindication-IEs>
+                        <id>60027</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICindicationMessage>
+                                00 1B 40 80 80 00 00 08 00 6F 00 02 00 0C 00 F8
+                                00 05 08 4D 86 D6 40 00 CB 00 20 31 32 33 34 35
+                                36 37 38 39 31 32 33 34 35 36 37 38 39 31 32 33
+                                34 35 36 37 38 39 31 32 33 34 35 00 CC 00 06 08
+                                07 D0 20 03 E8 00 CE 00 0C 0B 49 6E 66 6F 72 6D
+                                61 74 69 6F 6E 01 17 00 08 00 33 32 31 34 35 36
+                                30 01 13 00 01 23 00 CD 00 1B 00 00 D1 00 16 1A
+                                11 50 00 08 21 09 E0 41 41 42 42 43 43 44 44 45
+                                45 5A 5A 59 58
+                            </RICindicationMessage>
+                        </value>
+                    </RICindication-IEs>
+                </protocolIEs>
+            </RICindication>
+        </value>
+    </initiatingMessage>
+</E2AP-PDU>
