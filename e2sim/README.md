@@ -17,8 +17,60 @@
 #                                                                            *
 #******************************************************************************/
 
+This is an update to E2 Simulator, based on E2AP v1 defined in ORAN
+E2 Simulator is built as a library that supports basic functions and is
+linked by an E2 Simulation application.
 
-# INSTALLATION (tested on Ubuntu 16.04)
+The E2 Simulator breaks up the simulation roles into two:
+1. Base E2AP support
+2. E2SM Support
+
+#1 is the role supported by E2 Simulator library, while #2 is supported by the
+calling application.  An example of a calling application is provided in this repo
+under the
+
+E2 Simulator enables a specific E2SM to be supported by the calling application in
+the following way:
+
+* E2SM must be registered by the calling application
+* E2SM-specific code uses callbacks to handle interaction from xApp
+* E2SM-specific code must continuously implement simulation logic
+
+Registration of an E2SM with the E2 Simulator entails the following:
+* RAN function definition
+* Callback functions for any of the following:
+  Subscription
+  Control
+  Any Responses
+
+The following is the E2 Simulator Main Program Flow
+1. Upon startup, Simulator generates E2 Setup Request
+   For each E2SM that is registered, include RAN function definition
+
+2. Upon receiving incoming requests, decode
+   Identify RAN function ID
+   Call appropriate callback function for RAN function ID and request type
+   Provide entire encoded request
+   If no callback is provided, we return an error response
+3. Upon receiving responses, decode:
+   Identify RAN function ID
+   If a callback is registered for this message type, call it based on RAN function ID and request type
+   Provide entire encoded response
+   If no callback is registered, no action is taken
+
+E2SM Callback Functions:
+
+* Callback functions are responsible for sending responses
+* They may also need to set up ongoing simulation messaging
+  REPORT Service sends back periodic Indication messages containing REPORT
+  INSERT Service sends back periodic Indication messages containing INSERT
+* They may need to associate incoming messages with existing service invocation
+  Modify Subscription
+  CONTROL message associated with INSERT
+* Base E2 simulator should not be concerned with these details; only specific E2SM code should be responsible for any messaging
+
+
+# INSTALLATION Instructions (tested on Ubuntu 16.04)
   1. Install dependencies
     $ sudo apt-get update
     $ sudo apt-get install -y
@@ -35,61 +87,12 @@
         libboost-all-dev
     $ sudo apt-get clean
 
-  2. SET ENVIRONMENT VARIABLE
-    Add this line to `~/.bashrc`
-      export E2SIM_DIR=<your e2sim directory>
+  2. Build the official e2sim
+    $ mkdir build
+    $ cd build
+    $ cmake ..
+    $ make package
+    $ cmake .. -DDEV_PKG=1
+    $ make package
 
-  3. Build the official e2sim
-    $ ./build_e2sim
 
-# USAGE
-  $  $E2SIM_DIR/build/e2sim [SERVER IP] [PORT]
-
-  By default, SERVER IP = 127.0.0.1, PORT = 36421
-  The RIC (i.e., E2 Manager) will need to setup X2 or E2 connection to e2sim on
-  this SERVER IP and PORT
-
-# DOCKER
-  * Build docker image: run this command from $E2SIM_DIR
-  $ sudo docker build -f docker/Dockerfile -t [DOCKER_IMAGE]:[TAG] .
-
-  * Example how to run docker container
-  $ sudo docker run --rm --net host -it [DOCKER_IMAGE]:[TAG] sh -c "./build/e2sim [SERVER IP] [PORT]"
-  ex: sudo docker run --rm --net host -it e2sim:1.0.0 sh -c "./build/e2sim 127.0.0.1 36422"
-
-# SUPPORTED MESSAGE FLOWS
-- RESOURCE STATUS REQUEST   (RIC -> RAN)    version 1.4.0   November 16, 2019
-- RESOURCE STATUS RESPONSE  (RAN -> RIC)
-- RESOURCE STATUS UPDATE    (RAN -> RIC)      
-
-- RIC INDICATION            (RAN -> RIC)    version 1.3.0   September 13, 2019
-    SgNBAdditionRequest
-
-- RIC SUBSCRIPTION REQUEST  (RIC -> RAN)    version 1.2.0   May 24, 2019
-- RIC SUBSCRIPTION RESPONSE (RAN -> RIC)
-- RIC SUBSCRIPTION FAILURE  (RAN -> RIC)
-
-- ENDC X2 SETUP REQUEST     (RIC -> RAN)
-- ENDC X2 SETUP RESPONSE    (RAN -> RIC)
-
-- X2 SETUP REQUEST          (RIC -> RAN)
-- X2 SETUP RESPONSE         (RAN -> RIC)
-
-# GENERATING ASN1C CODES FOR E2AP, E2SM, X2AP
- 1. Install asn1c compiler
- ./tools/install_asn1c
-
- 2. Generate asn1c codes using e2ap, e2sm and x2ap specs
- This requires the following files in tools/asn_defs
-  - e2ap-v031.asn
-  - e2sm-gNB-X2-release-1-v041.asn
-  - x2ap-no-desc-15-04.asn
-
-# Change logs:
-  11/16/2019: - Switch back to using asn1c compiler
-              - add support to Resource Status Request, Response, and Update (over X2)
-  05/24/2019: add support for RIC SUBSCRIPTION REQUEST, RESPONSE, and FAILURE
-  05/21/2019: add support for ENDC X2 SETUP   
-              no longer use asn1c
-              all X2AP and E2AP messages are encapsulated into E2AP-PDU
-  03/12/2019: currently supports sending and receiving X2 SETUP messages
