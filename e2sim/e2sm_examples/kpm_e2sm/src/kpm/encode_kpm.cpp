@@ -16,7 +16,6 @@
 #                                                                            *
 ******************************************************************************/
 
-
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
@@ -1211,10 +1210,10 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
     bytesul->size = 4;
   }
   
-
+  long fqi = 9;
   FQIPERSlicesPerPlmnListItem_t *fqilistitem = (FQIPERSlicesPerPlmnListItem_t*)calloc(1, sizeof(FQIPERSlicesPerPlmnListItem_t));
   ASN_STRUCT_RESET(asn_DEF_FQIPERSlicesPerPlmnListItem, fqilistitem);
-  fqilistitem->fiveQI = 9;
+  fqilistitem->fiveQI = fqi;
   fqilistitem->pDCPBytesDL = bytesdl;
   fqilistitem->pDCPBytesUL = bytesul;
 

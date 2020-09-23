@@ -29,6 +29,8 @@ extern "C" {
   #include "E2SM-KPM-IndicationMessage.h"
   #include "FQIPERSlicesPerPlmnListItem.h"
   #include "E2SM-KPM-RANfunction-Description.h"
+  #include "E2SM-KPM-IndicationHeader-Format1.h"
+  #include "E2SM-KPM-IndicationHeader.h"
   #include "Timestamp.h"
   #include "E2AP-PDU.h"
   #include "RICsubscriptionRequest.h"
@@ -57,6 +59,8 @@ class E2Sim;
 E2Sim e2sim;
 
 int main(int argc, char* argv[]) {
+
+  fprintf(stderr, "Starting KPM processor sim");
 
   asn_codec_ctx_t *opt_cod;
 
@@ -100,12 +104,18 @@ int main(int argc, char* argv[]) {
   printf("value of this index is %d\n", ranfuncdesc[100]);
   printf("value of this index is %d\n", ranfuncdesc[101]);
   
-  e2sim.register_e2sm(1,ranfunc_ostr);
-  e2sim.register_subscription_callback(1,&callback_kpm_subscription_request);
+  e2sim.register_e2sm(0,ranfunc_ostr);
+  e2sim.register_subscription_callback(0,&callback_kpm_subscription_request);
 
   e2sim.run_loop(argc, argv);
 
 }
+
+/*
+void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long actionId) {
+
+}
+*/
 
 void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long actionId) {
 
@@ -118,10 +128,10 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
   
   simfile.open("simulation.txt", ios::in);
 
-  cout << "step1" << endl;
-    
-  std::ifstream ue_stream("ueMeasReport.txt");
-  std::ifstream cell_stream("cellMeasReport.txt");
+  //  cout << "step1" << endl;
+
+  std::ifstream ue_stream("/playpen/src/ueMeasReport.txt");
+  std::ifstream cell_stream("/playpen/src/cellMeasReport.txt");
 
   json all_ues_json;
 
@@ -133,8 +143,8 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
   asn_codec_ctx_t *opt_cod;
 
-  cout << "UE RF Measurements" << endl;
-  cout << "******************" << endl;
+  //  cout << "UE RF Measurements" << endl;
+  //  cout << "******************" << endl;
 
   int numMeasReports = (all_ues_json["/ueMeasReport/ueMeasReportList"_json_pointer]).size();
 
@@ -143,21 +153,21 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
     int nextRsrp;
     int nextRsrq;
     int nextRssinr;
-    cout << "UE number " + i << endl;
-    cout << "**********" << endl;
+    //    cout << "UE number " + i << endl;
+    //    cout << "**********" << endl;
     json::json_pointer p1(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/nrCellIdentity");
     nextCellId = all_ues_json[p1].get<int>();
-    cout << "Serving Cell " << nextCellId << endl;
+    //    cout << "Serving Cell " << nextCellId << endl;
     
     json::json_pointer p2(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/servingCellRfReport/rsrp");
     nextRsrp = all_ues_json[p2].get<int>();
-    cout << "  RSRP " << nextRsrp << endl;
+    //    cout << "  RSRP " << nextRsrp << endl;
     json::json_pointer p3(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/servingCellRfReport/rsrq");
     nextRsrq = all_ues_json[p3].get<int>();
-    cout << "  RSRQ " << nextRsrq << endl;
+    //    cout << "  RSRQ " << nextRsrq << endl;
     json::json_pointer p4(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/servingCellRfReport/rssinr");
     nextRssinr = all_ues_json[p4].get<int>();
-    cout << "  RSSINR " << nextRssinr << endl;
+    //    cout << "  RSSINR " << nextRssinr << endl;
 
     json::json_pointer p5(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/neighbourCellList");
 
@@ -194,21 +204,21 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
     for (int j = 0; j < numNeighborCells; j++) {
       json::json_pointer p8(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/neighbourCellList/" + std::to_string(j) + "/nbCellIdentity");
       nextNbCell = all_ues_json[p8].get<int>();
-      cout << "Neighbor Cell " << all_ues_json[p8] << endl;
+      //cout << "Neighbor Cell " << all_ues_json[p8] << endl;
       json::json_pointer p9(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i)
 			    +"/neighbourCellList/" + std::to_string(j) + "/nbCellRfReport/rsrp");
       nextNbRsrp = all_ues_json[p9].get<int>();
-      cout << "  RSRP " << nextNbRsrp << endl;
+      //cout << "  RSRP " << nextNbRsrp << endl;
 
       json::json_pointer p10(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i)
 			    +"/neighbourCellList/" + std::to_string(j) + "/nbCellRfReport/rsrq");
       nextNbRsrq = all_ues_json[p10].get<int>();
-      cout << "  RSRQ " << nextNbRsrq << endl;
+      //cout << "  RSRQ " << nextNbRsrq << endl;
 
       json::json_pointer p11(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i)
 			     +"/neighbourCellList/" + std::to_string(j) + "/nbCellRfReport/rssinr");
       nextNbRssinr = all_ues_json[p11].get<int>();
-      cout << "  RSSINR " << nextNbRssinr << endl;
+      //cout << "  RSSINR " << nextNbRssinr << endl;
 
       if (j != 0) {
 	neighbor_str += ",";
@@ -224,11 +234,12 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
     
     const uint8_t *neighbor_buf = reinterpret_cast<const uint8_t*>(neighbor_str.c_str());
     
-    printf("Neighbor string\n%s", neighbor_buf);
+    //    printf("Neighbor string\n%s", neighbor_buf);
 
     uint8_t *plmnid_buf = (uint8_t*)"747";
     uint8_t *nrcellid_buf = (uint8_t*)"12340";
-    
+
+    /*
     encode_kpm_report_rancontainer_cucp_parameterized(ind_msg3, plmnid_buf, nrcellid_buf, crnti_buf, serving_buf, neighbor_buf);
     
     uint8_t e2smbuffer3[8192];
@@ -242,21 +253,22 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
     
     fprintf(stderr, "er encded is %d\n", er3.encoded);
     fprintf(stderr, "after encoding message\n");
-    uint8_t *e2smheader_buf3 = (uint8_t*)"header";
+    uint8_t *e2smheader_buf3 = (uint8_t*)"";
     
-    e2sim.generate_e2apv1_indication_request_parameterized(pdu3, requestorId,
-							   instanceId, ranFunctionId,
-							   actionId, seqNum, e2smheader_buf3, 6, e2smbuffer3, er3.encoded);
+    generate_e2apv1_indication_request_parameterized(pdu3, requestorId,
+						     instanceId, ranFunctionId,
+						     actionId, seqNum, e2smheader_buf3, 0, e2smbuffer3, er3.encoded);
     
-    e2sim.encode_and_send_sctp_data(pdu3);
+						     e2sim.encode_and_send_sctp_data(pdu3);
+    */
     
     seqNum++;
         
   }
 
 
-  cout << "Cell Measurements" << endl;
-  cout << "******************" << endl;
+  //  cout << "Cell Measurements" << endl;
+  //  cout << "******************" << endl;
 
   int numCellMeasReports = (all_cells_json["/cellMeasReport/cellMeasReportList"_json_pointer]).size();
 
@@ -274,17 +286,17 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
     json::json_pointer p1(std::string("/cellMeasReport/cellMeasReportList/") + std::to_string(i) +"/nrCellIdentity");
     nextCellId = all_cells_json[p1].get<int>();
-    cout << std::string("Cell number ") << nextCellId << endl;
+    //    cout << std::string("Cell number ") << nextCellId << endl;
     
-    cout << "**********" << endl;
+    //    cout << "**********" << endl;
     
     json::json_pointer p2(std::string("/cellMeasReport/cellMeasReportList/") + std::to_string(i) +"/pdcpByteMeasReport/pdcpBytesDl");
     nextPdcpBytesDL = all_cells_json[p2].get<int>();
-    cout << std::string("  PDCP Bytes DL ") << nextPdcpBytesDL << endl;
+    //    cout << std::string("  PDCP Bytes DL ") << nextPdcpBytesDL << endl;
 
     json::json_pointer p3(std::string("/cellMeasReport/cellMeasReportList/") + std::to_string(i) +"/pdcpByteMeasReport/pdcpBytesUl");
     nextPdcpBytesUL = all_cells_json[p3].get<int>();    
-    cout << std::string("  PDCP Bytes UL ") << nextPdcpBytesUL << endl;
+    //    cout << std::string("  PDCP Bytes UL ") << nextPdcpBytesUL << endl;
 
     uint8_t *buf = (uint8_t*)"GNBCUUP5";
     
@@ -293,7 +305,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
     int bytes_ul = nextPdcpBytesUL;
 
     //    int bytes_dl = 3905;
-    //    int bytes_ul = 1609321;    
+    //    int bytes_ul = 1609321;
     
     E2SM_KPM_IndicationMessage_t *ind_msg2 =
       (E2SM_KPM_IndicationMessage_t*)calloc(1,sizeof(E2SM_KPM_IndicationMessage_t));
@@ -308,28 +320,153 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 					      ATS_ALIGNED_BASIC_PER,
 					      &asn_DEF_E2SM_KPM_IndicationMessage,
 					      ind_msg2, e2smbuffer2, e2smbuffer_size2);
-    
+
     fprintf(stderr, "er encded is %d\n", er2.encoded);
     fprintf(stderr, "after encoding message\n");
-    uint8_t *e2smheader_buf2 = (uint8_t*)"header";
+
+    E2SM_KPM_IndicationHeader_t *ihead =
+      (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
+
     
-    e2sim.generate_e2apv1_indication_request_parameterized(pdu2, requestorId,
-							   instanceId, ranFunctionId,
-							   actionId, seqNum, e2smheader_buf2, 6, e2smbuffer2, er2.encoded);
+    E2SM_KPM_IndicationHeader_Format1_t* ind_header =
+      (E2SM_KPM_IndicationHeader_Format1_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_Format1_t));
+
+    OCTET_STRING_t *plmnid = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
+    plmnid->buf = (uint8_t*)calloc(3,1);
+    plmnid->size = 3;
+    memcpy(plmnid->buf, plmnid_buf, plmnid->size);
+
+    long fqival = 9;
+    long qcival = 9;
+
+    OCTET_STRING_t *sst = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+    sst->size = 6;
+    sst->buf = (uint8_t*)calloc(1,6);
+    memcpy(sst->buf,sst_buf,sst->size);
     
-    e2sim.encode_and_send_sctp_data(pdu2);
+
+    OCTET_STRING_t *sds = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+    sds->size = 3;
+    sds->buf = (uint8_t*)calloc(1,3);
+    memcpy(sds->buf, sd_buf, sds->size);
     
+    
+    SNSSAI_t *snssai = (SNSSAI_t*)calloc(1, sizeof(SNSSAI_t));
+    ASN_STRUCT_RESET(asn_DEF_SNSSAI,snssai);
+    snssai->sST.buf = (uint8_t*)calloc(1,1);
+    snssai->sST.size = 1;
+    memcpy(snssai->sST.buf, sst_buf, 1);
+    snssai->sD = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+    snssai->sD->buf = (uint8_t*)calloc(1,3);
+    snssai->sD->size = 3;
+    memcpy(snssai->sD->buf, sd_buf, 3);
+
+        
+    ind_header->pLMN_Identity = plmnid;
+    ind_header->fiveQI = &fqival;
+
+    BIT_STRING_t *nrcellid = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
+    nrcellid->buf = (uint8_t*)calloc(1,5);
+    nrcellid->size = 5;
+    nrcellid->buf[0] = 0x22;
+    nrcellid->buf[1] = 0x5B;
+    nrcellid->buf[2] = 0xD6;
+    nrcellid->buf[3] = 0x00;
+    nrcellid->buf[4] = 0x70;
+    
+    nrcellid->bits_unused = 4;
+
+    BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
+    gnb_bstring->buf = (uint8_t*)calloc(1,4);
+    gnb_bstring->size = 4;
+    gnb_bstring->buf[0] = 0xB5;
+    gnb_bstring->buf[1] = 0xC6;
+    gnb_bstring->buf[2] = 0x77;
+    gnb_bstring->buf[3] = 0x88;
+    
+    gnb_bstring->bits_unused = 3;
+
+    INTEGER_t *cuup_id = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
+    uint8_t buffer[1];
+    buffer[0] = 20000;
+    cuup_id->buf = (uint8_t*)calloc(1,1);
+    memcpy(cuup_id->buf, buffer, 1);
+    cuup_id->size = 1;
+
+    ind_header->id_GlobalKPMnode_ID = (GlobalKPMnode_ID*)calloc(1,sizeof(GlobalKPMnode_ID));
+    ind_header->id_GlobalKPMnode_ID->present = GlobalKPMnode_ID_PR_gNB;
+    ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
+    ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.choice.gnb_ID = *gnb_bstring;
+    ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.plmn_id = *plmnid;
+    ind_header->id_GlobalKPMnode_ID->choice.gNB.gNB_CU_UP_ID = cuup_id;
+
+    ind_header->nRCGI = (NRCGI*)calloc(1,sizeof(NRCGI));
+    ind_header->nRCGI->pLMN_Identity = *plmnid;
+    ind_header->nRCGI->nRCellIdentity = *nrcellid;
+
+    ind_header->sliceID = snssai;
+    ind_header->qci = &qcival;
+    //    ind_header->message_Type = ;
+    //    ind_header->gNB_DU_ID = ;
+
+    
+    uint8_t *buf5 = (uint8_t*)"GNBCUUP5";
+    OCTET_STRING_t *cuupname = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+    cuupname->size = 8;
+    cuupname->buf = (uint8_t*)calloc(1,8);
+    memcpy(cuupname->buf, buf5, cuupname->size);    
+
+    
+    ind_header->gNB_Name = (GNB_Name*)calloc(1,sizeof(GNB_Name));
+    ind_header->gNB_Name->present = GNB_Name_PR_gNB_CU_UP_Name;
+    ind_header->gNB_Name->choice.gNB_CU_UP_Name = *cuupname;
+
+
+    ind_header->global_GNB_ID = (GlobalgNB_ID*)calloc(1,sizeof(GlobalgNB_ID));
+    ind_header->global_GNB_ID->plmn_id = *plmnid;
+    ind_header->global_GNB_ID->gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
+    ind_header->global_GNB_ID->gnb_id.choice.gnb_ID = *gnb_bstring;
+    
+
+    ihead->present = E2SM_KPM_IndicationHeader_PR_indicationHeader_Format1;
+    ihead->choice.indicationHeader_Format1 = *ind_header;
+
+    printf("IndicationHeader - now printing xer\n");
+    xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationHeader, ihead);
+    printf("IndicationHeader - done printing xer\n");      
+
+    uint8_t e2sm_header_buffer[8192];
+    size_t e2sm_header_buffer_size = 8192;
+    
+    asn_enc_rval_t er4 = asn_encode_to_buffer(opt_cod,
+					      ATS_ALIGNED_BASIC_PER,
+					      &asn_DEF_E2SM_KPM_IndicationHeader,
+					      ihead, e2sm_header_buffer, e2sm_header_buffer_size);    
+    
+    uint8_t *e2smheader_buf2 = (uint8_t*)"";
+
+    int seqNum0 = 1;
+
+    if (i == 0) {
+    
+      encoding::generate_e2apv1_indication_request_parameterized(pdu2, requestorId,
+								 instanceId, ranFunctionId,
+								 actionId, seqNum0, e2sm_header_buffer, er4.encoded, e2smbuffer2, er2.encoded);
+      
+      e2sim.encode_and_send_sctp_data(pdu2);
+    }
+
     seqNum++;
 
     
 
     json::json_pointer p4(std::string("/cellMeasReport/cellMeasReportList/") + std::to_string(i) +"/prbMeasReport/availPrbDl");
     nextPRBBytesDL = all_cells_json[p4].get<int>();    
-    cout << std::string("  PRB Bytes DL ") << all_cells_json[p4] << endl;
+    //    cout << std::string("  PRB Bytes DL ") << all_cells_json[p4] << endl;
 
     json::json_pointer p5(std::string("/cellMeasReport/cellMeasReportList/") + std::to_string(i) +"/prbMeasReport/availPrbUl");
     nextPRBBytesUL = all_cells_json[p5].get<int>();
-    cout << std::string("  PRB Bytes UL ") << all_cells_json[p5] << endl;
+    //    cout << std::string("  PRB Bytes UL ") << all_cells_json[p5] << endl;
 
 
     //REPORT Message 1 -- Encode and send ODU cell-level report
@@ -343,7 +480,8 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
     uint8_t *nrcellid_buf = (uint8_t*)"12340";
     long dl_prbs = nextPRBBytesDL;
     long ul_prbs = nextPRBBytesUL;
-    
+
+    /*
     encode_kpm_report_style1_parameterized(ind_msg1, fiveqi, dl_prbs, ul_prbs, sst_buf, sd_buf, plmnid_buf, nrcellid_buf, &dl_prbs, &ul_prbs);
     
     uint8_t e2smbuffer[8192];
@@ -356,20 +494,21 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
     
     fprintf(stderr, "er encded is %d\n", er.encoded);
     fprintf(stderr, "after encoding message\n");
-    uint8_t *e2smheader_buf = (uint8_t*)"header";
+    uint8_t *e2smheader_buf = (uint8_t*)"";
     
     uint8_t *cpid_buf = (uint8_t*)"CPID";
     
     fprintf(stderr, "About to encode Indication\n");
-    e2sim.generate_e2apv1_indication_request_parameterized(pdu, requestorId,
-							   instanceId, ranFunctionId,
-							   actionId, seqNum, e2smheader_buf, 6, e2smbuffer, er.encoded);
+    generate_e2apv1_indication_request_parameterized(pdu, requestorId,
+						     instanceId, ranFunctionId,
+						     actionId, seqNum, e2smheader_buf, 0, e2smbuffer, er.encoded);
     
-    e2sim.encode_and_send_sctp_data(pdu);
-    
+						     e2sim.encode_and_send_sctp_data(pdu);
+    */
     seqNum++;
     
   }
+
 
 
   /*
@@ -532,8 +671,10 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 }
 
+
 void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
+  fprintf(stderr, "Calling callback_kpm_subscription_request\n");
 
   //Record RIC Request ID
   //Go through RIC action to be Setup List
@@ -568,11 +709,12 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
     RICsubscriptionRequest_IEs_t *next_ie = ies[i];
     pres = next_ie->value.present;
     
-    fprintf(stderr, "next present value %d\n", pres);
+    fprintf(stderr, "The next present value %d\n", pres);
 
     switch(pres) {
     case RICsubscriptionRequest_IEs__value_PR_RICrequestID:
       {
+	fprintf(stderr,"in case request id\n");	
 	RICrequestID_t reqId = next_ie->value.choice.RICrequestID;
 	long requestorId = reqId.ricRequestorID;
 	long instanceId = reqId.ricInstanceID;
@@ -584,13 +726,19 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	break;
       }
     case RICsubscriptionRequest_IEs__value_PR_RANfunctionID:
-      break;
+      {
+	fprintf(stderr,"in case ran func id\n");	
+	break;
+      }
     case RICsubscriptionRequest_IEs__value_PR_RICsubscriptionDetails:
       {
-	RICsubscriptionDetails_t subDetails = next_ie->value.choice.RICsubscriptionDetails; 
+	fprintf(stderr,"in case subscription details\n");
+	RICsubscriptionDetails_t subDetails = next_ie->value.choice.RICsubscriptionDetails;
+	fprintf(stderr,"in case subscription details 1\n");	
 	RICeventTriggerDefinition_t triggerDef = subDetails.ricEventTriggerDefinition;
+	fprintf(stderr,"in case subscription details 2\n");	
 	RICactions_ToBeSetup_List_t actionList = subDetails.ricAction_ToBeSetup_List;
-
+	fprintf(stderr,"in case subscription details 3\n");
 	//We are ignoring the trigger definition
 
 	//We identify the first action whose type is REPORT
@@ -623,6 +771,11 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	
 	break;
       }
+    default:
+      {
+	fprintf(stderr,"in case default\n");	
+	break;
+      }      
     }
     
   }
@@ -645,7 +798,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   int accept_size = actionIdsAccept.size();
   int reject_size = actionIdsReject.size();
 
-  e2sim.generate_e2apv1_subscription_response_success(e2ap_pdu, accept_array, reject_array, accept_size, reject_size, reqRequestorId, reqInstanceId);
+  encoding::generate_e2apv1_subscription_response_success(e2ap_pdu, accept_array, reject_array, accept_size, reject_size, reqRequestorId, reqInstanceId);
 
   e2sim.encode_and_send_sctp_data(e2ap_pdu);
 

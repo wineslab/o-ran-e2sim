@@ -34,14 +34,20 @@ using namespace std;
 int client_fd = 0;
 
 void E2Sim::register_subscription_callback(long func_id, SubscriptionCallback cb) {
-  printf("%%%%about to register callback for subscription for func_id %d\n", func_id);
+  fprintf(stderr,"%%%%about to register callback for subscription for func_id %d\n", func_id);
   subscription_callbacks[func_id] = cb;
   
 }
 
 SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
-  printf("%%%%we are getting the subscription callback for func id %d\n", func_id);
-  SubscriptionCallback cb = subscription_callbacks[func_id];
+  fprintf(stderr, "%%%%we are getting the subscription callback for func id %d\n", func_id);
+  SubscriptionCallback cb;
+
+  try {
+    cb = subscription_callbacks.at(func_id);
+  } catch(const std::out_of_range& e) {
+    throw std::out_of_range("Function ID is not registered");
+  }
   return cb;
 
 }

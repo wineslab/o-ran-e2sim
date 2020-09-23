@@ -30,7 +30,7 @@
 #include "encode_e2apv1.hpp"
 
 extern "C" {
-  //#include "E2SM-KPM-RANfunction-Description.h"
+
 
 #include "e2ap_asn1c_codec.h"
 #include "GlobalE2node-ID.h"
@@ -80,12 +80,16 @@ long encoding::get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu) {
     pres = next_ie->value.present;
     
     fprintf(stderr, "next present value %d\n", pres);
+    fprintf(stderr, "value of pres ranfuncid is %d\n", RICsubscriptionRequest_IEs__value_PR_RANfunctionID);
 
     if (pres == RICsubscriptionRequest_IEs__value_PR_RANfunctionID) {
+      fprintf(stderr, "equal pres to ranfuncid\n");
       func_id = next_ie->value.choice.RANfunctionID;
     }
     
   }
+
+  fprintf(stderr, "After loop, func_id is %d\n", func_id);
 
   return func_id;  
 
@@ -190,117 +194,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
 
 }
 
-/*
-void generate_e2apv1_setup_request(E2AP_PDU_t *e2ap_pdu) {
-  
-  //  uint8_t *buf = (uint8_t *)"gnb1"
 
-  BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
-  gnb_bstring->buf = (uint8_t*)calloc(1,4);
-  gnb_bstring->size = 4;
-  gnb_bstring->buf[0] = 0xB5;
-  gnb_bstring->buf[1] = 0xC6;
-  gnb_bstring->buf[2] = 0x77;
-  gnb_bstring->buf[3] = 0x88;
-
-  gnb_bstring->bits_unused = 3;
-
-  uint8_t *buf2 = (uint8_t *)"747";
-  OCTET_STRING_t *plmn = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  plmn->buf = (uint8_t*)calloc(1,3);
-  memcpy(plmn->buf, buf2, 3);
-  plmn->size = 3;
-
-  GNB_ID_Choice_t *gnbchoice = (GNB_ID_Choice_t*)calloc(1,sizeof(GNB_ID_Choice_t));
-  GNB_ID_Choice_PR pres2 = GNB_ID_Choice_PR_gnb_ID;
-  gnbchoice->present = pres2;
-  gnbchoice->choice.gnb_ID = *gnb_bstring;
-
-  GlobalgNB_ID_t *gnb = (GlobalgNB_ID_t*)calloc(1, sizeof(GlobalgNB_ID_t));
-  gnb->plmn_id = *plmn;
-  gnb->gnb_id = *gnbchoice;
-
-  GlobalE2node_gNB_ID_t *e2gnb = (GlobalE2node_gNB_ID_t*)calloc(1, sizeof(GlobalE2node_gNB_ID_t));
-  e2gnb->global_gNB_ID = *gnb;
-
-  GlobalE2node_ID_t *globale2nodeid = (GlobalE2node_ID_t*)calloc(1, sizeof(GlobalE2node_ID_t));
-  GlobalE2node_ID_PR pres;
-  pres = GlobalE2node_ID_PR_gNB;
-  globale2nodeid->present = pres;
-  globale2nodeid->choice.gNB = e2gnb;
-  
-  E2setupRequestIEs_t *e2setuprid = (E2setupRequestIEs_t*)calloc(1, sizeof(E2setupRequestIEs_t));
-  E2setupRequestIEs__value_PR pres3;
-  pres3 = E2setupRequestIEs__value_PR_GlobalE2node_ID;
-  e2setuprid->id = 3;
-  e2setuprid->criticality = 0;
-  e2setuprid->value.choice.GlobalE2node_ID = *globale2nodeid;
-  e2setuprid->value.present = pres3;
-
-
-  auto *ranFlistIEs = (E2setupRequestIEs_t *)calloc(1, sizeof(E2setupRequestIEs_t));
-  ASN_STRUCT_RESET(asn_DEF_E2setupRequestIEs, ranFlistIEs);
-  ranFlistIEs->criticality = 0;
-  ranFlistIEs->id = ProtocolIE_ID_id_RANfunctionsAdded;
-  ranFlistIEs->value.present = E2setupRequestIEs__value_PR_RANfunctions_List;
-
-  auto *itemIes = (RANfunction_ItemIEs_t *)calloc(1, sizeof(RANfunction_ItemIEs_t));
-  itemIes->id = ProtocolIE_ID_id_RANfunction_Item;
-  itemIes->criticality = Criticality_reject;
-  itemIes->value.present = RANfunction_ItemIEs__value_PR_RANfunction_Item;
-  itemIes->value.choice.RANfunction_Item.ranFunctionID = 1;
-
-  E2SM_KPM_RANfunction_Description_t *ranfunc_desc =
-    (E2SM_KPM_RANfunction_Description_t*)calloc(1,sizeof(E2SM_KPM_RANfunction_Description_t));
-  encode_kpm_function_description(ranfunc_desc);
-
-  uint8_t e2smbuffer[8192];
-  size_t e2smbuffer_size = 8192;
-
-  asn_codec_ctx_t *opt_cod;  
-
-  asn_enc_rval_t er =
-    asn_encode_to_buffer(opt_cod,
-			 ATS_ALIGNED_BASIC_PER,
-			 &asn_DEF_E2SM_KPM_RANfunction_Description,
-			 ranfunc_desc, e2smbuffer, e2smbuffer_size);
-  
-  fprintf(stderr, "er encded is %d\n", er.encoded);
-  fprintf(stderr, "after encoding message\n");
-
-  OCTET_STRING_t *ranfuncdesc_str = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
-  ranfuncdesc_str->buf = (uint8_t*)calloc(1,er.encoded);
-  ranfuncdesc_str->size = er.encoded;
-  memcpy(ranfuncdesc_str->buf, e2smbuffer, er.encoded);
-  
-
-  itemIes->value.choice.RANfunction_Item.ranFunctionDefinition = *ranfuncdesc_str;
-  itemIes->value.choice.RANfunction_Item.ranFunctionRevision = (long)2;
-
-  ASN_SEQUENCE_ADD(&ranFlistIEs->value.choice.RANfunctions_List.list, itemIes);
-
-  E2setupRequest_t *e2setupreq = (E2setupRequest_t*)calloc(1, sizeof(E2setupRequest_t));
-  ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, e2setuprid);
-  ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, ranFlistIEs);
-
-  InitiatingMessage__value_PR pres4;
-  pres4 = InitiatingMessage__value_PR_E2setupRequest;
-  InitiatingMessage_t *initmsg = (InitiatingMessage_t*)calloc(1, sizeof(InitiatingMessage_t));
-
-  initmsg->procedureCode = ProcedureCode_id_E2setup;
-  initmsg->criticality = Criticality_reject;
-  initmsg->value.present = pres4;
-  initmsg->value.choice.E2setupRequest = *e2setupreq;
-
-  E2AP_PDU_PR pres5;
-  pres5 = E2AP_PDU_PR_initiatingMessage;
-  
-
-  e2ap_pdu->present = pres5;
-  e2ap_pdu->choice.initiatingMessage = initmsg;
-
-}
-*/
 
 void encoding::generate_e2apv1_setup_response(E2AP_PDU_t *e2ap_pdu) {
 
@@ -479,6 +373,13 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   
   respricreqid->value.choice.RICrequestID.ricInstanceID = reqInstanceId;
 
+  RICsubscriptionResponse_IEs_t *respfuncid =
+    (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
+  respfuncid->id = ProtocolIE_ID_id_RANfunctionID;
+  respfuncid->criticality = 0;
+  respfuncid->value.present = RICsubscriptionResponse_IEs__value_PR_RANfunctionID;
+  respfuncid->value.choice.RANfunctionID = (long)0;
+  
 
   RICsubscriptionResponse_IEs_t *ricactionadmitted =
     (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
@@ -513,6 +414,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
 
   RICsubscriptionResponse_t *ricsubresp = (RICsubscriptionResponse_t*)calloc(1,sizeof(RICsubscriptionResponse_t));
   ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, respricreqid);
+  ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, respfuncid);
   ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, ricactionadmitted);
   
 
@@ -564,6 +466,10 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
   printf("error length %d\n", errlen);
   printf("error buf %s\n", error_buf);
+
+  printf("now printing xer of subscription response\n");
+  xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
+  printf("done printing xer of subscription response\n");  
 
   
 }
@@ -715,6 +621,8 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
   asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
   printf("error length %d\n", errlen);
   printf("error buf %s\n", error_buf);
+
+
   
 }
 
@@ -816,7 +724,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   fprintf(stderr, "after encoding message 4\n");
   memcpy(ricind_ies7->value.choice.RICindicationMessage.buf, ind_message_buf, message_length);
 
-  fprintf(stderr, "after encoding message 5\n");      
+  fprintf(stderr, "after encoding message 5\n");
 
   uint8_t *cpid_buf = (uint8_t *)"cpid";
   OCTET_STRING_t cpid_str;
@@ -866,7 +774,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
 
   ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies7);  
   
-  //  ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies8);    
+  ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies8);    
 
 
   InitiatingMessage__value_PR pres4;
@@ -894,181 +802,4 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
 
 }
 
-/*
-void generate_e2apv1_indication_request(E2AP_PDU *e2ap_pdu) {
-  fprintf(stderr, "ind1\n");
-  RICindication_IEs_t *ricind_ies = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
-  RICindication_IEs_t *ricind_ies2 = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
-  RICindication_IEs_t *ricind_ies3 = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
-  RICindication_IEs_t *ricind_ies4 = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
-  RICindication_IEs_t *ricind_ies5 = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
-  RICindication_IEs_t *ricind_ies6 = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
-  RICindication_IEs_t *ricind_ies7 = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
-  RICindication_IEs_t *ricind_ies8 = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
-
-  RICindication_IEs__value_PR pres3;
-
-  pres3 = RICindication_IEs__value_PR_RICrequestID;
-  ricind_ies->id = ProtocolIE_ID_id_RICrequestID;
-  ricind_ies->criticality = 0;
-  ricind_ies->value.present = pres3;
-  ricind_ies->value.choice.RICrequestID.ricRequestorID = 25;
-  ricind_ies->value.choice.RICrequestID.ricInstanceID = 3;
-
-  fprintf(stderr, "ind2\n");  
-
-  pres3 = RICindication_IEs__value_PR_RANfunctionID;
-  ricind_ies2->id = ProtocolIE_ID_id_RANfunctionID;
-  ricind_ies2->criticality = 0;
-  ricind_ies2->value.present = pres3;
-  ricind_ies2->value.choice.RANfunctionID = 70;
-
-  
-  ricind_ies3->id = ProtocolIE_ID_id_RICactionID;
-  ricind_ies3->criticality = 0;
-  pres3 =  RICindication_IEs__value_PR_RICactionID;
-  ricind_ies3->value.present = pres3;
-  ricind_ies3->value.choice.RICactionID = 80;
-
-
-  pres3 = RICindication_IEs__value_PR_RICindicationSN;
-  ricind_ies4->id = ProtocolIE_ID_id_RICindicationSN;
-  ricind_ies4->criticality = 0;
-  ricind_ies4->value.present = pres3;
-  ricind_ies4->value.choice.RICindicationSN = 45;
-
-  pres3 = RICindication_IEs__value_PR_RICindicationType;
-  ricind_ies5->id = ProtocolIE_ID_id_RICindicationType;
-  ricind_ies5->criticality = 0;
-  ricind_ies5->value.present = pres3;
-  ricind_ies5->value.choice.RICindicationType = 0;
-
-
-  uint8_t *buf2 = (uint8_t *)"reportheader";
-  OCTET_STRING_t *hdr_str = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
-  hdr_str->buf = (uint8_t*)calloc(1,12);
-  hdr_str->size = 12;
-  memcpy(hdr_str->buf, buf2, 12);
-
-  fprintf(stderr, "ind3\n");
-
-  ricind_ies6->value.choice.RICindicationHeader.buf = (uint8_t*)calloc(1,12);
-
-  pres3 = RICindication_IEs__value_PR_RICindicationHeader;
-  ricind_ies6->id = ProtocolIE_ID_id_RICindicationHeader;
-  ricind_ies6->criticality = 0;
-  ricind_ies6->value.present = pres3;
-  ricind_ies6->value.choice.RICindicationHeader.size = 12;
-  memcpy(ricind_ies6->value.choice.RICindicationHeader.buf, buf2, 12);
-  
-  ricind_ies7->value.choice.RICindicationMessage.buf = (uint8_t*)calloc(1,8192);
-
-
-
-  E2SM_KPM_RANfunction_Description_t *e2sm_desc =
-    (E2SM_KPM_RANfunction_Description_t*)calloc(1,sizeof(E2SM_KPM_RANfunction_Description_t));
-
-  encode_kpm_function_description(e2sm_desc);
-  
-  
-  uint8_t e2smbuffer[8192];
-  size_t e2smbuffer_size = 8192;
-
-  asn_codec_ctx_t *opt_cod;
-
-  
-  asn_enc_rval_t er =
-    asn_encode_to_buffer(opt_cod,
-			 ATS_ALIGNED_BASIC_PER,
-			 &asn_DEF_E2SM_KPM_RANfunction_Description,
-			 e2sm_desc, e2smbuffer, e2smbuffer_size);
-    
-  
-  fprintf(stderr, "er encded is %d\n", er.encoded);
-  fprintf(stderr, "after encoding message\n");
-  
-  OCTET_STRING_t *msg_str = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
-  msg_str->buf = (uint8_t*)calloc(1,er.encoded);
-  msg_str->size = er.encoded;
-  memcpy(msg_str->buf, e2smbuffer, er.encoded);
-  
-
-  pres3 = RICindication_IEs__value_PR_RICindicationMessage;
-  ricind_ies7->id = ProtocolIE_ID_id_RICindicationMessage;
-  fprintf(stderr, "after encoding message 1\n");
-
-  ricind_ies7->criticality = 0;
-  ricind_ies7->value.present = pres3;
-
-  fprintf(stderr, "after encoding message 2\n");
-
-  fprintf(stderr, "after encoding message 3\n");      
-  ricind_ies7->value.choice.RICindicationMessage.size = er.encoded;
-
-  fprintf(stderr, "after encoding message 4\n");      
-  memcpy(ricind_ies7->value.choice.RICindicationMessage.buf, e2smbuffer, er.encoded);
-
-  fprintf(stderr, "after encoding message 5\n");      
-
-  uint8_t *buf4 = (uint8_t *)"cpid";
-  OCTET_STRING_t cpid_str;
-  cpid_str.buf = buf4;
-  cpid_str.size = 4;      
-
-
-  pres3 = RICindication_IEs__value_PR_RICcallProcessID;
-  ricind_ies8->id = ProtocolIE_ID_id_RICcallProcessID;
-
-  ricind_ies8->criticality = 0;
-  ricind_ies8->value.present = pres3;
-
-  ricind_ies8->value.choice.RICcallProcessID = cpid_str;
-
-
-  RICindication_t *ricindication = (RICindication_t*)calloc(1, sizeof(RICindication_t));
-
-  
-  int ret;
-*/
-  /*
-    ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies);
-
-    ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies2);
-
-    ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies3);  
-    ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies4);
-    ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies5);  
-
-    ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies6);
-  */
-/*
-    ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies7);  
-
-  ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies8);    
-
-
-  InitiatingMessage__value_PR pres4;
-  pres4 = InitiatingMessage__value_PR_RICindication;
-  InitiatingMessage_t *initmsg = (InitiatingMessage_t*)calloc(1, sizeof(InitiatingMessage_t));
-  initmsg->procedureCode = 5;
-  initmsg->criticality = 1;
-  initmsg->value.present = pres4;
-  initmsg->value.choice.RICindication = *ricindication;
-
-  E2AP_PDU_PR pres5;
-  pres5 = E2AP_PDU_PR_initiatingMessage;
-  
-  e2ap_pdu->present = pres5;
-  e2ap_pdu->choice.initiatingMessage = initmsg;
-
-  char *error_buf = (char*)calloc(300, sizeof(char));;
-  size_t errlen;  
-
-  asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
-  printf("error length %d\n", errlen);
-  printf("error buf %s\n", error_buf);
-
-  xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
-}
-*/
 

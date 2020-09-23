@@ -43,8 +43,8 @@ WORKDIR /playpen
 ARG E2SIM_VER=1.0.0
 
 # package cloud urls for wget
-ARG PC_REL_URL=https://packagecloud.io/o-ran-sc/release/packages/debian/stretch
-ARG PC_STG_URL=https://packagecloud.io/o-ran-sc/staging/packages/debian/stretch
+#ARG PC_REL_URL=https://packagecloud.io/o-ran-sc/release/packages/debian/stretch
+#ARG PC_STG_URL=https://packagecloud.io/o-ran-sc/staging/packages/debian/stretch
 
 
 # snarf up E2SIM dependencies, then pull E2SIM package and install
@@ -73,22 +73,24 @@ RUN apt-get update \
   && apt-get clean
 
 
-RUN wget -nv --content-disposition ${PC_STG_URL}/sdl_${SDL_VER}-1_amd64.deb/download.deb && \
-	wget -nv --content-disposition ${PC_STG_URL}/sdl-dev_${SDL_VER}-1_amd64.deb/download.deb &&\
-	dpkg -i sdl-dev_${SDL_VER}-1_amd64.deb sdl_${SDL_VER}-1_amd64.deb
+#RUN wget -nv --content-disposition ${PC_STG_URL}/sdl_${SDL_VER}-1_amd64.deb/download.deb && \
+#	wget -nv --content-disposition ${PC_STG_URL}/sdl-dev_${SDL_VER}-1_amd64.deb/download.deb &&\
+#	dpkg -i sdl-dev_${SDL_VER}-1_amd64.deb sdl_${SDL_VER}-1_amd64.deb
 
 #
 # build and install the application(s)
 #
 
 
-#COPY e2sim_1.0.0_amd64.deb /playpen
-#COPY e2sim-dev_1.0.0_amd64.deb /playpen
+COPY e2sim_1.0.0_amd64.deb /playpen
+COPY e2sim-dev_1.0.0_amd64.deb /playpen
 
 RUN dpkg -i e2sim_1.0.0_amd64.deb e2sim-dev_1.0.0_amd64.deb
 
+
 RUN mkdir /usr/local/include/nlohmann
-COPY nlohmann_json_release/json.hpp /usr/local/include/nlohmann
+RUN git clone https://github.com/azadkuh/nlohmann_json_release.git
+RUN cp nlohmann_json_release/json.hpp /usr/local/include/nlohmann
 
 COPY . /playpen/src/
 RUN cd /playpen/src && \
@@ -99,4 +101,4 @@ RUN cd /playpen/src && \
 	make install
 
 
-CMD [ "/usr/local/bin/ts_xapp" ]
+CMD kpm_sim 10.98.179.210 36422

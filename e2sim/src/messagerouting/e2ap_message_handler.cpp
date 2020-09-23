@@ -115,8 +115,23 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
           LOG_I("[E2AP] Received RIC-SUBSCRIPTION-REQUEST");
 	  //          e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
 	  long func_id = encoding::get_function_id_from_subscription(pdu);
-	  SubscriptionCallback cb = e2sim->get_subscription_callback(func_id);
-	  cb(pdu);
+	  fprintf(stderr, "Function Id of message is %d\n", func_id);
+	  SubscriptionCallback cb;
+
+	  bool func_exists = true;
+
+	  try {
+	    cb = e2sim->get_subscription_callback(func_id);
+	  } catch(const std::out_of_range& e) {
+	    func_exists = false;
+	  }
+
+	  if (func_exists) {
+	    fprintf(stderr, "Calling callback function\n");
+	    cb(pdu);
+	  } else {
+	    fprintf(stderr, "Error: No RAN Function with this ID exists\n");
+	  }
 	  //	  callback_kpm_subscription_request(pdu, socket_fd);
 
 	}
