@@ -1,0 +1,12 @@
+<E2AP-PDU>
+    <initiatingMessage>
+        <procedureCode>6</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <RICserviceQuery>
+                <protocolIEs>
+                </protocolIEs>
+            </RICserviceQuery>
+        </value>
+    </initiatingMessage>
+</E2AP-PDU>

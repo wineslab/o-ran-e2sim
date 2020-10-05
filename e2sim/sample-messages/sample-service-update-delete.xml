@@ -1,0 +1,80 @@
+<E2AP-PDU>
+    <initiatingMessage>
+        <procedureCode>7</procedureCode>
+        <criticality><reject/></criticality>
+        <value>
+            <RICserviceUpdate>
+                <protocolIEs>
+                    <RICserviceUpdate-IEs>
+                        <id>10</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RANfunctions-List>
+                                <ProtocolIE-SingleContainer>
+                                    <id>8</id>
+                                    <criticality><reject/></criticality>
+                                    <value>
+                                        <RANfunction-Item>
+                                            <ranFunctionID>20</ranFunctionID>
+                                            <ranFunctionDefinition>
+                                                30 00 00 00 05 4F 49 44 31 32 33 05 00 4B 50 4D
+                                                20 6D 6F 6E 69 74 6F 72 01 01 60 00 01 01 07 00
+                                                50 65 72 69 6F 64 69 63 20 72 65 70 6F 72 74 01
+                                                05 14 01 01 1D 00 4F 2D 44 55 20 4D 65 61 73 75
+                                                72 65 6D 65 6E 74 20 43 6F 6E 74 61 69 6E 65 72
+                                                20 66 6F 72 20 74 68 65 20 35 47 43 20 63 6F 6E
+                                                6E 65 63 74 65 64 20 64 65 70 6C 6F 79 6D 65 6E
+                                                74 01 01 01 01 00 01 02 1D 00 4F 2D 44 55 20 4D
+                                                65 61 73 75 72 65 6D 65 6E 74 20 43 6F 6E 74 61
+                                                69 6E 65 72 20 66 6F 72 20 74 68 65 20 45 50 43
+                                                20 63 6F 6E 6E 65 63 74 65 64 20 64 65 70 6C 6F
+                                                79 6D 65 6E 74 01 01 01 01 00 01 03 1E 80 4F 2D
+                                                43 55 2D 43 50 20 4D 65 61 73 75 72 65 6D 65 6E
+                                                74 20 43 6F 6E 74 61 69 6E 65 72 20 66 6F 72 20
+                                                74 68 65 20 35 47 43 20 63 6F 6E 6E 65 63 74 65
+                                                64 20 64 65 70 6C 6F 79 6D 65 6E 74 01 01 01 01
+                                                00 01 04 1E 80 4F 2D 43 55 2D 43 50 20 4D 65 61
+                                                73 75 72 65 6D 65 6E 74 20 43 6F 6E 74 61 69 6E
+                                                65 72 20 66 6F 72 20 74 68 65 20 45 50 43 20 63
+                                                6F 6E 6E 65 63 74 65 64 20 64 65 70 6C 6F 79 6D
+                                                65 6E 74 01 01 01 01 00 01 05 1E 80 4F 2D 43 55
+                                                2D 55 50 20 4D 65 61 73 75 72 65 6D 65 6E 74 20
+                                                43 6F 6E 74 61 69 6E 65 72 20 66 6F 72 20 74 68
+                                                65 20 35 47 43 20 63 6F 6E 6E 65 63 74 65 64 20
+                                                64 65 70 6C 6F 79 6D 65 6E 74 01 01 01 01 00 01
+                                                06 1E 80 4F 2D 43 55 2D 55 50 20 4D 65 61 73 75
+                                                72 65 6D 65 6E 74 20 43 6F 6E 74 61 69 6E 65 72
+                                                20 66 6F 72 20 74 68 65 20 45 50 43 20 63 6F 6E
+                                                6E 65 63 74 65 64 20 64 65 70 6C 6F 79 6D 65 6E
+                                                74 01 01 01 01
+                                            </ranFunctionDefinition>
+                                            <ranFunctionRevision>3</ranFunctionRevision>
+                                        </RANfunction-Item>
+                                    </value>
+                                </ProtocolIE-SingleContainer>
+                            </RANfunctions-List>
+                        </value>
+                    </RICserviceUpdate-IEs>
+                    <RICserviceUpdate-IEs>
+                        <id>11</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RANfunctionsID-List>
+                                <ProtocolIE-SingleContainer>
+                                    <id>6</id>
+                                    <criticality><reject/></criticality>
+                                    <value>
+                                        <RANfunctionID-Item>
+                                            <ranFunctionID>18</ranFunctionID>
+                                            <ranFunctionRevision>2</ranFunctionRevision>
+                                        </RANfunctionID-Item>
+                                    </value>
+                                </ProtocolIE-SingleContainer>
+                            </RANfunctionsID-List>
+                        </value>
+                    </RICserviceUpdate-IEs>
+                </protocolIEs>
+            </RICserviceUpdate>
+        </value>
+    </initiatingMessage>
+</E2AP-PDU
