@@ -3,6 +3,7 @@
 /*****************************************************************************
 #                                                                            *
 # Copyright 2020 AT&T Intellectual Property                                  *
+# Copyright (c) 2020 Samsung Electronics Co., Ltd. All Rights Reserved.      *
 #                                                                            *
 # Licensed under the Apache License, Version 2.0 (the "License");            *
 # you may not use this file except in compliance with the License.           *
@@ -93,6 +94,66 @@ long encoding::get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu) {
 
   return func_id;  
 
+}
+
+void encoding::generate_e2apv1_service_update(E2AP_PDU_t *e2ap_pdu, std::vector<encoding::ran_func_info> all_funcs) {
+  char* ran_function_op_type = getenv("RAN_FUNCTION_OP_TYPE");
+  LOG_D("Ran funciton : %s", ran_function_op_type);
+  ProtocolIE_ID_t prID;
+  if (ran_function_op_type != NULL)
+  {
+    if (strcmp(ran_function_op_type, "ADD") == 0)
+    {
+      prID = ProtocolIE_ID_id_RANfunctionsAdded;
+    }
+    else if (strcmp(ran_function_op_type, "DELETE"))
+    {
+      prID = ProtocolIE_ID_id_RANfunctionsDeleted;
+    }
+  }
+  else
+  {
+    prID = ProtocolIE_ID_id_RANfunctionsModified;
+  }
+
+
+  RICserviceUpdate_IEs_t *e2serviceUpdateList = (RICserviceUpdate_IEs_t *)calloc(1, sizeof(RICserviceUpdate_IEs_t));
+  e2serviceUpdateList->id = prID;
+  e2serviceUpdateList->criticality = Criticality_reject;
+  e2serviceUpdateList->value.present = RICserviceUpdate_IEs__value_PR_RANfunctions_List;
+
+
+  for (int i=0; i<all_funcs.size(); i++) {
+
+    encoding::ran_func_info nextRanFunc = all_funcs.at(i);
+    long nextRanFuncId = nextRanFunc.ranFunctionId;
+    OCTET_STRING_t *nextRanFuncDesc = nextRanFunc.ranFunctionDesc;
+    long nextRanFuncRev = nextRanFunc.ranFunctionRev;
+
+    auto *itemIes = (RANfunction_ItemIEs_t *)calloc(1, sizeof(RANfunction_ItemIEs_t));
+    itemIes->id = ProtocolIE_ID_id_RANfunction_Item;
+    itemIes->criticality = Criticality_reject;
+    itemIes->value.present = RANfunction_ItemIEs__value_PR_RANfunction_Item;
+    itemIes->value.choice.RANfunction_Item.ranFunctionID = 1;
+
+    itemIes->value.choice.RANfunction_Item.ranFunctionDefinition = *nextRanFuncDesc;
+    itemIes->value.choice.RANfunction_Item.ranFunctionRevision = nextRanFuncRev + 1;
+
+    ASN_SEQUENCE_ADD(&e2serviceUpdateList->value.choice.RANfunctions_List.list, itemIes);
+  }
+
+  RICserviceUpdate_t *ricServiceUpdate = (RICserviceUpdate_t *)calloc(1, sizeof(RICserviceUpdate_t));
+  ASN_SEQUENCE_ADD(&ricServiceUpdate->protocolIEs.list, e2serviceUpdateList);
+
+  InitiatingMessage_t *initiatingMessage = (InitiatingMessage_t *)calloc(1, sizeof(InitiatingMessage_t));
+  initiatingMessage->criticality = Criticality_reject;
+  initiatingMessage->procedureCode = ProcedureCode_id_RICserviceUpdate;
+  initiatingMessage->value.present = InitiatingMessage__value_PR_RICserviceUpdate;
+  initiatingMessage->value.choice.RICserviceUpdate = *ricServiceUpdate;
+
+  E2AP_PDU_PR pres6 = E2AP_PDU_PR_initiatingMessage;
+  e2ap_pdu->present = pres6;
+  e2ap_pdu->choice.initiatingMessage = initiatingMessage;
 }
 
 void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu, std::vector<ran_func_info> all_funcs) {

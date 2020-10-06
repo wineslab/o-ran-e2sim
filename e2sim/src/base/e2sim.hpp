@@ -1,6 +1,7 @@
 /*****************************************************************************
 #                                                                            *
 # Copyright 2020 AT&T Intellectual Property                                  *
+# Copyright (c) 2020 Samsung Electronics Co., Ltd. All Rights Reserved.      *
 #                                                                            *
 # Licensed under the Apache License, Version 2.0 (the "License");            *
 # you may not use this file except in compliance with the License.           *
@@ -39,6 +40,8 @@ private:
   void wait_for_sctp_data();
   
 public:
+
+  std::unordered_map<long, OCTET_STRING_t*> getRegistered_ran_functions();
 
   void generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu, long reqActionIdsAccepted[], long reqActionIdsRejected[], int accept_size, int reject_size, long reqRequestorId, long reqInstanceId);
 

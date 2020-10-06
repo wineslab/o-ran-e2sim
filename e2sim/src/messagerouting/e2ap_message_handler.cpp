@@ -3,6 +3,7 @@
 /*****************************************************************************
 #                                                                            *
 # Copyright 2020 AT&T Intellectual Property                                  *
+# Copyright (c) 2020 Samsung Electronics Co., Ltd. All Rights Reserved.      *
 #                                                                            *
 # Licensed under the Apache License, Version 2.0 (the "License");            *
 # you may not use this file except in compliance with the License.           *
@@ -172,13 +173,99 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
           break;
 	}
       break;
-      
+
+    case ProcedureCode_id_RICserviceQuery:
+      switch (index)
+        {
+          case E2AP_PDU_PR_initiatingMessage:
+          LOG_I("[E2AP] Received RIC-Service-Query")
+          e2ap_handle_E2SeviceRequest(pdu, socket_fd, e2sim);
+          break;
+
+          default:
+            LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", index,
+                                    (int)ProcedureCode_id_RICserviceQuery);
+          break;
+        }
+      break;
+
+    case ProcedureCode_id_RICserviceUpdate:
+      switch (index)
+        {
+          case E2AP_PDU_PR_successfulOutcome:
+          LOG_I("[E2AP] Received RIC-SERVICE-UPDATE-SUCCESS")
+          break;
+
+          case E2AP_PDU_PR_unsuccessfulOutcome:
+          LOG_I("[E2AP] Received RIC-SERVICE-UPDATE-FAILURE")
+          break;
+
+          default:
+            LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", index,
+                                    (int)ProcedureCode_id_RICserviceUpdate);
+          break;
+        }
+      break;
+    
     default:
       
       LOG_E("[E2AP] No available handler for procedureCode=%d", procedureCode);
 
       break;
     }
+}
+
+void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) {
+
+  auto buffer_size = MAX_SCTP_BUFFER;
+  unsigned char buffer[MAX_SCTP_BUFFER];
+  E2AP_PDU_t* res_pdu = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
+
+  // prepare ran function defination
+  std::vector<encoding::ran_func_info> all_funcs;
+
+  //Loop through RAN function definitions that are registered
+
+  for (std::pair<long, OCTET_STRING_t*> elem : e2sim->getRegistered_ran_functions()) {
+    printf("looping through ran func\n");
+    encoding::ran_func_info next_func;
+
+    next_func.ranFunctionId = elem.first;
+    next_func.ranFunctionDesc = elem.second;
+    next_func.ranFunctionRev = (long)3;
+    all_funcs.push_back(next_func);
+  }
+    
+  printf("about to call service update encode\n");
+
+  encoding::generate_e2apv1_service_update(res_pdu, all_funcs);
+
+  LOG_D("[E2AP] Created E2-SERVICE-UPDATE");
+
+  e2ap_asn1c_print_pdu(res_pdu);
+
+  sctp_buffer_t data;
+
+  char *error_buf = (char*)calloc(300, sizeof(char));
+  size_t errlen;
+
+  asn_check_constraints(&asn_DEF_E2AP_PDU, res_pdu, error_buf, &errlen);
+  printf("error length %d\n", errlen);
+  printf("error buf %s\n", error_buf);
+
+  auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
+
+  data.len = er.encoded;
+  fprintf(stderr, "er encoded is %d\n", er.encoded);
+
+  memcpy(data.buffer, buffer, er.encoded);
+
+  //send response data over sctp
+  if(sctp_send_data(socket_fd, data) > 0) {
+    LOG_I("[SCTP] Sent E2-SERVICE-UPDATE");
+  } else {
+    LOG_E("[SCTP] Unable to send E2-SERVICE-UPDATE to peer");
+  }
 }
 
 void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
