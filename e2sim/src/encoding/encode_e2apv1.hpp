@@ -2,6 +2,7 @@
 /*****************************************************************************
 #                                                                            *
 # Copyright 2020 AT&T Intellectual Property                                  *
+# Copyright (c) 2020 Samsung Electronics Co., Ltd. All Rights Reserved.      *
 #                                                                            *
 # Licensed under the Apache License, Version 2.0 (the "License");            *
 # you may not use this file except in compliance with the License.           *
@@ -54,6 +55,7 @@ namespace encoding {
   
   void generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_pdu, long requestorId, long instanceId, long ranFunctionId, long actionId, long seqNum, uint8_t *ind_header_buf, int header_length, uint8_t *ind_message_buf, int message_length);
   
+  void generate_e2apv1_service_update(E2AP_PDU_t *e2ap_pdu, std::vector<ran_func_info> all_funcs);
 }
 
 #endif

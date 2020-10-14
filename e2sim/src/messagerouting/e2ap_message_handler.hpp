@@ -2,6 +2,7 @@
 #                                                                            *
 # Copyright 2019 AT&T Intellectual Property                                  *
 # Copyright 2019 Nokia                                                       *
+# Copyright (c) 2020 Samsung Electronics Co., Ltd. All Rights Reserved.      *
 #                                                                            *
 # Licensed under the Apache License, Version 2.0 (the "License");            *
 # you may not use this file except in compliance with the License.           *
@@ -43,5 +44,7 @@ void e2ap_handle_RICSubscriptionRequest(E2AP_PDU_t* pdu, int &socket_fd);
 void e2ap_handle_RICSubscriptionRequest_securityDemo(E2AP_PDU_t* pdu, int &socket_fd);
 
 void e2ap_handle_ResourceStatusRequest(E2AP_PDU_t* pdu, int &socket_fd);
+
+void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim);
 
 #endif

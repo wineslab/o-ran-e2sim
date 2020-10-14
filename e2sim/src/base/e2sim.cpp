@@ -1,6 +1,7 @@
 /*****************************************************************************
 #                                                                            *
 # Copyright 2020 AT&T Intellectual Property                                  *
+# Copyright (c) 2020 Samsung Electronics Co., Ltd. All Rights Reserved.      *
 #                                                                            *
 # Licensed under the Apache License, Version 2.0 (the "License");            *
 # you may not use this file except in compliance with the License.           *
@@ -32,6 +33,10 @@
 using namespace std;
 
 int client_fd = 0;
+
+std::unordered_map<long, OCTET_STRING_t*> E2Sim::getRegistered_ran_functions() {
+  return ran_functions_registered;
+}
 
 void E2Sim::register_subscription_callback(long func_id, SubscriptionCallback cb) {
   fprintf(stderr,"%%%%about to register callback for subscription for func_id %d\n", func_id);
