@@ -174,7 +174,128 @@ void encode_kpm_function_description(E2SM_KPM_RANfunction_Description_t* ranfunc
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_RANfunction_Description, ranfunc_desc);
 }
 
-void encode_kpm_ocuup_user_level(RAN_Container_t *ranco) {
+
+void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead) {
+
+  uint8_t *plmnid_buf = (uint8_t*)"747";
+  uint8_t *sst_buf = (uint8_t*)"1";
+  uint8_t *sd_buf = (uint8_t*)"100";  
+  
+  E2SM_KPM_IndicationHeader_Format1_t* ind_header =
+    (E2SM_KPM_IndicationHeader_Format1_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_Format1_t));
+  
+  OCTET_STRING_t *plmnid = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
+  plmnid->buf = (uint8_t*)calloc(3,1);
+  plmnid->size = 3;
+  memcpy(plmnid->buf, plmnid_buf, plmnid->size);
+  
+  long fqival = 9;
+  long qcival = 9;
+  
+  OCTET_STRING_t *sst = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+  sst->size = 6;
+  sst->buf = (uint8_t*)calloc(1,6);
+  memcpy(sst->buf,sst_buf,sst->size);
+  
+  
+  OCTET_STRING_t *sds = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+  sds->size = 3;
+  sds->buf = (uint8_t*)calloc(1,3);
+  memcpy(sds->buf, sd_buf, sds->size);
+  
+  
+  SNSSAI_t *snssai = (SNSSAI_t*)calloc(1, sizeof(SNSSAI_t));
+  ASN_STRUCT_RESET(asn_DEF_SNSSAI,snssai);
+  snssai->sST.buf = (uint8_t*)calloc(1,1);
+  snssai->sST.size = 1;
+  memcpy(snssai->sST.buf, sst_buf, 1);
+  snssai->sD = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+  snssai->sD->buf = (uint8_t*)calloc(1,3);
+  snssai->sD->size = 3;
+  memcpy(snssai->sD->buf, sd_buf, 3);
+  
+  
+  ind_header->pLMN_Identity = plmnid;
+  ind_header->fiveQI = &fqival;
+  
+  BIT_STRING_t *nrcellid = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
+  nrcellid->buf = (uint8_t*)calloc(1,5);
+  nrcellid->size = 5;
+  nrcellid->buf[0] = 0x22;
+  nrcellid->buf[1] = 0x5B;
+  nrcellid->buf[2] = 0xD6;
+  nrcellid->buf[3] = 0x00;
+  nrcellid->buf[4] = 0x70;
+  
+  nrcellid->bits_unused = 4;
+  
+  BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
+  gnb_bstring->buf = (uint8_t*)calloc(1,4);
+  gnb_bstring->size = 4;
+  gnb_bstring->buf[0] = 0xB5;
+  gnb_bstring->buf[1] = 0xC6;
+  gnb_bstring->buf[2] = 0x77;
+  gnb_bstring->buf[3] = 0x88;
+  
+  gnb_bstring->bits_unused = 3;
+  
+  INTEGER_t *cuup_id = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
+  uint8_t buffer[1];
+  buffer[0] = 20000;
+  cuup_id->buf = (uint8_t*)calloc(1,1);
+  memcpy(cuup_id->buf, buffer, 1);
+  cuup_id->size = 1;
+  
+  ind_header->id_GlobalKPMnode_ID = (GlobalKPMnode_ID*)calloc(1,sizeof(GlobalKPMnode_ID));
+  ind_header->id_GlobalKPMnode_ID->present = GlobalKPMnode_ID_PR_gNB;
+  ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
+  ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.choice.gnb_ID = *gnb_bstring;
+  ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.plmn_id = *plmnid;
+  ind_header->id_GlobalKPMnode_ID->choice.gNB.gNB_CU_UP_ID = cuup_id;
+  
+  ind_header->nRCGI = (NRCGI*)calloc(1,sizeof(NRCGI));
+  ind_header->nRCGI->pLMN_Identity = *plmnid;
+  ind_header->nRCGI->nRCellIdentity = *nrcellid;
+  
+  ind_header->sliceID = snssai;
+  ind_header->qci = &qcival;
+  //    ind_header->message_Type = ;
+  //    ind_header->gNB_DU_ID = ;
+  
+  
+  uint8_t *buf5 = (uint8_t*)"GNBCUUP5";
+  OCTET_STRING_t *cuupname = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+  cuupname->size = 8;
+  cuupname->buf = (uint8_t*)calloc(1,8);
+  memcpy(cuupname->buf, buf5, cuupname->size);    
+  
+  
+  ind_header->gNB_Name = (GNB_Name*)calloc(1,sizeof(GNB_Name));
+  ind_header->gNB_Name->present = GNB_Name_PR_gNB_CU_UP_Name;
+  ind_header->gNB_Name->choice.gNB_CU_UP_Name = *cuupname;
+  
+  
+  //    ind_header->global_GNB_ID = (GlobalgNB_ID*)calloc(1,sizeof(GlobalgNB_ID));
+  //    ind_header->global_GNB_ID->plmn_id = *plmnid;
+  //    ind_header->global_GNB_ID->gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
+  //    ind_header->global_GNB_ID->gnb_id.choice.gnb_ID = *gnb_bstring;
+  
+  
+  ihead->present = E2SM_KPM_IndicationHeader_PR_indicationHeader_Format1;
+  ihead->choice.indicationHeader_Format1 = *ind_header;
+  
+  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationHeader, ihead);
+  
+}
+
+
+
+void encode_kpm_ocuup_user_level(RAN_Container_t *ranco,
+				 uint8_t *plmnid_buf,
+				 uint8_t *nrcellid_buf,
+				 uint8_t *crnti_buf,
+				 int bytes_dl,
+				 int bytes_ul) {
 
   uint8_t *buf = (uint8_t*)"2020.06.13 13:01:05.222";
   Timestamp_t *ts = (Timestamp_t*)calloc(1,sizeof(Timestamp_t));
@@ -187,19 +308,19 @@ void encode_kpm_ocuup_user_level(RAN_Container_t *ranco) {
   CU_UP_Usage_Report_CellResourceReportItem_t  *report_item =
     (CU_UP_Usage_Report_CellResourceReportItem_t*)calloc(1,sizeof(CU_UP_Usage_Report_CellResourceReportItem_t));
 
-  uint8_t *buf2 = (uint8_t*)"747";
+  //  uint8_t *buf2 = (uint8_t*)"747";
   
   OCTET_STRING_t *plmnidstr = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
   plmnidstr->buf = (uint8_t*)calloc(3,1);
   plmnidstr->size = 3;
-  memcpy(plmnidstr->buf, buf2, plmnidstr->size);
+  memcpy(plmnidstr->buf, plmnid_buf, plmnidstr->size);
 
   printf("enc2\n");  
 
   NRCellIdentity_t *nrcellid = (NRCellIdentity_t*)calloc(1,sizeof(NRCellIdentity_t));
-  uint8_t* buf3 = (uint8_t*)"12340";
+  //  uint8_t* buf3 = (uint8_t*)"12340";
   nrcellid->buf = (uint8_t*)calloc(1,5);
-  memcpy(nrcellid->buf, buf3, 5);
+  memcpy(nrcellid->buf, nrcellid_buf, 5);
   nrcellid->size = 5;
   nrcellid->bits_unused = 4;
 
@@ -216,33 +337,112 @@ void encode_kpm_ocuup_user_level(RAN_Container_t *ranco) {
 
   printf("enc3.2\n");   
   
-  uint8_t* crnti_str = (uint8_t*)"1111";
+  //  uint8_t* crnti_str = (uint8_t*)"1111";
   OCTET_STRING *crnti = (OCTET_STRING*)calloc(1,sizeof(OCTET_STRING));
   crnti->buf = (uint8_t*)calloc(1,4);
   
   printf("enc3.3\n");
   
-  crnti->size = strlen((char*)crnti_str);
+  crnti->size = strlen((char*)crnti_buf);
 
   printf("enc3.4\n");
-  memcpy(crnti->buf, crnti_str, crnti->size);
+  memcpy(crnti->buf, crnti_buf, crnti->size);
 
   printf("enc4\n");
 
   INTEGER_t *bytesdl = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
-  uint8_t buffer[1];
-  buffer[0]= 40000;
-  bytesdl->buf = (uint8_t*)calloc(1,1);
-  memcpy(bytesdl->buf, buffer,1);
-  bytesdl->size = 1;
+  int array_size_dl;
+
+  if (bytes_dl <= 64) {
+    array_size_dl = 1;
+
+    uint8_t buffer[array_size_dl];
+    buffer[0] = bytes_dl & 0xFF;
+    bytesdl->buf = (uint8_t*)calloc(1,1);
+    memcpy(bytesdl->buf,buffer,1);
+    bytesdl->size = 1;
+
+  } else if (bytes_dl <= 16384) {
+    array_size_dl = 2;
+
+    uint8_t buffer[array_size_dl];
+    buffer[0] = (bytes_dl >> 8) & 0xFF;
+    buffer[1] = bytes_dl & 0xFF;
+    bytesdl->buf = (uint8_t*)calloc(2,1);
+    memcpy(bytesdl->buf,buffer,2);
+    bytesdl->size = 2;
+    
+  } else if (bytes_dl <= 4194304) {
+    array_size_dl = 3;
+
+    uint8_t buffer[array_size_dl];
+    buffer[0] = (bytes_dl >> 16) & 0xFF;
+    buffer[1] = (bytes_dl >> 8) & 0xFF;
+    buffer[2] = bytes_dl & 0xFF;
+    bytesdl->buf = (uint8_t*)calloc(3,1);
+    memcpy(bytesdl->buf,buffer,3);
+    bytesdl->size = 3;    
+    
+  } else if (bytes_dl <= 1073741824) {
+    array_size_dl = 4;
+    uint8_t buffer[array_size_dl];
+    buffer[0] = (bytes_dl >> 24) & 0xFF;
+    buffer[1] = (bytes_dl >> 16) & 0xFF;
+    buffer[2] = (bytes_dl >> 8) & 0xFF;
+    buffer[3] = bytes_dl & 0xFF;
+    bytesdl->buf = (uint8_t*)calloc(4,1);
+    memcpy(bytesdl->buf,buffer,4);
+    bytesdl->size = 4;
+  }
+  
 
   INTEGER_t *bytesul = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
-  uint8_t buffer1[1];
-  buffer1[0] = 50000;
-  bytesul->buf = (uint8_t*)calloc(1,1);
-  memcpy(bytesul->buf, buffer1, 1);
-  bytesul->size = 1;  
 
+  int array_size_ul;
+
+  if (bytes_ul <= 64) {
+    array_size_ul = 1;
+
+    uint8_t buffer[array_size_ul];
+    buffer[0] = bytes_ul & 0xFF;
+    bytesul->buf = (uint8_t*)calloc(1,1);
+    memcpy(bytesul->buf,buffer,1);
+    bytesul->size = 1;
+
+  } else if (bytes_ul <= 16384) {
+    array_size_ul = 2;
+
+    uint8_t buffer[array_size_ul];
+    buffer[0] = (bytes_ul >> 8) & 0xFF;
+    buffer[1] = bytes_ul & 0xFF;
+    bytesul->buf = (uint8_t*)calloc(2,1);
+    memcpy(bytesul->buf,buffer,2);
+    bytesul->size = 2;
+    
+  } else if (bytes_ul <= 4194304) {
+    array_size_ul = 3;
+
+    uint8_t buffer[array_size_ul];
+    buffer[0] = (bytes_ul >> 16) & 0xFF;
+    buffer[1] = (bytes_ul >> 8) & 0xFF;
+    buffer[2] = bytes_ul & 0xFF;
+    bytesul->buf = (uint8_t*)calloc(3,1);
+    memcpy(bytesul->buf,buffer,3);
+    bytesul->size = 3;    
+    
+  } else if (bytes_ul <= 1073741824) {
+    array_size_ul = 4;
+    uint8_t buffer[array_size_ul];
+    buffer[0] = (bytes_ul >> 24) & 0xFF;
+    buffer[1] = (bytes_ul >> 16) & 0xFF;
+    buffer[2] = (bytes_ul >> 8) & 0xFF;
+    buffer[3] = bytes_ul & 0xFF;
+    bytesul->buf = (uint8_t*)calloc(4,1);
+    memcpy(bytesul->buf,buffer,4);
+    bytesul->size = 4;
+  }
+  
+  
   
   ue_report_item->c_RNTI = *crnti;
   ue_report_item->pDCPBytesDL = bytesdl;
@@ -431,7 +631,12 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco) {
 }
 
 
-void encode_kpm_odu_user_level(RAN_Container_t *ranco) {
+void encode_kpm_odu_user_level(RAN_Container_t *ranco,
+			       uint8_t *plmnid_buf,
+			       uint8_t *nrcellid_buf,
+			       uint8_t *crnti_buf,
+			       long prb_usage_dl,
+			       long prb_usage_ul) {
 
   uint8_t *buf = (uint8_t*)"2020.06.13 13:01:05.222";
   Timestamp_t *ts = (Timestamp_t*)calloc(1,sizeof(Timestamp_t));
@@ -444,20 +649,22 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco) {
   DU_Usage_Report_CellResourceReportItem_t *report_item =
     (DU_Usage_Report_CellResourceReportItem_t*)calloc(1,sizeof(DU_Usage_Report_CellResourceReportItem_t));
 
-  uint8_t *buf2 = (uint8_t*)"747";
-  
+  //  uint8_t *buf2 = (uint8_t*)"747";
+
+  int plmnid_size = strlen((char*)plmnid_buf);  
   OCTET_STRING_t *plmnidstr = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
-  plmnidstr->buf = (uint8_t*)calloc(3,1);
-  plmnidstr->size = 3;
-  memcpy(plmnidstr->buf, buf2, plmnidstr->size);
+  plmnidstr->buf = (uint8_t*)calloc(plmnid_size,1);
+  plmnidstr->size = plmnid_size;
+  memcpy(plmnidstr->buf, plmnid_buf, plmnidstr->size);
 
   printf("enc2\n");  
 
   NRCellIdentity_t *nrcellid = (NRCellIdentity_t*)calloc(1,sizeof(NRCellIdentity_t));
-  uint8_t* buf3 = (uint8_t*)"12340";
-  nrcellid->buf = (uint8_t*)calloc(1,5);
-  memcpy(nrcellid->buf, buf3, 5);
-  nrcellid->size = 5;
+
+  int nrcellid_size = strlen((char*)nrcellid_buf);  
+  nrcellid->buf = (uint8_t*)calloc(1,nrcellid_size);
+  memcpy(nrcellid->buf, nrcellid_buf, nrcellid_size);
+  nrcellid->size = nrcellid_size;
   nrcellid->bits_unused = 4;
 
   NRCGI *nrcgi = (NRCGI*)calloc(1,sizeof(NRCGI));
@@ -474,29 +681,28 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco) {
     (DU_Usage_Report_UeResourceReportItem*)calloc(1,sizeof(DU_Usage_Report_UeResourceReportItem));
 
   printf("enc3.2\n");   
-  
-  uint8_t* crnti_str = (uint8_t*)"1111";
+
+  int crnti_size = strlen((char*)crnti_buf);
+
   OCTET_STRING *crnti = (OCTET_STRING*)calloc(1,sizeof(OCTET_STRING));
-  crnti->buf = (uint8_t*)calloc(1,4);
+  crnti->buf = (uint8_t*)calloc(1,crnti_size);
   
   printf("enc3.3\n");
   
-  crnti->size = strlen((char*)crnti_str);
+  crnti->size = strlen((char*)crnti_buf);
 
   printf("enc3.4\n");
-  memcpy(crnti->buf, crnti_str, crnti->size);
+  memcpy(crnti->buf, crnti_buf, crnti->size);
 
   printf("enc4\n");  
 
-  long lval1 = 2;
-  long lval2 = 1;
   
   ue_report_item->c_RNTI = *crnti;
-  ue_report_item->dl_PRBUsage = &lval1;
+  ue_report_item->dl_PRBUsage = &prb_usage_dl;
 
   printf("enc5\n");
   
-  ue_report_item->ul_PRBUsage = &lval2;
+  ue_report_item->ul_PRBUsage = &prb_usage_ul;
 
   printf("enc6\n");
   
@@ -512,10 +718,15 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco) {
   
 }
 
-void encode_kpm_report_rancontainer_du(E2SM_KPM_IndicationMessage_t* indicationmessage) {
-
+void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_t* indicationmessage,
+						     uint8_t *plmnid_buf,
+						     uint8_t *nrcellid_buf,
+						     uint8_t *crnti_buf,
+						     long prb_usage_dl,
+						     long prb_usage_ul) {
+  
   RAN_Container_t *ranco = (RAN_Container_t*)calloc(1,sizeof(RAN_Container_t));
-  encode_kpm_odu_user_level(ranco);
+  encode_kpm_odu_user_level(ranco,plmnid_buf,nrcellid_buf,crnti_buf,prb_usage_dl,prb_usage_ul);
 
   PM_Containers_List_t *containers_list = (PM_Containers_List_t*)calloc(1, sizeof(PM_Containers_List_t));
   ASN_STRUCT_RESET(asn_DEF_PM_Containers_List, containers_list);
@@ -540,7 +751,7 @@ void encode_kpm_report_rancontainer_du(E2SM_KPM_IndicationMessage_t* indicationm
   printf("error length %d\n", errlen);
   printf("error buf %s\n", error_buf);
 
-  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
+  //  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
 
   asn_codec_ctx_t *opt_cod;
 
@@ -647,7 +858,7 @@ void encode_kpm_report_rancontainer_cucp(E2SM_KPM_IndicationMessage_t* indicatio
   printf("error length %d\n", errlen);
   printf("error buf %s\n", error_buf);
 
-  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
+  //  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
 
   asn_codec_ctx_t *opt_cod;
 
@@ -675,6 +886,53 @@ void encode_kpm_report_rancontainer_cuup_parameterized(E2SM_KPM_IndicationMessag
 						       uint8_t *crnti_buf,
 						       int pdcp_bytesdl,
 						       int pdcp_bytesul) {
+
+  RAN_Container_t *ranco = (RAN_Container_t*)calloc(1,sizeof(RAN_Container_t));
+  encode_kpm_ocuup_user_level(ranco,plmnid_buf,nrcellid_buf,crnti_buf,pdcp_bytesdl,pdcp_bytesul);
+
+  PM_Containers_List_t *containers_list = (PM_Containers_List_t*)calloc(1, sizeof(PM_Containers_List_t));
+  ASN_STRUCT_RESET(asn_DEF_PM_Containers_List, containers_list);
+  containers_list->theRANContainer = ranco;
+
+  E2SM_KPM_IndicationMessage_Format1_t *format =
+    (E2SM_KPM_IndicationMessage_Format1_t*)calloc(1, sizeof(E2SM_KPM_IndicationMessage_Format1_t));
+  ASN_STRUCT_RESET(asn_DEF_E2SM_KPM_IndicationMessage_Format1, format);
+
+  int ret = ASN_SEQUENCE_ADD(&format->pm_Containers.list, containers_list);
+  
+  E2SM_KPM_IndicationMessage__indicationMessage_PR pres = E2SM_KPM_IndicationMessage__indicationMessage_PR_indicationMessage_Format1;
+
+  indicationmessage->indicationMessage.present = pres;
+
+  indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+
+  char *error_buf = (char*)calloc(300, sizeof(char));
+  size_t errlen;
+
+  asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
+  printf("error length %d\n", errlen);
+  printf("error buf %s\n", error_buf);
+
+  //  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
+
+  asn_codec_ctx_t *opt_cod;
+
+  uint8_t e2smbuffer[8192];
+  size_t e2smbuffer_size = 8192;
+
+  uint8_t e2smbuffer2[8192];
+  size_t e2smbuffer_size2 = 8192;
+
+  //  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);  
+
+  asn_enc_rval_t er =
+    asn_encode_to_buffer(opt_cod,
+			 ATS_ALIGNED_BASIC_PER,
+			 &asn_DEF_E2SM_KPM_IndicationMessage,
+			 indicationmessage, e2smbuffer, e2smbuffer_size);
+
+  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "after encoding message\n");  
 
 
 }
