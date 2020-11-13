@@ -24,6 +24,7 @@ extern "C" {
   #include "OCTET_STRING.h"
   #include "asn_application.h"
   #include "E2SM-KPM-IndicationMessage.h"
+  #include "E2SM-KPM-IndicationHeader.h"  
   #include "FQIPERSlicesPerPlmnListItem.h"
   #include "E2SM-KPM-RANfunction-Description.h"
   #include "Timestamp.h"
@@ -41,6 +42,8 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco);
 
 void encode_kpm_ocucp_user_level(RAN_Container_t *ranco);
 
+void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead);
+
 void encode_kpm_ocuup_user_level(RAN_Container_t *ranco);
 
 void encode_kpm_report_rancontainer_du(E2SM_KPM_IndicationMessage_t *indMsg);
@@ -50,6 +53,8 @@ void encode_kpm_report_rancontainer_cucp(E2SM_KPM_IndicationMessage_t *indMsg);
 void encode_kpm_report_rancontainer_cuup(E2SM_KPM_IndicationMessage_t *indMsg);
 
 void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage);
+
+void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_t *indMsg, uint8_t *plmnid_buf, uint8_t *nrcellid_buf, uint8_t *crnti_buf, long prb_usage_dl, long prb_usage_ul);
 
 void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessage_t* indicationmessage,uint8_t *plmnid_buf,uint8_t *nrcellid_buf,uint8_t *crnti_buf,const uint8_t *serving_buf, const uint8_t *neighbor_buf);
 
