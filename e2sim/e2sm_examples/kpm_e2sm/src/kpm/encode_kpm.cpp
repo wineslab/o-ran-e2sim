@@ -158,7 +158,7 @@ void encode_kpm_function_description(E2SM_KPM_RANfunction_Description_t* ranfunc
   memcpy(report_style6->ric_ReportStyle_Name.buf, buf10, strlen((char*)buf10));
   report_style6->ric_ReportStyle_Name.size = strlen((char*)buf10);
   report_style6->ric_IndicationHeaderFormat_Type = 1;
-  report_style6->ric_IndicationMessageFormat_Type = 1;  
+  report_style6->ric_IndicationMessageFormat_Type = 1;
   
 
   ranfunc_desc->e2SM_KPM_RANfunction_Item.ric_ReportStyle_List =
@@ -179,7 +179,7 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead) {
 
   uint8_t *plmnid_buf = (uint8_t*)"747";
   uint8_t *sst_buf = (uint8_t*)"1";
-  uint8_t *sd_buf = (uint8_t*)"100";  
+  uint8_t *sd_buf = (uint8_t*)"100";
   
   E2SM_KPM_IndicationHeader_Format1_t* ind_header =
     (E2SM_KPM_IndicationHeader_Format1_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_Format1_t));
@@ -213,11 +213,7 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead) {
   snssai->sD->buf = (uint8_t*)calloc(1,3);
   snssai->sD->size = 3;
   memcpy(snssai->sD->buf, sd_buf, 3);
-  
-  
-  ind_header->pLMN_Identity = plmnid;
-  ind_header->fiveQI = &fqival;
-  
+      
   BIT_STRING_t *nrcellid = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
   nrcellid->buf = (uint8_t*)calloc(1,5);
   nrcellid->size = 5;
@@ -245,41 +241,57 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead) {
   cuup_id->buf = (uint8_t*)calloc(1,1);
   memcpy(cuup_id->buf, buffer, 1);
   cuup_id->size = 1;
-  
+
+  INTEGER_t *du_id = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
+  uint8_t buffer_duid[1];
+  buffer_duid[0] = 20000;
+  du_id->buf = (uint8_t*)calloc(1,1);
+  memcpy(du_id->buf, buffer_duid, 1);
+  du_id->size = 1;
+
+
+  uint8_t *buf5 = (uint8_t*)"GNBCUUP5";
+  OCTET_STRING_t *cuupname = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
+  cuupname->size = 8;
+  cuupname->buf = (uint8_t*)calloc(1,8);
+  memcpy(cuupname->buf, buf5, cuupname->size);
+
+
   ind_header->id_GlobalKPMnode_ID = (GlobalKPMnode_ID*)calloc(1,sizeof(GlobalKPMnode_ID));
   ind_header->id_GlobalKPMnode_ID->present = GlobalKPMnode_ID_PR_gNB;
   ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
   ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.choice.gnb_ID = *gnb_bstring;
   ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.plmn_id = *plmnid;
   ind_header->id_GlobalKPMnode_ID->choice.gNB.gNB_CU_UP_ID = cuup_id;
+
+
   
   ind_header->nRCGI = (NRCGI*)calloc(1,sizeof(NRCGI));
   ind_header->nRCGI->pLMN_Identity = *plmnid;
   ind_header->nRCGI->nRCellIdentity = *nrcellid;
   
+  ind_header->pLMN_Identity = plmnid;
+  //  memcpy(ind_header->fiveQI, &fqival, 4);
+  
   ind_header->sliceID = snssai;
-  ind_header->qci = &qcival;
-  //    ind_header->message_Type = ;
-  //    ind_header->gNB_DU_ID = ;
-  
-  
-  uint8_t *buf5 = (uint8_t*)"GNBCUUP5";
-  OCTET_STRING_t *cuupname = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  cuupname->size = 8;
-  cuupname->buf = (uint8_t*)calloc(1,8);
-  memcpy(cuupname->buf, buf5, cuupname->size);    
-  
-  
+  //  memcpy(ind_header->qci, &qcival, 4);
+
+
   ind_header->gNB_Name = (GNB_Name*)calloc(1,sizeof(GNB_Name));
   ind_header->gNB_Name->present = GNB_Name_PR_gNB_CU_UP_Name;
   ind_header->gNB_Name->choice.gNB_CU_UP_Name = *cuupname;
-  
-  
-  //    ind_header->global_GNB_ID = (GlobalgNB_ID*)calloc(1,sizeof(GlobalgNB_ID));
-  //    ind_header->global_GNB_ID->plmn_id = *plmnid;
-  //    ind_header->global_GNB_ID->gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
-  //    ind_header->global_GNB_ID->gnb_id.choice.gnb_ID = *gnb_bstring;
-  
+
+
+  ind_header->global_GNB_ID = (GlobalgNB_ID*)calloc(1,sizeof(GlobalgNB_ID));
+  ind_header->global_GNB_ID->plmn_id = *plmnid;
+  ind_header->global_GNB_ID->gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
+  ind_header->global_GNB_ID->gnb_id.choice.gnb_ID = *gnb_bstring;
+
+
+  //  long msg_type = 2;
+  //  ind_header->message_Type = &msg_type;
+  ind_header->gNB_DU_ID = du_id;
+
   
   ihead->present = E2SM_KPM_IndicationHeader_PR_indicationHeader_Format1;
   ihead->choice.indicationHeader_Format1 = *ind_header;

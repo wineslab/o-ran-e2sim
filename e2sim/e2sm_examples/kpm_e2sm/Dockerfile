@@ -93,6 +93,7 @@ RUN git clone https://github.com/azadkuh/nlohmann_json_release.git
 RUN cp nlohmann_json_release/json.hpp /usr/local/include/nlohmann
 
 COPY . /playpen/src/
+RUN wc -l /playpen/src/reports.json
 RUN cd /playpen/src && \
 	rm -fr .build &&\
 	mkdir  .build && \
@@ -101,4 +102,4 @@ RUN cd /playpen/src && \
 	make install
 
 
-CMD kpm_sim 10.98.179.210 36422
+CMD kpm_sim 10.106.115.58 36422
