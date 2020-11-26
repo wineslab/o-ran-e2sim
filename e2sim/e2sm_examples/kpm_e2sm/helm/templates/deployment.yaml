@@ -36,5 +36,5 @@ spec:
         - name: e2sim
           image: e2simul:0.0.2
           imagePullPolicy: IfNotPresent
-          restartPolicy: Always
+          restartPolicy: Never
 

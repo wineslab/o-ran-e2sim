@@ -42,7 +42,7 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco);
 
 void encode_kpm_ocucp_user_level(RAN_Container_t *ranco);
 
-void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead);
+void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8_t *plmnid_buf, uint8_t *sst_buf, uint8_t *sd_buf, long fqival, long qcival, uint8_t *nrcellid_buf, uint8_t *gnbid_buf, int gnbid_unused, uint8_t *cuupid_buf, uint8_t *duid_buf, uint8_t *cuupname_buf);
 
 void encode_kpm_ocuup_user_level(RAN_Container_t *ranco);
 
