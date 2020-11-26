@@ -1,0 +1,8 @@
+
+For this simulation, we make the following assumptions:
+DU ID can differ and we assign a separate ID
+CU-CP and CU-UP are always the same
+Cell Identities are different
+
+FQI and QFI Values are the same
+

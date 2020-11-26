@@ -129,6 +129,14 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
     json all_ues_json;
 
+    long fqival = 9;
+    long qcival = 9;
+
+    uint8_t *plmnid_buf = (uint8_t*)"747";
+    uint8_t *sst_buf = (uint8_t*)"1";
+    uint8_t *sd_buf = (uint8_t*)"100";
+    
+
     fprintf(stderr,"De line is %s\n", str.c_str());
 
     bool valid = false;
@@ -247,8 +255,28 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  fprintf(stderr,"Creating UE-level RAN-Container CUCP message\n");
 	  
 	  const uint8_t *neighbor_buf = reinterpret_cast<const uint8_t*>(neighbor_str.c_str());
-	  uint8_t *plmnid_buf = (uint8_t*)"747";
-	  uint8_t *nrcellid_buf = (uint8_t*)"12340";
+
+	  //	  uint8_t *nrcellid_buf = (uint8_t*)"12340";
+	  uint8_t *nrcellid_buf = (uint8_t*)calloc(1,5);
+	  nrcellid_buf[0] = 0x22;
+	  nrcellid_buf[1] = 0x5B;
+	  nrcellid_buf[2] = 0xD6;
+	  nrcellid_buf[3] = 0x00;
+	  nrcellid_buf[4] = 0x70;
+
+	  uint8_t *gnbid_buf = (uint8_t*)calloc(1,3);
+	  gnbid_buf[0] = 0x22;
+	  gnbid_buf[1] = 0x5B;
+	  gnbid_buf[2] = 0xD6;
+
+	  uint8_t cuupid_buf[1];
+	  cuupid_buf[0] = 20000;
+
+	  uint8_t duid_buf[1];
+	  duid_buf[0] = 20000;
+
+	  uint8_t *cuupname_buf = (uint8_t*)"GNBCUUP5";	  
+	  
 	  
 	  E2SM_KPM_IndicationMessage_t *ind_msg_cucp_ue =
 	    (E2SM_KPM_IndicationMessage_t*)calloc(1,sizeof(E2SM_KPM_IndicationMessage_t));
@@ -271,7 +299,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  E2SM_KPM_IndicationHeader_t* ind_header_cucp_ue =
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
-	  encode_e2sm_kpm_indication_header(ind_header_cucp_ue);
+	  encode_e2sm_kpm_indication_header(ind_header_cucp_ue, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 	  fprintf(stderr, "Now printing xer outside of function call\n");
 	  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationHeader, ind_header_cucp_ue);	  
 
@@ -329,7 +357,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  E2SM_KPM_IndicationHeader_t* ind_header_cuup_ue =
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
-	  encode_e2sm_kpm_indication_header(ind_header_cuup_ue);
+	  encode_e2sm_kpm_indication_header(ind_header_cuup_ue, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 
 	  uint8_t e2sm_header_buf_cuup_ue[8192];
 	  size_t e2sm_header_buf_size_cuup_ue = 8192;
@@ -382,7 +410,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  E2SM_KPM_IndicationHeader_t* ind_header_du_ue =
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
-	  encode_e2sm_kpm_indication_header(ind_header_du_ue);	  
+	  encode_e2sm_kpm_indication_header(ind_header_du_ue, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 
 	  uint8_t e2sm_header_buf_du_ue[8192];
 	  size_t e2sm_header_buf_size_du_ue = 8192;
@@ -443,11 +471,31 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  prb_ul = all_ues_json[p3].get<int>();
 	  fprintf(stderr, "Avail PRB UL %d\n", prb_ul);
 
-	  uint8_t *buf = (uint8_t*)"GNBCUUP5";
 	  
 	  uint8_t *sst_buf = (uint8_t*)"1";
 	  uint8_t *sd_buf = (uint8_t*)"100";
 	  uint8_t *plmnid_buf = (uint8_t*)"747";
+
+	  uint8_t *nrcellid_buf = (uint8_t*)calloc(1,5);
+	  nrcellid_buf[0] = 0x22;
+	  nrcellid_buf[1] = 0x5B;
+	  nrcellid_buf[2] = 0xD6;
+	  nrcellid_buf[3] = 0x00;
+	  nrcellid_buf[4] = 0x70;
+
+	  uint8_t *gnbid_buf = (uint8_t*)calloc(1,3);
+	  gnbid_buf[0] = 0x22;
+	  gnbid_buf[1] = 0x5B;
+	  gnbid_buf[2] = 0xD6;
+
+	  uint8_t cuupid_buf[1];
+	  cuupid_buf[0] = 200;
+
+	  uint8_t duid_buf[1];
+	  duid_buf[0] = 300;
+
+	  uint8_t *cuupname_buf = (uint8_t*)"GNBCUUP5";	  	  
+	  
 
 	  //Encoding Style 5 Message Body
 	  
@@ -459,7 +507,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	    (E2SM_KPM_IndicationMessage_t*)calloc(1,sizeof(E2SM_KPM_IndicationMessage_t));
 	  E2AP_PDU *pdu_style5 = (E2AP_PDU*)calloc(1,sizeof(E2AP_PDU));
 	  
-	  encode_kpm_report_style5_parameterized(ind_msg_style5 , buf, bytes_dl, bytes_ul, sst_buf, sd_buf, plmnid_buf);
+	  encode_kpm_report_style5_parameterized(ind_msg_style5 , cuupname_buf, bytes_dl, bytes_ul, sst_buf, sd_buf, plmnid_buf);
 	  
 	  uint8_t e2sm_message_buf_style5[8192];
 	  size_t e2sm_message_buf_size_style5 = 8192;
@@ -477,7 +525,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  E2SM_KPM_IndicationHeader_t* ind_header_style5 =
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
-	  encode_e2sm_kpm_indication_header(ind_header_style5);
+	  encode_e2sm_kpm_indication_header(ind_header_style5, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 
 	  uint8_t e2sm_header_buf_style5[8192];
 	  size_t e2sm_header_buf_size_style5 = 8192;
@@ -514,8 +562,8 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  
 	  long fiveqi = 7;
 	  
-	  uint8_t *nrcellid_buf = (uint8_t*)"12340";
 
+	  
 	  long l_dl_prbs = prb_dl;
 	  long l_ul_prbs = prb_ul;
 	  
@@ -542,7 +590,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  E2SM_KPM_IndicationHeader_t* ind_header_style1 =
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
-	  encode_e2sm_kpm_indication_header(ind_header_style1);
+	  encode_e2sm_kpm_indication_header(ind_header_style1, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 
 	  uint8_t e2sm_header_buf_style1[8192];
 	  size_t e2sm_header_buf_size_style1 = 8192;
