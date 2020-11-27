@@ -241,7 +241,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	      
 	    }
 	    
-	    neighbor_str += "{\"CID\" : \"" + std::to_string(nextNbCell) + "\", \"Cell-RF\" : \"{\"rsrp\": " + std::to_string(nextNbRsrp) +
+	    neighbor_str += "{\"CID\" : \"" + std::to_string(nextNbCell) + "\", \"Cell-RF\" : {\"rsrp\": " + std::to_string(nextNbRsrp) +
 	      ", \"rsrq\": " + std::to_string(nextNbRsrq) + ", \"rssinr\": " + std::to_string(nextNbRssinr) + "}}";
 	    
 	  }
