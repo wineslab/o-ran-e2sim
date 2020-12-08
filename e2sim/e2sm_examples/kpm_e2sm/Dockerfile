@@ -102,4 +102,4 @@ RUN cd /playpen/src && \
 	make install
 
 
-CMD kpm_sim 10.98.20.146 36422
+CMD kpm_sim 10.110.102.29 36422
