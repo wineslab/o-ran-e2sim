@@ -64,6 +64,14 @@ int main(int argc, char* argv[]) {
 
   fprintf(stderr, "JSON Test\n");
 
+  uint8_t *nrcellid_buf = (uint8_t*)calloc(1,5);
+  nrcellid_buf[0] = 0x22;
+  nrcellid_buf[1] = 0x5B;
+  nrcellid_buf[2] = 0xD6;
+  nrcellid_buf[3] = 0x00;
+  nrcellid_buf[4] = 0x70;
+
+  
 
   asn_codec_ctx_t *opt_cod;
   
@@ -111,6 +119,30 @@ int main(int argc, char* argv[]) {
   e2sim.register_subscription_callback(0,&callback_kpm_subscription_request);
 
   e2sim.run_loop(argc, argv);
+
+}
+
+void get_cell_id(uint8_t *nrcellid_buf, char *cid_return_buf) {
+
+  uint8_t nr0 = nrcellid_buf[0] >> 4;
+  uint8_t nr1 = nrcellid_buf[0] << 4;
+  nr1 = nr1 >> 4;
+
+  uint8_t nr2 = nrcellid_buf[1] >> 4;
+  uint8_t nr3 = nrcellid_buf[1] << 4;
+  nr3 = nr3 >> 4;
+
+  uint8_t nr4 = nrcellid_buf[2] >> 4;
+  uint8_t nr5 = nrcellid_buf[2] << 4;
+  nr5 = nr5 >> 4;
+
+  uint8_t nr6 = nrcellid_buf[3] >> 4;
+  uint8_t nr7 = nrcellid_buf[3] << 4;
+  nr7 = nr7 >> 4;
+
+  uint8_t nr8 = nrcellid_buf[4] >> 4;
+  
+  sprintf(cid_return_buf, "373437%d%d%d%d%d%d%d%d%d", nr0,nr1,nr2,nr3,nr4,nr5,nr6,nr7,nr8);  
 
 }
 
@@ -170,7 +202,13 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  int nextRssinr;
 	  float tput;
 	  int prb_usage;
+	  std::string ueId;
+	  
 	  fprintf(stderr,"UE number %d\n", i);
+
+	  json::json_pointer p001(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/ue-id");
+	  ueId = all_ues_json[p001].get<std::string>();
+	  fprintf(stderr, "UEID %s\n", ueId.c_str());	  
 	  
 	  json::json_pointer p0(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/throughput");
 	  tput = all_ues_json[p0].get<float>();
@@ -178,7 +216,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  
 	  json::json_pointer p00(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/prb_usage");
 	  prb_usage = all_ues_json[p00].get<int>();
-	  fprintf(stderr, "Throughput %d\n", prb_usage);	
+	  fprintf(stderr, "Throughput %d\n", prb_usage);
 	  
 	  json::json_pointer p1(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/nrCellIdentity");
 	  nextCellId = all_ues_json[p1].get<int>();
@@ -199,10 +237,27 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  json::json_pointer p5(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/neighbourCellList");
 	  
 	  uint8_t *crnti_buf = (uint8_t*)calloc(1,2);
+
+	  if (ueId.find("Pedestrian") != string::npos) {
+	    std::string ind = ueId.substr(11);
+	    fprintf(stderr, "ind is %s\n", ind.c_str());
+
+	    int indval = std::stoi(ind);
+
+	    if (indval < 10) {
+	      crnti_buf[1] = indval;
+	      crnti_buf[0] = 0;
+	    } else {
+	      crnti_buf[0] = indval/10;
+	      crnti_buf[1] = indval % 10;
+	    }
+	    
+	  } else if (ueId.find("Car") != string::npos) {
+	    crnti_buf[0] = 4;
+	    crnti_buf[1] = 1;
+	  }
 	  
-	  uint8_t *buf2 = (uint8_t*)"12";
-	  memcpy(crnti_buf, buf2, 2);
-	  
+	  //	  uint8_t *buf2 = (uint8_t*)"12";
 	  
 	  std::string serving_str = "{\"rsrp\": " + std::to_string(nextRsrp) + ", \"rsrq\": " +
 	    std::to_string(nextRsrq) + ", \"rssinr\": " + std::to_string(nextRssinr) + "}";
@@ -240,8 +295,20 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	      neighbor_str += ",";
 	      
 	    }
+
+
+	    uint8_t *neighbor_cellid_buf = (uint8_t*)calloc(1,5);
+	    neighbor_cellid_buf[0] = 0x22;
+	    neighbor_cellid_buf[1] = 0x5B;
+	    neighbor_cellid_buf[2] = 0xD6;
+	    neighbor_cellid_buf[3] = nextNbCell;
+	    neighbor_cellid_buf[4] = 0x70;
 	    
-	    neighbor_str += "{\"CID\" : \"" + std::to_string(nextNbCell) + "\", \"Cell-RF\" : {\"rsrp\": " + std::to_string(nextNbRsrp) +
+	    char *cid_buf = (char*)calloc(1,24);
+	    get_cell_id(neighbor_cellid_buf,cid_buf);
+	    
+	    
+	    neighbor_str += "{\"CID\" : \"" + std::string(cid_buf) + "\", \"Cell-RF\" : {\"rsrp\": " + std::to_string(nextNbRsrp) +
 	      ", \"rsrq\": " + std::to_string(nextNbRsrq) + ", \"rssinr\": " + std::to_string(nextNbRssinr) + "}}";
 	    
 	  }
@@ -256,12 +323,12 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  
 	  const uint8_t *neighbor_buf = reinterpret_cast<const uint8_t*>(neighbor_str.c_str());
 
-	  //	  uint8_t *nrcellid_buf = (uint8_t*)"12340";
+
 	  uint8_t *nrcellid_buf = (uint8_t*)calloc(1,5);
 	  nrcellid_buf[0] = 0x22;
 	  nrcellid_buf[1] = 0x5B;
 	  nrcellid_buf[2] = 0xD6;
-	  nrcellid_buf[3] = 0x00;
+	  nrcellid_buf[3] = nextCellId;
 	  nrcellid_buf[4] = 0x70;
 
 	  uint8_t *gnbid_buf = (uint8_t*)calloc(1,3);
@@ -328,7 +395,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  seqNum++;
 
-	  std::this_thread::sleep_for (std::chrono::seconds(2));
+	  std::this_thread::sleep_for (std::chrono::milliseconds(50));
 	  
 	  //Creating UE-level RAN-Container CUUP message
 	  
@@ -380,7 +447,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  seqNum++;
 
-	  std::this_thread::sleep_for (std::chrono::seconds(2));
+	  std::this_thread::sleep_for (std::chrono::milliseconds(50));
 	  
 	  //Creating UE-level RAN-Container DU message
 	  
@@ -434,7 +501,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  seqNum++;
 
-	  std::this_thread::sleep_for (std::chrono::seconds(2));
+	  std::this_thread::sleep_for (std::chrono::milliseconds(50));
 	  
 	  fprintf(stderr, "done with ue meas report\n");
 	}
@@ -452,8 +519,13 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  float bytes_ul;
 	  int prb_dl;
 	  int prb_ul;
+	  int cellid;
 	  
 	  fprintf(stderr,"UE number %d\n", i);
+
+	  json::json_pointer p00(std::string("/cellMeasReport/cellMeasReportList/") + std::to_string(i) +"/nrCellIdentity");
+	  cellid = all_ues_json[p00].get<int>();
+	  fprintf(stderr, "Cell ID %d\n", cellid);
 	  
 	  json::json_pointer p0(std::string("/cellMeasReport/cellMeasReportList/") + std::to_string(i) +"/pdcpByteMeasReport/pdcpBytesDl");
 	  bytes_dl = all_ues_json[p0].get<float>();
@@ -480,7 +552,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  nrcellid_buf[0] = 0x22;
 	  nrcellid_buf[1] = 0x5B;
 	  nrcellid_buf[2] = 0xD6;
-	  nrcellid_buf[3] = 0x00;
+	  nrcellid_buf[3] = cellid;
 	  nrcellid_buf[4] = 0x70;
 
 	  uint8_t *gnbid_buf = (uint8_t*)calloc(1,3);
@@ -489,10 +561,10 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  gnbid_buf[2] = 0xD6;
 
 	  uint8_t cuupid_buf[1];
-	  cuupid_buf[0] = 200;
+	  cuupid_buf[0] = 20000;
 
 	  uint8_t duid_buf[1];
-	  duid_buf[0] = 300;
+	  duid_buf[0] = 20000;
 
 	  uint8_t *cuupname_buf = (uint8_t*)"GNBCUUP5";	  	  
 	  
@@ -547,7 +619,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  seqNum++;
 
-	  std::this_thread::sleep_for (std::chrono::seconds(2));	  
+	  std::this_thread::sleep_for (std::chrono::milliseconds(50));	  
 	  
 
 	  //Encoding Style 1 Message Body
@@ -609,7 +681,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 
 	  e2sim.encode_and_send_sctp_data(pdu_style1);
 	  seqNum++;
-	  std::this_thread::sleep_for (std::chrono::seconds(2));	  
+	  std::this_thread::sleep_for (std::chrono::milliseconds(50));	  
 	  
 	}
       }					           
