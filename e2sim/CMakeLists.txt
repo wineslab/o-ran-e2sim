@@ -107,7 +107,7 @@ add_library( e2sim_shared SHARED
 # we only build/export the static archive (.a) if generating a dev package
 if( DEV_PKG )
     	add_library( e2sim_static STATIC
-        	     "$<TARGET_OBJECTS:def_objects>;$<TARGET_OBJECTS:sctp_objects>;$<TARGET_OBJECTS:messagerouting_objects>;$<TARGET_OBJECTS:encoding_objects>;$<TARGET_OBJECTS:base_objects>"
+        	     "$<TARGET_OBJECTS:def_objects>;$<TARGET_OBJECTS:sctp_objects>;$<TARGET_OBJECTS:messagerouting_objects>;$<TARGET_OBJECTS:encoding_objects>;$<TARGET_OBJECTS:base_objects>;$<TARGET_OBJECTS:asn1_objects>"
 	)
 
 	set_target_properties( e2sim_static
@@ -117,7 +117,7 @@ if( DEV_PKG )
    			       VERSION ${major_version}.${minor_version}.${patch_level}
 	)
 
-	target_include_directories( e2sim_static PUBLIC "src/DEF" "src/SCTP" "src/messagerouting" "src/base" "src/encoding" )	
+	target_include_directories( e2sim_static PUBLIC "src/DEF" "src/SCTP" "src/messagerouting" "src/base" "src/encoding" "src/ASN1c" )	
 endif()
 
 
