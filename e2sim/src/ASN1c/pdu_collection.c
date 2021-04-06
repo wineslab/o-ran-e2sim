@@ -4,12 +4,22 @@
 
 struct asn_TYPE_descriptor_s;	/* Forward declaration */
 
-extern struct asn_TYPE_descriptor_s asn_DEF_E2AP_PDU;
+extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_EventTriggerDefinition;
+extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_ActionDefinition;
+extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_IndicationHeader;
+extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_IndicationMessage;
+extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_RANfunction_Description;
+extern struct asn_TYPE_descriptor_s asn_DEF_RANcallProcess_ID_string;
 
 
 struct asn_TYPE_descriptor_s *asn_pdu_collection[] = {
-	/* From module E2AP-PDU-Descriptions in /root/e2ap-v01.00.00.asn */
-	&asn_DEF_E2AP_PDU,	
+	/* From module E2SM-KPM-IEs in /home/rshacham/e2sm-kpm-v01.02.asn */
+	&asn_DEF_E2SM_KPM_EventTriggerDefinition,	
+	&asn_DEF_E2SM_KPM_ActionDefinition,	
+	&asn_DEF_E2SM_KPM_IndicationHeader,	
+	&asn_DEF_E2SM_KPM_IndicationMessage,	
+	&asn_DEF_E2SM_KPM_RANfunction_Description,	
+	&asn_DEF_RANcallProcess_ID_string,	
 	0
 };
 

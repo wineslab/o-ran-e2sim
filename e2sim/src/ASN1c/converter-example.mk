@@ -1,12 +1,12 @@
-include ./Makefile.am.libasncodec
+include Makefile.am.libasncodec
 
 LIBS += -lm
 CFLAGS += $(ASN_MODULE_CFLAGS) -DASN_PDU_COLLECTION -I.
 ASN_LIBRARY ?= libasncodec.a
 ASN_PROGRAM ?= converter-example
 ASN_PROGRAM_SRCS ?= \
-	./converter-example.c\
-	./pdu_collection.c
+	converter-example.c\
+	pdu_collection.c
 
 all: $(ASN_PROGRAM)
 
@@ -29,5 +29,5 @@ clean:
 regen: regenerate-from-asn1-source
 
 regenerate-from-asn1-source:
-	asn1c -fcompound-names -fincludes-quoted -fno-include-deps -findirect-choice -gen-PER -D . /root/e2ap-v01.00.00.asn
+	asn1c -fcompound-names /home/rshacham/e2sm-kpm-v01.02.asn
 
