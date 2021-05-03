@@ -1,15 +1,16 @@
 #!/bin/bash
+#set -x
 
 # build
 rm -rf build
-mkdir build 
+mkdir build
 cd build
 cmake ..
 make package
 cmake .. -DDEV_PKG=1
 make package
 
-# unistall old versions
+# uninstall old versions
 sudo apt-get purge e2sim-dev
 sudo apt-get purge e2sim
 
@@ -26,5 +27,5 @@ cmake ..
 make
 
 # run the example
-cd build/src/kpm/
-./kpm_sim
+#pwd
+./src/kpm/kpm_sim 192.168.130.80 36422 gnb1

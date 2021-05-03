@@ -51,22 +51,22 @@ extern "C" {
 #include "RANfunctions-List.h"
 #include "RICindication.h"
 #include "RICsubsequentActionType.h"
-#include "RICsubsequentAction.h"  
+#include "RICsubsequentAction.h"
 #include "RICtimeToWait.h"
-  
+
 }
 
 long encoding::get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu) {
 
   RICsubscriptionRequest_t orig_req =
     e2ap_pdu->choice.initiatingMessage->value.choice.RICsubscriptionRequest;
-  
+
   RICsubscriptionResponse_IEs_t *ricreqid =
     (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
-					   
+
   int count = orig_req.protocolIEs.list.count;
   int size = orig_req.protocolIEs.list.size;
-  
+
   RICsubscriptionRequest_IEs_t **ies = (RICsubscriptionRequest_IEs_t**)orig_req.protocolIEs.list.array;
 
   fprintf(stderr, "count%d\n", count);
@@ -79,7 +79,7 @@ long encoding::get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu) {
   for (int i=0; i < count; i++) {
     RICsubscriptionRequest_IEs_t *next_ie = ies[i];
     pres = next_ie->value.present;
-    
+
     fprintf(stderr, "next present value %d\n", pres);
     fprintf(stderr, "value of pres ranfuncid is %d\n", RICsubscriptionRequest_IEs__value_PR_RANfunctionID);
 
@@ -87,12 +87,12 @@ long encoding::get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu) {
       fprintf(stderr, "equal pres to ranfuncid\n");
       func_id = next_ie->value.choice.RANfunctionID;
     }
-    
+
   }
 
   fprintf(stderr, "After loop, func_id is %d\n", func_id);
 
-  return func_id;  
+  return func_id;
 
 }
 
@@ -156,20 +156,22 @@ void encoding::generate_e2apv1_service_update(E2AP_PDU_t *e2ap_pdu, std::vector<
   e2ap_pdu->choice.initiatingMessage = initiatingMessage;
 }
 
-void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu, std::vector<ran_func_info> all_funcs) {
+void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu, std::vector<ran_func_info> all_funcs,
+                                                           uint8_t* gnb_id,size_t gnb_id_size) {
   //						 long ranFunctionId, uint8_t *ranFuncDescEncoded, int ranFuncLength) {
 
   //  uint8_t *buf = (uint8_t *)"gnb1"
 
   BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
-  gnb_bstring->buf = (uint8_t*)calloc(1,4);
-  gnb_bstring->size = 4;
-  gnb_bstring->buf[0] = 0xB5;
-  gnb_bstring->buf[1] = 0xC6;
-  gnb_bstring->buf[2] = 0x77;
-  gnb_bstring->buf[3] = 0x88;
+  gnb_bstring->buf = (uint8_t*)calloc(1,gnb_id_size);
+  memcpy(gnb_bstring->buf,gnb_id,gnb_id_size);
+  gnb_bstring->size = gnb_id_size;
+  gnb_bstring->bits_unused = 8-gnb_id_size;
+//  gnb_bstring->buf[0] = 0xB5;
+//  gnb_bstring->buf[1] = 0xC6;
+//  gnb_bstring->buf[2] = 0x78;
+//  gnb_bstring->buf[3] = 0x88;
 
-  gnb_bstring->bits_unused = 3;
 
   uint8_t *buf2 = (uint8_t *)"747";
   OCTET_STRING_t *plmn = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
@@ -194,7 +196,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   pres = GlobalE2node_ID_PR_gNB;
   globale2nodeid->present = pres;
   globale2nodeid->choice.gNB = e2gnb;
-  
+
   E2setupRequestIEs_t *e2setuprid = (E2setupRequestIEs_t*)calloc(1, sizeof(E2setupRequestIEs_t));
   E2setupRequestIEs__value_PR pres3;
   pres3 = E2setupRequestIEs__value_PR_GlobalE2node_ID;
@@ -228,7 +230,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
 
     itemIes->value.choice.RANfunction_Item.ranFunctionDefinition = *nextRanFuncDesc;
     itemIes->value.choice.RANfunction_Item.ranFunctionRevision = nextRanFuncRev;
-    
+
     ASN_SEQUENCE_ADD(&ranFlistIEs->value.choice.RANfunctions_List.list, itemIes);
 
   }
@@ -248,10 +250,10 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
 
   E2AP_PDU_PR pres5;
   pres5 = E2AP_PDU_PR_initiatingMessage;
-  
+
 
   e2ap_pdu->present = pres5;
-  e2ap_pdu->choice.initiatingMessage = initmsg;  
+  e2ap_pdu->choice.initiatingMessage = initmsg;
 
 }
 
@@ -281,7 +283,7 @@ void encoding::generate_e2apv1_setup_response(E2AP_PDU_t *e2ap_pdu) {
 
   E2setupResponseIEs__value_PR pres1;
   pres1 = E2setupResponseIEs__value_PR_GlobalRIC_ID;
-  
+
   resp_ies1->id = ProtocolIE_ID_id_GlobalRIC_ID;
   resp_ies1->criticality = 0;
   resp_ies1->value.present = pres1;
@@ -300,10 +302,10 @@ void encoding::generate_e2apv1_setup_response(E2AP_PDU_t *e2ap_pdu) {
   successoutcome->value.choice.E2setupResponse = *e2setupresp;
 
   E2AP_PDU_PR pres5 = E2AP_PDU_PR_successfulOutcome;
-  
+
   e2ap_pdu->present = pres5;
   e2ap_pdu->choice.successfulOutcome = successoutcome;
-  
+
 }
 
 
@@ -311,19 +313,19 @@ void encoding::generate_e2apv1_subscription_request(E2AP_PDU *e2ap_pdu) {
 
   fprintf(stderr, "in sub 1\n");
   RICsubscriptionRequest_IEs_t *ricreqid = (RICsubscriptionRequest_IEs_t*)calloc(1, sizeof(RICsubscriptionRequest_IEs_t));
-  fprintf(stderr, "in sub 2\n");  
+  fprintf(stderr, "in sub 2\n");
   ASN_STRUCT_RESET(asn_DEF_RICsubscriptionRequest_IEs, ricreqid);
-  fprintf(stderr, "in sub 3\n");  
+  fprintf(stderr, "in sub 3\n");
   auto *ricsubrid = (RICsubscriptionRequest_IEs_t*)calloc(1, sizeof(RICsubscriptionRequest_IEs_t));
-  fprintf(stderr, "in sub 4\n");  
+  fprintf(stderr, "in sub 4\n");
   ASN_STRUCT_RESET(asn_DEF_RICsubscriptionRequest_IEs, ricsubrid);
-  
+
   fprintf(stderr, "in generate sub\n");
   uint8_t *buf2 = (uint8_t *)"SubscriptionTriggers";
   fprintf(stderr, "in gen sub 1\n");
   OCTET_STRING_t *triggerdef = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
   triggerdef->buf = (uint8_t *)calloc(1,20);
-  triggerdef->size = 20;  
+  triggerdef->size = 20;
   memcpy(triggerdef->buf, buf2, triggerdef->size);
 
 
@@ -339,15 +341,15 @@ void encoding::generate_e2apv1_subscription_request(E2AP_PDU *e2ap_pdu) {
 
   OCTET_STRING_t *actdef = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
   actdef->buf = (uint8_t *)calloc(1,9);
-  actdef->size = 9;  
+  actdef->size = 9;
   memcpy(triggerdef->buf, buf5, 9);
 
   auto *sa = (RICsubsequentAction_t *) calloc(1, sizeof(RICsubsequentAction_t));
   ASN_STRUCT_RESET(asn_DEF_RICsubsequentAction, sa);
-  
+
   sa->ricTimeToWait = RICtimeToWait_w500ms;
   sa->ricSubsequentActionType = RICsubsequentActionType_continue;
-    
+
   printf("sub3\n");
 
   RICaction_ToBeSetup_ItemIEs_t *action_item_ies = (RICaction_ToBeSetup_ItemIEs_t *)calloc(1, sizeof(RICaction_ToBeSetup_Item_t));
@@ -362,21 +364,21 @@ void encoding::generate_e2apv1_subscription_request(E2AP_PDU *e2ap_pdu) {
 
 
   printf("sub5\n");
-  
+
 
   RICsubscriptionRequest_IEs__value_PR pres3;
   printf("sub6.1\n");
   pres3 = RICsubscriptionRequest_IEs__value_PR_RICsubscriptionDetails;
   ricsubrid->id = ProtocolIE_ID_id_RICsubscriptionDetails;
   printf("sub6.2\n");
-  
+
   ricsubrid->criticality = 0;
   ricsubrid->value.present = pres3;
   printf("sub6.3\n");
 
   ricsubrid->value.choice.RICsubscriptionDetails.ricEventTriggerDefinition = *triggerdef;
   printf("sub6.4\n");
-  
+
   ASN_SEQUENCE_ADD(&ricsubrid->value.choice.RICsubscriptionDetails.ricAction_ToBeSetup_List.list, action_item_ies);
 
   printf("sub7\n");
@@ -405,14 +407,14 @@ void encoding::generate_e2apv1_subscription_request(E2AP_PDU *e2ap_pdu) {
 
   E2AP_PDU_PR pres5;
   pres5 = E2AP_PDU_PR_initiatingMessage;
-  
+
 
   e2ap_pdu->present = pres5;
   e2ap_pdu->choice.initiatingMessage = initmsg;
 
   char *error_buf = (char*)calloc(300, sizeof(char));;
   size_t errlen;
-									  
+
   asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
   printf("error length %d\n", errlen);
   printf("error buf %s\n", error_buf);
@@ -426,12 +428,12 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
 
   RICsubscriptionResponse_IEs_t *respricreqid =
     (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
-  
+
   respricreqid->id = ProtocolIE_ID_id_RICrequestID;
   respricreqid->criticality = 0;
   respricreqid->value.present = RICsubscriptionResponse_IEs__value_PR_RICrequestID;
   respricreqid->value.choice.RICrequestID.ricRequestorID = reqRequestorId;
-  
+
   respricreqid->value.choice.RICrequestID.ricInstanceID = reqInstanceId;
 
   RICsubscriptionResponse_IEs_t *respfuncid =
@@ -440,7 +442,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   respfuncid->criticality = 0;
   respfuncid->value.present = RICsubscriptionResponse_IEs__value_PR_RANfunctionID;
   respfuncid->value.choice.RANfunctionID = (long)0;
-  
+
 
   RICsubscriptionResponse_IEs_t *ricactionadmitted =
     (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
@@ -448,7 +450,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   ricactionadmitted->criticality = 0;
   ricactionadmitted->value.present = RICsubscriptionResponse_IEs__value_PR_RICaction_Admitted_List;
 
-  RICaction_Admitted_List_t* admlist = 
+  RICaction_Admitted_List_t* admlist =
     (RICaction_Admitted_List_t*)calloc(1,sizeof(RICaction_Admitted_List_t));
   ricactionadmitted->value.choice.RICaction_Admitted_List = *admlist;
 
@@ -457,7 +459,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   int numReject = reject_size;
 
 
-  
+
   for (int i=0; i < numAccept ; i++) {
     fprintf(stderr, "in for loop i = %d\n", i);
 
@@ -468,7 +470,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
     admitie->criticality = 0;
     admitie->value.present = RICaction_Admitted_ItemIEs__value_PR_RICaction_Admitted_Item;
     admitie->value.choice.RICaction_Admitted_Item.ricActionID = aid;
-    
+
     ASN_SEQUENCE_ADD(&ricactionadmitted->value.choice.RICaction_Admitted_List.list, admitie);
 
   }
@@ -477,7 +479,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, respricreqid);
   ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, respfuncid);
   ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, ricactionadmitted);
-  
+
 
   if (numReject > 0) {
 
@@ -486,24 +488,24 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
     ricactionrejected->id = ProtocolIE_ID_id_RICactions_NotAdmitted;
     ricactionrejected->criticality = 0;
     ricactionrejected->value.present = RICsubscriptionResponse_IEs__value_PR_RICaction_NotAdmitted_List;
-    
-    RICaction_NotAdmitted_List_t* rejectlist = 
+
+    RICaction_NotAdmitted_List_t* rejectlist =
       (RICaction_NotAdmitted_List_t*)calloc(1,sizeof(RICaction_NotAdmitted_List_t));
     ricactionadmitted->value.choice.RICaction_NotAdmitted_List = *rejectlist;
-    
+
     for (int i=0; i < numReject; i++) {
       fprintf(stderr, "in for loop i = %d\n", i);
-      
+
       long aid = reqActionIdsRejected[i];
-      
+
       RICaction_NotAdmitted_ItemIEs_t *noadmitie = (RICaction_NotAdmitted_ItemIEs_t*)calloc(1,sizeof(RICaction_NotAdmitted_ItemIEs_t));
       noadmitie->id = ProtocolIE_ID_id_RICaction_NotAdmitted_Item;
       noadmitie->criticality = 0;
       noadmitie->value.present = RICaction_NotAdmitted_ItemIEs__value_PR_RICaction_NotAdmitted_Item;
       noadmitie->value.choice.RICaction_NotAdmitted_Item.ricActionID = aid;
-      
+
       ASN_SEQUENCE_ADD(&ricactionrejected->value.choice.RICaction_NotAdmitted_List.list, noadmitie);
-      ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, ricactionrejected);      
+      ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, ricactionrejected);
     }
   }
 
@@ -517,7 +519,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   successoutcome->value.choice.RICsubscriptionResponse = *ricsubresp;
 
   E2AP_PDU_PR pres5 = E2AP_PDU_PR_successfulOutcome;
-  
+
   e2ap_pdu->present = pres5;
   e2ap_pdu->choice.successfulOutcome = successoutcome;
 
@@ -530,9 +532,9 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
 
   printf("now printing xer of subscription response\n");
   xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
-  printf("done printing xer of subscription response\n");  
+  printf("done printing xer of subscription response\n");
 
-  
+
 }
 
 void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PDU *sub_req_pdu) {
@@ -541,13 +543,13 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
 
   RICsubscriptionRequest_t orig_req =
     sub_req_pdu->choice.initiatingMessage->value.choice.RICsubscriptionRequest;
-  
+
   RICsubscriptionResponse_IEs_t *ricreqid =
     (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
-					   
+
   int count = orig_req.protocolIEs.list.count;
   int size = orig_req.protocolIEs.list.size;
-  
+
   RICsubscriptionRequest_IEs_t **ies = (RICsubscriptionRequest_IEs_t**)orig_req.protocolIEs.list.array;
 
   fprintf(stderr, "count%d\n", count);
@@ -564,7 +566,7 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
   for (int i=0; i < count; i++) {
     RICsubscriptionRequest_IEs_t *next_ie = ies[i];
     pres = next_ie->value.present;
-    
+
     fprintf(stderr, "next present value %d\n", pres);
 
     switch(pres) {
@@ -577,17 +579,17 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
 	fprintf(stderr, "instanceId %d\n", instanceId);
 	responseRequestorId = requestorId;
 	responseInstanceId = instanceId;
-		
+
 	break;
       }
     case RICsubscriptionRequest_IEs__value_PR_RANfunctionID:
       break;
     case RICsubscriptionRequest_IEs__value_PR_RICsubscriptionDetails:
       {
-	RICsubscriptionDetails_t subDetails = next_ie->value.choice.RICsubscriptionDetails; 
+	RICsubscriptionDetails_t subDetails = next_ie->value.choice.RICsubscriptionDetails;
 	RICeventTriggerDefinition_t triggerDef = subDetails.ricEventTriggerDefinition;
 	RICactions_ToBeSetup_List_t actionList = subDetails.ricAction_ToBeSetup_List;
-	
+
 	int actionCount = actionList.list.count;
 	fprintf(stderr, "action count%d\n", actionCount);
 
@@ -601,11 +603,11 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
 	  responseActionId = actionId;
 	  actionIds.push_back(responseActionId);
 	}
-	
+
 	break;
       }
     }
-    
+
   }
 
   fprintf(stderr, "After Processing Subscription Request\n");
@@ -616,18 +618,18 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
 
   for (int i=0; i < actionIds.size(); i++) {
     fprintf(stderr, "Action ID %d %ld\n", i, actionIds.at(i));
-    
+
   }
 
 
   RICsubscriptionResponse_IEs_t *respricreqid =
     (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
-  
+
   respricreqid->id = ProtocolIE_ID_id_RICrequestID;
   respricreqid->criticality = 0;
   respricreqid->value.present = RICsubscriptionResponse_IEs__value_PR_RICrequestID;
   respricreqid->value.choice.RICrequestID.ricRequestorID = responseRequestorId;
-  
+
   respricreqid->value.choice.RICrequestID.ricInstanceID = responseInstanceId;
 
 
@@ -637,7 +639,7 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
   ricactionadmitted->criticality = 0;
   ricactionadmitted->value.present = RICsubscriptionResponse_IEs__value_PR_RICaction_Admitted_List;
 
-  RICaction_Admitted_List_t* admlist = 
+  RICaction_Admitted_List_t* admlist =
     (RICaction_Admitted_List_t*)calloc(1,sizeof(RICaction_Admitted_List_t));
   ricactionadmitted->value.choice.RICaction_Admitted_List = *admlist;
 
@@ -651,14 +653,14 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
     admitie->criticality = 0;
     admitie->value.present = RICaction_Admitted_ItemIEs__value_PR_RICaction_Admitted_Item;
     admitie->value.choice.RICaction_Admitted_Item.ricActionID = aid;
-    
+
     ASN_SEQUENCE_ADD(&ricactionadmitted->value.choice.RICaction_Admitted_List.list, admitie);
 
   }
 
 
   RICsubscriptionResponse_t *ricsubresp = (RICsubscriptionResponse_t*)calloc(1,sizeof(RICsubscriptionResponse_t));
-  
+
   ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, respricreqid);
   ASN_SEQUENCE_ADD(&ricsubresp->protocolIEs.list, ricactionadmitted);
 
@@ -672,7 +674,7 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
   successoutcome->value.choice.RICsubscriptionResponse = *ricsubresp;
 
   E2AP_PDU_PR pres5 = E2AP_PDU_PR_successfulOutcome;
-  
+
   e2ap_pdu->present = pres5;
   e2ap_pdu->choice.successfulOutcome = successoutcome;
 
@@ -684,7 +686,7 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
   printf("error buf %s\n", error_buf);
 
 
-  
+
 }
 
 void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_pdu,
@@ -697,7 +699,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
 								int header_length,
 								uint8_t *ind_message_buf,
 								int message_length) {
-  
+
   fprintf(stderr, "ind1\n");
   RICindication_IEs_t *ricind_ies = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
   RICindication_IEs_t *ricind_ies2 = (RICindication_IEs_t*)calloc(1, sizeof(RICindication_IEs_t));
@@ -725,7 +727,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   ricind_ies2->value.present = pres3;
   ricind_ies2->value.choice.RANfunctionID = ranFunctionId;
 
-  
+
   ricind_ies3->id = ProtocolIE_ID_id_RICactionID;
   ricind_ies3->criticality = 0;
   pres3 =  RICindication_IEs__value_PR_RICactionID;
@@ -764,11 +766,11 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   ricind_ies6->value.present = pres3;
   ricind_ies6->value.choice.RICindicationHeader.size = header_length;
   memcpy(ricind_ies6->value.choice.RICindicationHeader.buf, ind_header_buf, header_length);
-  
+
   ricind_ies7->value.choice.RICindicationMessage.buf = (uint8_t*)calloc(1,8192);
 
 
-  
+
 
   pres3 = RICindication_IEs__value_PR_RICindicationMessage;
   ricind_ies7->id = ProtocolIE_ID_id_RICindicationMessage;
@@ -779,7 +781,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
 
   fprintf(stderr, "after encoding message 2\n");
 
-  fprintf(stderr, "after encoding message 3\n");      
+  fprintf(stderr, "after encoding message 3\n");
   ricind_ies7->value.choice.RICindicationMessage.size = message_length;
 
   fprintf(stderr, "after encoding message 4\n");
@@ -808,11 +810,11 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
 
   RICindication_t *ricindication = (RICindication_t*)calloc(1, sizeof(RICindication_t));
 
-  
+
   int ret;
 
   ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies);
-  
+
   ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies2);
 
   printf("5.3\n");
@@ -820,22 +822,22 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies3);
 
   printf("5.35\n");
-  
+
   ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies4);
 
   printf("5.36\n");
-  
+
   ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies5);
 
   printf("5.4\n");
-  
+
   ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies6);
 
   printf("5.5\n");
 
-  ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies7);  
-  
-  ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies8);    
+  ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies7);
+
+  ret = ASN_SEQUENCE_ADD(&ricindication->protocolIEs.list, ricind_ies8);
 
 
   InitiatingMessage__value_PR pres4;
@@ -848,7 +850,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
 
   E2AP_PDU_PR pres5;
   pres5 = E2AP_PDU_PR_initiatingMessage;
-  
+
   e2ap_pdu->present = pres5;
   e2ap_pdu->choice.initiatingMessage = initmsg;
 
@@ -859,7 +861,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   printf("error length %d\n", errlen);
   printf("error buf %s\n", error_buf);
 
-  xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);  
+  xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
 
 }
 

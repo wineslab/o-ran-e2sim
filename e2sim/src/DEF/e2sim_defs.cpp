@@ -18,6 +18,7 @@
 ******************************************************************************/
 
 #include "e2sim_defs.h"
+#include <string.h>
 #include <getopt.h>
 #include <sys/time.h>
 #include <time.h>
@@ -95,8 +96,25 @@ options_t read_input_options(int argc, char *argv[])
 
   options.server_ip         = (char*)DEFAULT_SCTP_IP;
   options.server_port       = X2AP_SCTP_PORT;
+  options.gnb_id            = (char*)"gnb1";
 
-  if(argc == 3) //user provided IP and PORT
+    if(argc == 4) //user provided IP, PORT and GNB_ID
+    {
+        options.server_ip = argv[1];
+        options.server_port = atoi(argv[2]);
+        if(options.server_port < 1 || options.server_port > 65535) {
+            LOG_E("Invalid port number (%d). Valid values are between 1 and 65535.\n",
+                  options.server_port);
+            exit(1);
+        }
+        options.gnb_id = argv[3];
+        if(strlen(options.gnb_id) != 4) {
+            LOG_E("Invalid GNB ID (%s). Valid values must have size of 4.\n",
+                  options.gnb_id);
+            exit(1);
+        }
+    }
+  else if(argc == 3) //user provided IP and PORT
   {
     options.server_ip = argv[1];
     options.server_port = atoi(argv[2]);
@@ -117,7 +135,7 @@ options_t read_input_options(int argc, char *argv[])
   else
   {
     LOG_I("Unrecognized option.\n");
-    LOG_I("Usage: %s [SERVER IP ADDRESS] [SERVER PORT]\n", argv[0]);
+    LOG_I("Usage: %s [SERVER IP ADDRESS] [SERVER PORT] [GNB_ID]\n", argv[0]);
     exit(1);
   }
 
