@@ -182,6 +182,7 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const ch
         client4_addr.sin_port   = htons(RIC_SCTP_SRC_PORT);
         client_addr = (struct sockaddr*)&client4_addr;
         client_addr_len    = sizeof(client4_addr);
+        fprintf(stderr, "IP =  %s\n", inet_ntoa(client4_addr.sin_addr));
   }
   else if(inet_pton(AF_INET6, client_ip_str, &client6_addr.sin6_addr) == 1)
   {
@@ -189,6 +190,7 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const ch
       client6_addr.sin6_port   = htons(RIC_SCTP_SRC_PORT);
       client_addr = (struct sockaddr*)&client6_addr;
       client_addr_len    = sizeof(client6_addr);
+//      in6addr_any
   }
   else {
         perror("inet_pton() client");
@@ -287,9 +289,9 @@ Outcome of recv()
 int sctp_receive_data(int &socket_fd, sctp_buffer_t &data)
 {
   //clear out the data before receiving
-  fprintf(stderr, "receive data1\n");
+  fprintf(stderr, "begin recv data \n");
   memset(data.buffer, 0, sizeof(data.buffer));
-  fprintf(stderr, "receive data2\n");
+  fprintf(stderr, "memset buf\n");
   data.len = 0;
 
   //receive data from the socket
