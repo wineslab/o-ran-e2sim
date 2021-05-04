@@ -56,6 +56,7 @@ typedef struct {
   char* server_ip;
   int   server_port;
   char* gnb_id;
+  char* client_ip;
   //... extend as needed
 } options_t;
 

@@ -28,4 +28,4 @@ make
 
 # run the example
 #pwd
-./src/kpm/kpm_sim 192.168.130.80 36422 gnb1
+./src/kpm/kpm_sim 192.168.130.80 36422 gnb1 192.168.130.83
