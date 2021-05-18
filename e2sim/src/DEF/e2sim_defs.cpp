@@ -90,11 +90,11 @@ options_t read_input_options(int argc, char *argv[]) {
     options.server_ip = (char *) DEFAULT_SCTP_IP;
     options.server_port = X2AP_SCTP_PORT;
     options.gnb_id = (char *) "gnb1";
-    options.client_ip = (char *) "192.168.130.83";
+    options.client_port = RIC_SCTP_SRC_PORT;
 
     switch (argc) {
-        case 5: { // user provided IP, PORT, GNB_ID and CLIENT_IP
-            options.client_ip = argv[4];
+        case 5: { // user provided IP, PORT, GNB_ID and CLIENT_PORT
+            options.client_port = atoi(argv[4]);
         }
         case 4: { // user provided IP, PORT and GNB_ID
             options.gnb_id = argv[3];
@@ -119,7 +119,7 @@ options_t read_input_options(int argc, char *argv[]) {
             break;
 
         default: LOG_I("Unrecognized option.\n");
-            LOG_I("Usage: %s [SERVER IP ADDRESS] [SERVER PORT] [GNB_ID] [CLIENT_IP]\n", argv[0]);
+            LOG_I("Usage: %s [SERVER IP ADDRESS] [SERVER PORT] [GNB_ID] [CLIENT_PORT]\n", argv[0]);
             exit(1);
     }
 

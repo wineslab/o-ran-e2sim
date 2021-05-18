@@ -130,7 +130,7 @@ int E2Sim::run_loop(int argc, char* argv[]){
   //E2 Agent will automatically restart upon sctp disconnection
   //  int server_fd = sctp_start_server(ops.server_ip, ops.server_port);
 
-  client_fd = sctp_start_client(ops.server_ip, ops.server_port, ops.client_ip);
+  client_fd = sctp_start_client(ops.server_ip, ops.server_port, ops.client_port);
   E2AP_PDU_t* pdu_setup = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
 
   printf("After starting client\n");

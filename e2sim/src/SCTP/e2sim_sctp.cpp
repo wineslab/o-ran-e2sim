@@ -112,7 +112,7 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
   return server_fd;
 }
 
-int sctp_start_client(const char *server_ip_str, const int server_port, const char* client_ip_str)
+int sctp_start_client(const char *server_ip_str, const int server_port, const int client_port)
 {
   int client_fd, af;
 
@@ -172,33 +172,13 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const ch
     exit(1);
   }
 
-  struct sockaddr* client_addr;
-  struct sockaddr_in client4_addr{};
-  struct sockaddr_in6  client6_addr {};
-  size_t client_addr_len;
-  if(inet_pton(AF_INET, client_ip_str, &client4_addr.sin_addr) == 1)
-  {
-        client4_addr.sin_family = AF_INET;
-        client4_addr.sin_port   = htons(RIC_SCTP_SRC_PORT);
-        client_addr = (struct sockaddr*)&client4_addr;
-        client_addr_len    = sizeof(client4_addr);
-        fprintf(stderr, "IP =  %s\n", inet_ntoa(client4_addr.sin_addr));
-  }
-  else if(inet_pton(AF_INET6, client_ip_str, &client6_addr.sin6_addr) == 1)
-  {
-      client6_addr.sin6_family = AF_INET6;
-      client6_addr.sin6_port   = htons(RIC_SCTP_SRC_PORT);
-      client_addr = (struct sockaddr*)&client6_addr;
-      client_addr_len    = sizeof(client6_addr);
-//      in6addr_any
-  }
-  else {
-        perror("inet_pton() client");
-        exit(1);
-  }
+    struct sockaddr_in6  client6_addr {};
+    client6_addr.sin6_family = AF_INET6;
+    client6_addr.sin6_port   = htons(client_port);
+    client6_addr.sin6_addr   = in6addr_any;
 
-  LOG_I("[SCTP] Binding client socket to address %s with source port %d", client_ip_str,RIC_SCTP_SRC_PORT);
-  if(bind(client_fd, client_addr,client_addr_len) == -1) {
+  LOG_I("[SCTP] Binding client socket with source port %d", client_port);
+  if(bind(client_fd,(struct sockaddr*) &client6_addr,sizeof(client6_addr)) == -1) {
     perror("bind");
     exit(1);
   }
