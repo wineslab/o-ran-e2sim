@@ -25,6 +25,7 @@ mkdir build
 cd build
 cmake ..
 make
+cd ../../../
 
 # run the example
 #pwd
