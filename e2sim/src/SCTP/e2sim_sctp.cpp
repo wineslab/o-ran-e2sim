@@ -112,17 +112,17 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
   return server_fd;
 }
 
-int sctp_start_client(const char *server_ip_str, const int server_port)
+int sctp_start_client(const char *server_ip_str, const int server_port, const int client_port)
 {
   int client_fd, af;
 
   struct sockaddr* server_addr;
-  size_t addr_len;
+  size_t server_addr_len;
 
-  struct sockaddr_in  server4_addr;
+  struct sockaddr_in  server4_addr{};
   memset(&server4_addr, 0, sizeof(struct sockaddr_in));
 
-  struct sockaddr_in6 server6_addr;
+  struct sockaddr_in6 server6_addr{};
   memset(&server6_addr, 0, sizeof(struct sockaddr_in6));
 
   if(inet_pton(AF_INET, server_ip_str, &server4_addr.sin_addr) == 1)
@@ -130,17 +130,17 @@ int sctp_start_client(const char *server_ip_str, const int server_port)
     server4_addr.sin_family = AF_INET;
     server4_addr.sin_port   = htons(server_port);
     server_addr = (struct sockaddr*)&server4_addr;
-    addr_len    = sizeof(server4_addr);
+    server_addr_len    = sizeof(server4_addr);
   }
   else if(inet_pton(AF_INET6, server_ip_str, &server6_addr.sin6_addr) == 1)
   {
     server6_addr.sin6_family = AF_INET6;
     server6_addr.sin6_port   = htons(server_port);
     server_addr = (struct sockaddr*)&server6_addr;
-    addr_len    = sizeof(server6_addr);
+    server_addr_len    = sizeof(server6_addr);
   }
   else {
-    perror("inet_pton()");
+    perror("inet_pton() server");
     exit(1);
   }
 
@@ -172,20 +172,20 @@ int sctp_start_client(const char *server_ip_str, const int server_port)
     exit(1);
   }
 
-  struct sockaddr_in6  client6_addr {};
-  client6_addr.sin6_family = AF_INET6;
-  client6_addr.sin6_port   = htons(RIC_SCTP_SRC_PORT);
-  client6_addr.sin6_addr   = in6addr_any;
+    struct sockaddr_in6  client6_addr {};
+    client6_addr.sin6_family = AF_INET6;
+    client6_addr.sin6_port   = htons(client_port);
+    client6_addr.sin6_addr   = in6addr_any;
 
-  LOG_I("[SCTP] Binding client socket to source port %d", RIC_SCTP_SRC_PORT);
-  if(bind(client_fd, (struct sockaddr*)&client6_addr, sizeof(client6_addr)) == -1) {
+  LOG_I("[SCTP] Binding client socket with source port %d", client_port);
+  if(bind(client_fd,(struct sockaddr*) &client6_addr,sizeof(client6_addr)) == -1) {
     perror("bind");
     exit(1);
   }
   // end binding ---------------------
 
   LOG_I("[SCTP] Connecting to server at %s:%d ...", server_ip_str, server_port);
-  if(connect(client_fd, server_addr, addr_len) == -1) {
+  if(connect(client_fd, server_addr, server_addr_len) == -1) {
     perror("connect");
     exit(1);
   }
@@ -269,15 +269,15 @@ Outcome of recv()
 int sctp_receive_data(int &socket_fd, sctp_buffer_t &data)
 {
   //clear out the data before receiving
-  fprintf(stderr, "receive data1\n");
+  fprintf(stderr, "begin recv data \n");
   memset(data.buffer, 0, sizeof(data.buffer));
-  fprintf(stderr, "receive data2\n");  
+  fprintf(stderr, "memset buf\n");
   data.len = 0;
 
   //receive data from the socket
   int recv_len = recv(socket_fd, &(data.buffer), sizeof(data.buffer), 0);
   fprintf(stderr, "receive data3\n");
-  
+
   if(recv_len == -1)
   {
     perror("[SCTP] recv");
