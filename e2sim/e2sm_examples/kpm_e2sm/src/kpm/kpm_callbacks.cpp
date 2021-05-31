@@ -50,6 +50,8 @@ extern "C" {
 #include <thread>
 #include <chrono>
 
+#include "viavi_connector.hpp"
+
 using json = nlohmann::json;
 
 using namespace std;
@@ -146,12 +148,19 @@ void get_cell_id(uint8_t *nrcellid_buf, char *cid_return_buf) {
 
 }
 
-void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long actionId) {
+void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long actionId)
+{
+  std::filebuf reports_json;
+  std::streambuf *input_filebuf = &reports_json;
 
-  std::ifstream input("/playpen/src/reports.json");
-  bool x = input.good();
+  std::unique_ptr<viavi::RICTesterReceiver> viavi_connector;
+  if (!reports_json.open("/playpen/src/reports.json", std::ios::in)) {
+    std::cerr << "Can't open reports.json, enabling VIAVI connector instead..." << endl;
+	viavi_connector.reset(new viavi::RICTesterReceiver {3001, nullptr});
+	input_filebuf = viavi_connector->get_data_filebuf();
+  }
 
-  fprintf(stderr, "%s\n", x ? "true" : "false");
+  std::istream input {input_filebuf};
 
   long seqNum = 1;
 

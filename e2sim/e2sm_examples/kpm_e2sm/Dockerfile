@@ -31,7 +31,8 @@
 
 # the builder has: git, wget, cmake, gcc/g++, make, python2/3. v7 dropped nng support
 #
-FROM nexus3.o-ran-sc.org:10004/o-ran-sc/bldr-ubuntu18-c-go:8-u18.04 as buildenv
+ARG CONTAINER_PULL_REGISTRY=nexus3.o-ran-sc.org:10001
+FROM ${CONTAINER_PULL_REGISTRY}/o-ran-sc/bldr-ubuntu18-c-go:1.9.0 as buildenv
 
 # spaces to save things in the build image to copy to final image
 RUN mkdir -p /playpen/assets /playpen/src /playpen/bin
