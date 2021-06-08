@@ -10,6 +10,8 @@ make package
 cmake .. -DDEV_PKG=1
 make package
 
+cd ..
+return
 # uninstall old versions
 sudo apt-get purge -y e2sim-dev
 sudo apt-get purge -y e2sim
