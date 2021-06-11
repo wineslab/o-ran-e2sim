@@ -1,0 +1,344 @@
+ASN_MODULE_SRCS=	\
+	./gen_files/Criticality.c	\
+	./gen_files/Presence.c	\
+	./gen_files/ProcedureCode.c	\
+	./gen_files/ProtocolIE-ID.c	\
+	./gen_files/TriggeringMessage.c	\
+	./gen_files/E2SM-KPM-RANFunctionDefinition.c	\
+	./gen_files/RIC-ReportStyle-Item.c	\
+	./gen_files/E2SM-KPM-ActionDefinition.c	\
+	./gen_files/E2SM-KPM-ActionDefinition-Format1.c	\
+	./gen_files/E2SM-KPM-IndicationHeader.c	\
+	./gen_files/E2SM-KPM-IndicationHeader-Format1.c	\
+	./gen_files/E2SM-KPM-IndicationMessage.c	\
+	./gen_files/E2SM-KPM-IndicationMessage-Format1.c	\
+	./gen_files/PM-Containers-Item.c	\
+	./gen_files/PerUE-PM-Item.c	\
+	./gen_files/PM-Info-Item.c	\
+	./gen_files/PF-Container.c	\
+	./gen_files/ODU-PF-Container.c	\
+	./gen_files/CellResourceReportListItem.c	\
+	./gen_files/ServedPlmnPerCellListItem.c	\
+	./gen_files/FGC-DU-PM-Container.c	\
+	./gen_files/SlicePerPlmnPerCellListItem.c	\
+	./gen_files/FQIPERSlicesPerPlmnPerCellListItem.c	\
+	./gen_files/EPC-DU-PM-Container.c	\
+	./gen_files/PerQCIReportListItem.c	\
+	./gen_files/OCUCP-PF-Container.c	\
+	./gen_files/OCUUP-PF-Container.c	\
+	./gen_files/PF-ContainerListItem.c	\
+	./gen_files/CUUPMeasurement-Container.c	\
+	./gen_files/PlmnID-Item.c	\
+	./gen_files/FGC-CUUP-PM-Format.c	\
+	./gen_files/SliceToReportListItem.c	\
+	./gen_files/FQIPERSlicesPerPlmnListItem.c	\
+	./gen_files/EPC-CUUP-PM-Format.c	\
+	./gen_files/PerQCIReportListItemFormat.c	\
+	./gen_files/MeasurementValue.c	\
+	./gen_files/L3-RRC-Measurements.c	\
+	./gen_files/RRCEvent.c	\
+	./gen_files/ServingCellMeasurements.c	\
+	./gen_files/MeasResultServMOList.c	\
+	./gen_files/MeasResultServMO.c	\
+	./gen_files/MeasResultNR.c	\
+	./gen_files/MeasResultListEUTRA.c	\
+	./gen_files/MeasResultEUTRA.c	\
+	./gen_files/MeasResultPCell.c	\
+	./gen_files/MeasResultNeighCells.c	\
+	./gen_files/MeasResultListNR.c	\
+	./gen_files/PhysCellId.c	\
+	./gen_files/ServCellIndex.c	\
+	./gen_files/MeasQuantityResults.c	\
+	./gen_files/MeasQuantityResultsEUTRA.c	\
+	./gen_files/RSRP-RangeEUTRA.c	\
+	./gen_files/RSRQ-RangeEUTRA.c	\
+	./gen_files/SINR-RangeEUTRA.c	\
+	./gen_files/ResultsPerSSB-IndexList.c	\
+	./gen_files/ResultsPerSSB-Index.c	\
+	./gen_files/ResultsPerCSI-RS-IndexList.c	\
+	./gen_files/ResultsPerCSI-RS-Index.c	\
+	./gen_files/SSB-Index.c	\
+	./gen_files/CSI-RS-Index.c	\
+	./gen_files/RSRP-Range.c	\
+	./gen_files/RSRQ-Range.c	\
+	./gen_files/SINR-Range.c	\
+	./gen_files/TimeStamp.c	\
+	./gen_files/CellObjectID.c	\
+	./gen_files/MeasurementInfoList.c	\
+	./gen_files/MeasurementInfoItem.c	\
+	./gen_files/MeasurementType.c	\
+	./gen_files/NRCGI.c	\
+	./gen_files/NRCellIdentity.c	\
+	./gen_files/S-NSSAI.c	\
+	./gen_files/MeasurementTypeName.c	\
+	./gen_files/MeasurementTypeID.c	\
+	./gen_files/FiveQI.c	\
+	./gen_files/QCI.c	\
+	./gen_files/NI-Type.c	\
+	./gen_files/RAN-Container.c	\
+	./gen_files/E2SM-RC-RANFunctionDefinition.c	\
+	./gen_files/RANfunction-Name.c	\
+	./gen_files/RIC-EventTriggerStyle-Item.c	\
+	./gen_files/RIC-ControlStyle-Item.c	\
+	./gen_files/RIC-ControlAction-Item.c	\
+	./gen_files/RAN-ControlParameter-Item.c	\
+	./gen_files/E2SM-RC-ControlHeader.c	\
+	./gen_files/E2SM-RC-ControlHeader-Format1.c	\
+	./gen_files/E2SM-RC-ControlMessage.c	\
+	./gen_files/E2SM-RC-ControlMessage-Format1.c	\
+	./gen_files/RANParameter-Item.c	\
+	./gen_files/RANParameter-ValueType.c	\
+	./gen_files/RANParameter-ELEMENT.c	\
+	./gen_files/RANParameter-STRUCTURE.c	\
+	./gen_files/RANParameter-LIST.c	\
+	./gen_files/RANParameter-Value.c	\
+	./gen_files/UE-Identity.c	\
+	./gen_files/RIC-Style-Type.c	\
+	./gen_files/RIC-Style-Name.c	\
+	./gen_files/RIC-Format-Type.c	\
+	./gen_files/RANParameter-ID.c	\
+	./gen_files/RANParameter-Name.c	\
+	./gen_files/RIC-ControlAction-ID.c	\
+	./gen_files/RIC-ControlAction-Name.c	\
+	./gen_files/E2SM-KPM-EventTriggerDefinition.c	\
+	./gen_files/E2SM-KPM-EventTriggerDefinition-Format1.c	\
+	./gen_files/Trigger-ConditionIE-Item.c	\
+	./gen_files/RT-Period-IE.c	\
+	./gen_files/RANcallProcess-ID-string.c	\
+	./gen_files/PLMN-Identity.c	\
+	./gen_files/GlobalE2node-ID.c	\
+	./gen_files/GlobalE2node-en-gNB-ID.c	\
+	./gen_files/GlobalE2node-eNB-ID.c	\
+	./gen_files/GlobalE2node-gNB-ID.c	\
+	./gen_files/GlobalE2node-ng-eNB-ID.c	\
+	./gen_files/GlobalENB-ID.c	\
+	./gen_files/GlobalenGNB-ID.c	\
+	./gen_files/GlobalgNB-ID.c	\
+	./gen_files/GlobalngeNB-ID.c	\
+	./gen_files/GNB-ID-Choice.c	\
+	./gen_files/ENB-ID-Choice.c	\
+	./gen_files/ENB-ID.c	\
+	./gen_files/ENGNB-ID.c	\
+	./gen_files/GNB-CU-UP-ID.c	\
+	./gen_files/GNB-DU-ID.c
+
+ASN_MODULE_HDRS=	\
+	./gen_files/Criticality.h	\
+	./gen_files/Presence.h	\
+	./gen_files/ProcedureCode.h	\
+	./gen_files/ProtocolIE-ID.h	\
+	./gen_files/TriggeringMessage.h	\
+	./gen_files/E2SM-KPM-RANFunctionDefinition.h	\
+	./gen_files/RIC-ReportStyle-Item.h	\
+	./gen_files/E2SM-KPM-ActionDefinition.h	\
+	./gen_files/E2SM-KPM-ActionDefinition-Format1.h	\
+	./gen_files/E2SM-KPM-IndicationHeader.h	\
+	./gen_files/E2SM-KPM-IndicationHeader-Format1.h	\
+	./gen_files/E2SM-KPM-IndicationMessage.h	\
+	./gen_files/E2SM-KPM-IndicationMessage-Format1.h	\
+	./gen_files/PM-Containers-Item.h	\
+	./gen_files/PerUE-PM-Item.h	\
+	./gen_files/PM-Info-Item.h	\
+	./gen_files/PF-Container.h	\
+	./gen_files/ODU-PF-Container.h	\
+	./gen_files/CellResourceReportListItem.h	\
+	./gen_files/ServedPlmnPerCellListItem.h	\
+	./gen_files/FGC-DU-PM-Container.h	\
+	./gen_files/SlicePerPlmnPerCellListItem.h	\
+	./gen_files/FQIPERSlicesPerPlmnPerCellListItem.h	\
+	./gen_files/EPC-DU-PM-Container.h	\
+	./gen_files/PerQCIReportListItem.h	\
+	./gen_files/OCUCP-PF-Container.h	\
+	./gen_files/OCUUP-PF-Container.h	\
+	./gen_files/PF-ContainerListItem.h	\
+	./gen_files/CUUPMeasurement-Container.h	\
+	./gen_files/PlmnID-Item.h	\
+	./gen_files/FGC-CUUP-PM-Format.h	\
+	./gen_files/SliceToReportListItem.h	\
+	./gen_files/FQIPERSlicesPerPlmnListItem.h	\
+	./gen_files/EPC-CUUP-PM-Format.h	\
+	./gen_files/PerQCIReportListItemFormat.h	\
+	./gen_files/MeasurementValue.h	\
+	./gen_files/L3-RRC-Measurements.h	\
+	./gen_files/RRCEvent.h	\
+	./gen_files/ServingCellMeasurements.h	\
+	./gen_files/MeasResultServMOList.h	\
+	./gen_files/MeasResultServMO.h	\
+	./gen_files/MeasResultNR.h	\
+	./gen_files/MeasResultListEUTRA.h	\
+	./gen_files/MeasResultEUTRA.h	\
+	./gen_files/MeasResultPCell.h	\
+	./gen_files/MeasResultNeighCells.h	\
+	./gen_files/MeasResultListNR.h	\
+	./gen_files/PhysCellId.h	\
+	./gen_files/ServCellIndex.h	\
+	./gen_files/MeasQuantityResults.h	\
+	./gen_files/MeasQuantityResultsEUTRA.h	\
+	./gen_files/RSRP-RangeEUTRA.h	\
+	./gen_files/RSRQ-RangeEUTRA.h	\
+	./gen_files/SINR-RangeEUTRA.h	\
+	./gen_files/ResultsPerSSB-IndexList.h	\
+	./gen_files/ResultsPerSSB-Index.h	\
+	./gen_files/ResultsPerCSI-RS-IndexList.h	\
+	./gen_files/ResultsPerCSI-RS-Index.h	\
+	./gen_files/SSB-Index.h	\
+	./gen_files/CSI-RS-Index.h	\
+	./gen_files/RSRP-Range.h	\
+	./gen_files/RSRQ-Range.h	\
+	./gen_files/SINR-Range.h	\
+	./gen_files/TimeStamp.h	\
+	./gen_files/CellObjectID.h	\
+	./gen_files/MeasurementInfoList.h	\
+	./gen_files/MeasurementInfoItem.h	\
+	./gen_files/MeasurementType.h	\
+	./gen_files/NRCGI.h	\
+	./gen_files/NRCellIdentity.h	\
+	./gen_files/S-NSSAI.h	\
+	./gen_files/MeasurementTypeName.h	\
+	./gen_files/MeasurementTypeID.h	\
+	./gen_files/FiveQI.h	\
+	./gen_files/QCI.h	\
+	./gen_files/NI-Type.h	\
+	./gen_files/RAN-Container.h	\
+	./gen_files/E2SM-RC-RANFunctionDefinition.h	\
+	./gen_files/RANfunction-Name.h	\
+	./gen_files/RIC-EventTriggerStyle-Item.h	\
+	./gen_files/RIC-ControlStyle-Item.h	\
+	./gen_files/RIC-ControlAction-Item.h	\
+	./gen_files/RAN-ControlParameter-Item.h	\
+	./gen_files/E2SM-RC-ControlHeader.h	\
+	./gen_files/E2SM-RC-ControlHeader-Format1.h	\
+	./gen_files/E2SM-RC-ControlMessage.h	\
+	./gen_files/E2SM-RC-ControlMessage-Format1.h	\
+	./gen_files/RANParameter-Item.h	\
+	./gen_files/RANParameter-ValueType.h	\
+	./gen_files/RANParameter-ELEMENT.h	\
+	./gen_files/RANParameter-STRUCTURE.h	\
+	./gen_files/RANParameter-LIST.h	\
+	./gen_files/RANParameter-Value.h	\
+	./gen_files/UE-Identity.h	\
+	./gen_files/RIC-Style-Type.h	\
+	./gen_files/RIC-Style-Name.h	\
+	./gen_files/RIC-Format-Type.h	\
+	./gen_files/RANParameter-ID.h	\
+	./gen_files/RANParameter-Name.h	\
+	./gen_files/RIC-ControlAction-ID.h	\
+	./gen_files/RIC-ControlAction-Name.h	\
+	./gen_files/E2SM-KPM-EventTriggerDefinition.h	\
+	./gen_files/E2SM-KPM-EventTriggerDefinition-Format1.h	\
+	./gen_files/Trigger-ConditionIE-Item.h	\
+	./gen_files/RT-Period-IE.h	\
+	./gen_files/RANcallProcess-ID-string.h	\
+	./gen_files/PLMN-Identity.h	\
+	./gen_files/GlobalE2node-ID.h	\
+	./gen_files/GlobalE2node-en-gNB-ID.h	\
+	./gen_files/GlobalE2node-eNB-ID.h	\
+	./gen_files/GlobalE2node-gNB-ID.h	\
+	./gen_files/GlobalE2node-ng-eNB-ID.h	\
+	./gen_files/GlobalENB-ID.h	\
+	./gen_files/GlobalenGNB-ID.h	\
+	./gen_files/GlobalgNB-ID.h	\
+	./gen_files/GlobalngeNB-ID.h	\
+	./gen_files/GNB-ID-Choice.h	\
+	./gen_files/ENB-ID-Choice.h	\
+	./gen_files/ENB-ID.h	\
+	./gen_files/ENGNB-ID.h	\
+	./gen_files/GNB-CU-UP-ID.h	\
+	./gen_files/GNB-DU-ID.h
+
+ASN_MODULE_HDRS+=./gen_files/OPEN_TYPE.h
+ASN_MODULE_SRCS+=./gen_files/OPEN_TYPE.c
+ASN_MODULE_HDRS+=./gen_files/constr_CHOICE.h
+ASN_MODULE_HDRS+=./gen_files/BOOLEAN.h
+ASN_MODULE_SRCS+=./gen_files/BOOLEAN.c
+ASN_MODULE_HDRS+=./gen_files/INTEGER.h
+ASN_MODULE_SRCS+=./gen_files/INTEGER.c
+ASN_MODULE_HDRS+=./gen_files/NULL.h
+ASN_MODULE_SRCS+=./gen_files/NULL.c
+ASN_MODULE_HDRS+=./gen_files/NativeEnumerated.h
+ASN_MODULE_SRCS+=./gen_files/NativeEnumerated.c
+ASN_MODULE_HDRS+=./gen_files/NativeInteger.h
+ASN_MODULE_SRCS+=./gen_files/NativeInteger.c
+ASN_MODULE_HDRS+=./gen_files/NativeReal.h
+ASN_MODULE_SRCS+=./gen_files/NativeReal.c
+ASN_MODULE_HDRS+=./gen_files/REAL.h
+ASN_MODULE_HDRS+=./gen_files/PrintableString.h
+ASN_MODULE_SRCS+=./gen_files/PrintableString.c
+ASN_MODULE_HDRS+=./gen_files/OCTET_STRING.h
+ASN_MODULE_SRCS+=./gen_files/REAL.c
+ASN_MODULE_HDRS+=./gen_files/asn_SEQUENCE_OF.h
+ASN_MODULE_SRCS+=./gen_files/asn_SEQUENCE_OF.c
+ASN_MODULE_HDRS+=./gen_files/asn_SET_OF.h
+ASN_MODULE_SRCS+=./gen_files/asn_SET_OF.c
+ASN_MODULE_SRCS+=./gen_files/constr_CHOICE.c
+ASN_MODULE_HDRS+=./gen_files/constr_SEQUENCE.h
+ASN_MODULE_SRCS+=./gen_files/constr_SEQUENCE.c
+ASN_MODULE_HDRS+=./gen_files/constr_SEQUENCE_OF.h
+ASN_MODULE_SRCS+=./gen_files/constr_SEQUENCE_OF.c
+ASN_MODULE_HDRS+=./gen_files/constr_SET_OF.h
+ASN_MODULE_SRCS+=./gen_files/constr_SET_OF.c
+ASN_MODULE_HDRS+=./gen_files/asn_application.h
+ASN_MODULE_SRCS+=./gen_files/asn_application.c
+ASN_MODULE_HDRS+=./gen_files/asn_ioc.h
+ASN_MODULE_HDRS+=./gen_files/asn_system.h
+ASN_MODULE_HDRS+=./gen_files/asn_codecs.h
+ASN_MODULE_HDRS+=./gen_files/asn_internal.h
+ASN_MODULE_SRCS+=./gen_files/asn_internal.c
+ASN_MODULE_HDRS+=./gen_files/asn_random_fill.h
+ASN_MODULE_SRCS+=./gen_files/asn_random_fill.c
+ASN_MODULE_HDRS+=./gen_files/asn_bit_data.h
+ASN_MODULE_SRCS+=./gen_files/asn_bit_data.c
+ASN_MODULE_SRCS+=./gen_files/OCTET_STRING.c
+ASN_MODULE_HDRS+=./gen_files/BIT_STRING.h
+ASN_MODULE_SRCS+=./gen_files/BIT_STRING.c
+ASN_MODULE_SRCS+=./gen_files/asn_codecs_prim.c
+ASN_MODULE_HDRS+=./gen_files/asn_codecs_prim.h
+ASN_MODULE_HDRS+=./gen_files/ber_tlv_length.h
+ASN_MODULE_SRCS+=./gen_files/ber_tlv_length.c
+ASN_MODULE_HDRS+=./gen_files/ber_tlv_tag.h
+ASN_MODULE_SRCS+=./gen_files/ber_tlv_tag.c
+ASN_MODULE_HDRS+=./gen_files/ber_decoder.h
+ASN_MODULE_SRCS+=./gen_files/ber_decoder.c
+ASN_MODULE_HDRS+=./gen_files/der_encoder.h
+ASN_MODULE_SRCS+=./gen_files/der_encoder.c
+ASN_MODULE_HDRS+=./gen_files/constr_TYPE.h
+ASN_MODULE_SRCS+=./gen_files/constr_TYPE.c
+ASN_MODULE_HDRS+=./gen_files/constraints.h
+ASN_MODULE_SRCS+=./gen_files/constraints.c
+ASN_MODULE_HDRS+=./gen_files/xer_support.h
+ASN_MODULE_SRCS+=./gen_files/xer_support.c
+ASN_MODULE_HDRS+=./gen_files/xer_decoder.h
+ASN_MODULE_SRCS+=./gen_files/xer_decoder.c
+ASN_MODULE_HDRS+=./gen_files/xer_encoder.h
+ASN_MODULE_SRCS+=./gen_files/xer_encoder.c
+ASN_MODULE_HDRS+=./gen_files/per_support.h
+ASN_MODULE_SRCS+=./gen_files/per_support.c
+ASN_MODULE_HDRS+=./gen_files/per_decoder.h
+ASN_MODULE_SRCS+=./gen_files/per_decoder.c
+ASN_MODULE_HDRS+=./gen_files/per_encoder.h
+ASN_MODULE_SRCS+=./gen_files/per_encoder.c
+ASN_MODULE_HDRS+=./gen_files/per_opentype.h
+ASN_MODULE_SRCS+=./gen_files/per_opentype.c
+ASN_MODULE_HDRS+=./gen_files/oer_decoder.h
+ASN_MODULE_HDRS+=./gen_files/oer_encoder.h
+ASN_MODULE_HDRS+=./gen_files/oer_support.h
+ASN_MODULE_SRCS+=./gen_files/oer_decoder.c
+ASN_MODULE_SRCS+=./gen_files/oer_encoder.c
+ASN_MODULE_SRCS+=./gen_files/oer_support.c
+ASN_MODULE_SRCS+=./gen_files/OPEN_TYPE_oer.c
+ASN_MODULE_SRCS+=./gen_files/INTEGER_oer.c
+ASN_MODULE_SRCS+=./gen_files/BIT_STRING_oer.c
+ASN_MODULE_SRCS+=./gen_files/OCTET_STRING_oer.c
+ASN_MODULE_SRCS+=./gen_files/NativeInteger_oer.c
+ASN_MODULE_SRCS+=./gen_files/NativeEnumerated_oer.c
+ASN_MODULE_SRCS+=./gen_files/constr_CHOICE_oer.c
+ASN_MODULE_SRCS+=./gen_files/constr_SEQUENCE_oer.c
+ASN_MODULE_SRCS+=./gen_files/constr_SET_OF_oer.c
+
+ASN_MODULE_CFLAGS=
+
+lib_LTLIBRARIES+=libasncodec.la
+libasncodec_la_SOURCES=$(ASN_MODULE_SRCS) $(ASN_MODULE_HDRS)
+libasncodec_la_CPPFLAGS=-I$(top_srcdir)/./gen_files/
+libasncodec_la_CFLAGS=$(ASN_MODULE_CFLAGS)
+libasncodec_la_LDFLAGS=-lm
