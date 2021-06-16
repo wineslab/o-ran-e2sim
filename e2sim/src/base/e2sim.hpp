@@ -21,13 +21,14 @@
 #define E2SIM_HPP
 
 #include <unordered_map>
+#include <functional>
 
 extern "C" {
 #include "E2AP-PDU.h"
 #include "OCTET_STRING.h"
 }
 
-typedef void (*SubscriptionCallback)(E2AP_PDU_t*);
+typedef std::function<void(E2AP_PDU_t*)> SubscriptionCallback;
 
 class E2Sim;
 class E2Sim {
