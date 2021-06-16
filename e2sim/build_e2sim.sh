@@ -18,6 +18,10 @@ sudo apt-get purge -y e2sim
 sudo dpkg --install ./e2sim_1.0.0_amd64.deb
 sudo dpkg --install ./e2sim-dev_1.0.0_amd64.deb
 
+# remove these two lines to build the example
+cd ..
+return
+
 # build example
 cd ../e2sm_examples/kpm_e2sm
 rm -rf build
