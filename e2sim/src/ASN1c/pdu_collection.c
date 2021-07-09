@@ -15,7 +15,7 @@ extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_IndicationMessage;
 extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_RC_RANFunctionDefinition;
 extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_RC_ControlHeader;
 extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_RC_ControlMessage;
-extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_EventTriggerDefinition_Format1;
+extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_EventTriggerDefinition;
 extern struct asn_TYPE_descriptor_s asn_DEF_RANcallProcess_ID_string;
 
 
@@ -32,7 +32,7 @@ struct asn_TYPE_descriptor_s *asn_pdu_collection[] = {
 	&asn_DEF_E2SM_RC_RANFunctionDefinition,	
 	&asn_DEF_E2SM_RC_ControlHeader,	
 	&asn_DEF_E2SM_RC_ControlMessage,	
-	&asn_DEF_E2SM_KPM_EventTriggerDefinition_Format1,	
+	&asn_DEF_E2SM_KPM_EventTriggerDefinition,	
 	&asn_DEF_RANcallProcess_ID_string,	
 	0
 };
