@@ -17,7 +17,7 @@
 #                                                                            *
 ******************************************************************************/
 
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 #include <string>
 #include <iostream>
@@ -34,18 +34,17 @@ using namespace std;
 
 int client_fd = 0;
 
-std::unordered_map<long, OCTET_STRING_t*> E2Sim::getRegistered_ran_functions() {
+std::unordered_map<long , OCTET_STRING_t*> E2Sim::getRegistered_ran_functions() {
   return ran_functions_registered;
 }
 
 void E2Sim::register_subscription_callback(long func_id, SubscriptionCallback cb) {
-  fprintf(stderr,"%%%%about to register callback for subscription for func_id %d\n", func_id);
+  fprintf(stderr,"%%%%about to register callback for subscription for func_id %ld\n", func_id);
   subscription_callbacks[func_id] = cb;
-
 }
 
 SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
-  fprintf(stderr, "%%%%we are getting the subscription callback for func id %d\n", func_id);
+  fprintf(stderr, "%%%%we are getting the subscription callback for func id %ld\n", func_id);
   SubscriptionCallback cb;
 
   try {
@@ -54,7 +53,22 @@ SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
     throw std::out_of_range("Function ID is not registered");
   }
   return cb;
+}
 
+void E2Sim::register_sm_callback(long func_id, SmCallback cb) {
+    fprintf(stderr, "%%%%about to register callback for e2sm for func_id %ld\n", func_id);
+    sm_callbacks[func_id] = cb;
+}
+
+SmCallback E2Sim::get_sm_callback(long func_id) {
+    fprintf(stderr, "%%%%we are getting the e2sm callback for func id %ld\n", func_id);
+    SmCallback cb;
+    try {
+        cb = sm_callbacks.at(func_id);
+    } catch (const std::out_of_range &e) {
+        throw std::out_of_range("Function ID is not registered");
+    }
+    return cb;
 }
 
 void E2Sim::register_e2sm(long func_id, OCTET_STRING_t *ostr) {
@@ -62,7 +76,7 @@ void E2Sim::register_e2sm(long func_id, OCTET_STRING_t *ostr) {
   //Error conditions:
   //If we already have an entry for func_id
 
-  printf("%%%%about to register e2sm func desc for %d\n", func_id);
+  printf("%%%%about to register e2sm func desc for %ld\n", func_id);
 
   ran_functions_registered[func_id] = ostr;
 
@@ -142,7 +156,7 @@ int E2Sim::run_loop(int argc, char* argv[]){
 
   for (std::pair<long, OCTET_STRING_t*> elem : ran_functions_registered) {
     printf("looping through ran func\n");
-    encoding::ran_func_info next_func;
+    encoding::ran_func_info next_func{};
 
     next_func.ranFunctionId = elem.first;
     next_func.ranFunctionDesc = elem.second;
@@ -173,14 +187,14 @@ int E2Sim::run_loop(int argc, char* argv[]){
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, pdu_setup, error_buf, &errlen);
-  printf("error length %zu\n", errlen);
-  printf("error buf %s\n", error_buf);
+//  printf("error length %zu\n", errlen);
+//  printf("error buf %s\n", error_buf);
 
   auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_setup, buffer, buffer_size);
 
   data.len = er.encoded;
 
-  fprintf(stderr, "er encded is %zd\n", er.encoded);
+//  fprintf(stderr, "er encded is %zd\n", er.encoded);
 
   memcpy(data.buffer, buffer, er.encoded);
 
@@ -194,7 +208,7 @@ int E2Sim::run_loop(int argc, char* argv[]){
 
   LOG_I("[SCTP] Waiting for SCTP data");
 
-  while(1) //constantly looking for data on SCTP interface
+  while(true) //constantly looking for data on SCTP interface
   {
     if(sctp_receive_data(client_fd, recv_buf) <= 0)
       break;

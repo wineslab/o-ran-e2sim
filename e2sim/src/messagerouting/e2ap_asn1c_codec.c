@@ -21,10 +21,8 @@
 
 void e2ap_asn1c_print_pdu(const E2AP_PDU_t* pdu)
 {
-  printf("before\n");
   //  xer_fprint(stdout, &asn_DEF_E2AP_PDU, (void *)pdu);
   xer_fprint(stdout, &asn_DEF_E2AP_PDU, pdu);
-  printf("after\n");
   printf("\n");
 }
 
@@ -184,26 +182,23 @@ int e2ap_asn1c_encode_pdu(E2AP_PDU_t* pdu, unsigned char **buffer)
   return len;
 }
 
-void e2ap_asn1c_decode_pdu(E2AP_PDU_t* pdu, unsigned char *buffer, int len)
-{
-  asn_dec_rval_t dec_ret;
+struct asn_dec_rval_s e2ap_asn1c_decode_pdu(E2AP_PDU_t *pdu, enum asn_transfer_syntax syntax, unsigned char *buffer, int len) {
+    asn_dec_rval_t dec_ret;
+    assert(buffer != NULL);
 
-  assert(buffer != NULL);
-
-  dec_ret = aper_decode(NULL, &asn_DEF_E2AP_PDU, (void **)&pdu, buffer, len, 0, 0);
-
-  if (dec_ret.code != RC_OK) {
-    LOG_E("[E2AP ASN] Failed to decode pdu");
-    exit(1);
-  }
-  else {
-    LOG_D("[E2AP ASN] Decoded succesfully");
-  }
+    dec_ret = asn_decode(NULL, syntax, &asn_DEF_E2AP_PDU, (void **) &pdu, buffer, len);
+    if (dec_ret.code != RC_OK) {
+        LOG_E("[E2AP ASN] Failed to decode pdu");
+        exit(1);
+    } else {
+        LOG_D("[E2AP ASN] Decoded successfully");
+        return dec_ret;
+    }
 }
 
-int e2ap_asn1c_get_procedureCode(E2AP_PDU_t* pdu)
+long e2ap_asn1c_get_procedureCode(E2AP_PDU_t* pdu)
 {
-  int procedureCode = -1;
+  long procedureCode = -1;
 
   switch(pdu->present)
   {

@@ -47,4 +47,6 @@ void e2ap_handle_ResourceStatusRequest(E2AP_PDU_t* pdu, int &socket_fd);
 
 void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim);
 
+void e2ap_handle_RICControlRequest(E2AP_PDU_t *pPdu, int &fd, E2Sim *e2sim);
+
 #endif
