@@ -207,7 +207,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   globale2nodeid->choice.gNB = e2gnb;
 
   E2setupRequestIEs_t *e2setuprid = (E2setupRequestIEs_t*)calloc(1, sizeof(E2setupRequestIEs_t));
-  e2setuprid->id = 3;
+  e2setuprid->id = ProtocolIE_ID_id_GlobalE2node_ID;
   e2setuprid->criticality = Criticality_reject;
   e2setuprid->value.choice.GlobalE2node_ID = *globale2nodeid;
   e2setuprid->value.present = E2setupRequestIEs__value_PR_GlobalE2node_ID;
@@ -473,7 +473,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   int numReject = reject_size;
 
   for (int i = 0; i < numAccept; i++) {
-      fprintf(stderr, "in for loop i = %d\n", i);
+      LOG_D("in for loop i = %d\n", i);
 
       long aid = reqActionIdsAccepted[i];
 
@@ -506,7 +506,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
     ricactionadmitted->value.choice.RICaction_NotAdmitted_List = *rejectlist;
 
     for (int i=0; i < numReject; i++) {
-//      fprintf(stderr, "in for loop i = %d\n", i);
+      LOG_D("in for loop i = %d\n", i);
 
       long aid = reqActionIdsRejected[i];
 
@@ -757,16 +757,11 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   ricind_ies7->criticality = Criticality_reject;
   ricind_ies7->value.present = RICindication_IEs__value_PR_RICindicationMessage;
 
-//  fprintf(stderr, "after encoding message 2\n");
-//
-//  fprintf(stderr, "after encoding message 3\n");
   ricind_ies7->value.choice.RICindicationMessage.size = message_length;
 
-//  fprintf(stderr, "after encoding message 4\n");
   memcpy(ricind_ies7->value.choice.RICindicationMessage.buf, ind_message_buf, message_length);
 
-//  fprintf(stderr, "after encoding message 5\n");
-
+  // TODO : this should be deleted
   uint8_t *cpid_buf = (uint8_t *)"cpid";
   OCTET_STRING_t cpid_str;
 
