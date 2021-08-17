@@ -98,11 +98,11 @@ options_t read_input_options(int argc, char *argv[]) {
         }
         case 4: { // user provided IP, PORT and GNB_ID
             options.gnb_id = argv[3];
-            if (strlen(options.gnb_id) != 4) {
-                LOG_E("Invalid GNB ID (%s). Valid values must have size of 4 (only the first 3 characters considered)\n",
-                      options.gnb_id);
-                exit(1);
-            }
+            //if (strlen(options.gnb_id) != 4) {
+              //  LOG_E("Invalid GNB ID (%s). Valid values must have size of 4 (only the first 3 characters considered)\n",
+                //      options.gnb_id);
+                //exit(1);
+            //}
         }
         case 3: { // user provided IP and PORT
             options.server_port = atoi(argv[2]);

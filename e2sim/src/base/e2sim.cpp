@@ -168,7 +168,7 @@ int E2Sim::run_loop(int argc, char* argv[]){
 
   printf("creation of gnb_id... ");
   uint8_t *gnb_id = (uint8_t *)ops.gnb_id;
-  size_t gnb_id_size = strlen(ops.gnb_id);
+  size_t gnb_id_size = 4; // strlen(ops.gnb_id);
   printf("done\n");
   generate_e2apv1_setup_request_parameterized(pdu_setup, all_funcs,gnb_id,gnb_id_size);
 
