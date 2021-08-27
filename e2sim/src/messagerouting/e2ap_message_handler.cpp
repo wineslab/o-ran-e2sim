@@ -33,17 +33,17 @@
 void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2Sim *e2sim) {
     fprintf(stderr, "in e2ap_handle_sctp_data()\n");
     //decode the data into E2AP-PDU
-    E2AP_PDU_t *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
+    auto *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
     ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, pdu);
 
-    fprintf(stderr, "decoding...\n");
+//    fprintf(stderr, "decoding...\n");
 
     asn_transfer_syntax syntax = ATS_ALIGNED_BASIC_PER;
 
-    fprintf(stderr, "full buffer\n%s\n", data.buffer);
+//    fprintf(stderr, "full buffer\n%s\n", data.buffer);
 
-    auto rval =  e2ap_asn1c_decode_pdu(pdu,syntax, data.buffer, data.len);
-    int pr_type_of_message = (int) pdu->present;
+    e2ap_asn1c_decode_pdu(pdu, syntax, data.buffer, data.len);
+    E2AP_PDU_PR pr_type_of_message = pdu->present;
 
 //    LOG_E("length of data %zu\n", rval.consumed);
 //    LOG_E("result %d\n", rval.code);
@@ -75,12 +75,11 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
 
         case ProcedureCode_id_Reset: // RESET = 7
             switch (pr_type_of_message) {
-                case E2AP_PDU_PR_initiatingMessage: LOG_I("[E2AP] Received RESET-REQUEST");
+                case E2AP_PDU_PR_initiatingMessage:
+                    LOG_I("[E2AP] Received RESET-REQUEST");
                     break;
 
                 case E2AP_PDU_PR_successfulOutcome:
-                    break;
-
                 case E2AP_PDU_PR_unsuccessfulOutcome:
                     break;
 
@@ -246,7 +245,7 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
 
   auto buffer_size = MAX_SCTP_BUFFER;
   unsigned char buffer[MAX_SCTP_BUFFER];
-  E2AP_PDU_t* res_pdu = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
+  auto* res_pdu = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
 
   // prepare ran function defination
   std::vector<encoding::ran_func_info> all_funcs;
@@ -255,7 +254,7 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
 
   for (std::pair<long, OCTET_STRING_t*> elem : e2sim->getRegistered_ran_functions()) {
     printf("looping through ran func\n");
-    encoding::ran_func_info next_func;
+    encoding::ran_func_info next_func{};
 
     next_func.ranFunctionId = elem.first;
     next_func.ranFunctionDesc = elem.second;
@@ -277,8 +276,8 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, res_pdu, error_buf, &errlen);
-  printf("error length %zu\n", errlen);
-  printf("error buf %s\n", error_buf);
+//  printf("error length %zu\n", errlen);
+//  printf("error buf %s\n", error_buf);
 
   auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
 
@@ -297,8 +296,7 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
 
 void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
-
-  E2AP_PDU_t* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
+  auto* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
   encoding::generate_e2apv1_setup_response(res_pdu);
 
 
@@ -315,7 +313,7 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
 
   fprintf(stderr, "er encoded is %zd\n", er.encoded);
-    data.len = er.encoded;
+  data.len = er.encoded;
 
   //data.len = e2ap_asn1c_encode_pdu(res_pdu, &buf);
   memcpy(data.buffer, buffer, er.encoded);
@@ -327,11 +325,11 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
     LOG_E("[SCTP] Unable to send E2-SETUP-RESPONSE to peer");
   }
 
-  sleep(5);
+  sleep(3);
 
-  //Sending Subscription Request
+  // Sending Subscription Request
 
-  E2AP_PDU_t* pdu_sub = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
+  auto* pdu_sub = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
 
   encoding::generate_e2apv1_subscription_request(pdu_sub);
 
@@ -354,8 +352,6 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
   } else {
     LOG_E("[SCTP] Unable to send E2-SUBSCRIPTION-REQUEST to peer");
   }
-
-
 }
 
 /*
