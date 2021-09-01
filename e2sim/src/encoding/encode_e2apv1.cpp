@@ -185,7 +185,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
 //  gnb_bstring->buf[3] = 0x88;
 
 
-  uint8_t *buf2 = (uint8_t *)"747";
+  uint8_t *buf2 = (uint8_t *)"111";
   OCTET_STRING_t *plmn = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
   plmn->buf = (uint8_t*)calloc(1,3);
   memcpy(plmn->buf, buf2, 3);
@@ -818,5 +818,3 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
 
 }
-
-
