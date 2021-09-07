@@ -32,15 +32,24 @@
 #define MAX_SCTP_BUFFER     10000
 #define WORKDIR_ENV         "E2SIM_DIR" //environment variable
 
+#define LOG_LEVEL           1
+
+#define LOG_LEVEL_DEBUG     3
+#define LOG_LEVEL_INFO      2
+#define LOG_LEVEL_ERROR     1
+#define LOG_LEVEL_UNCOND    0
+
+
 char* time_stamp(void);
 
 // #define LOG_I(...) {printf("[%s]", time_stamp()); printf(__VA_ARGS__); printf("\n");}
 // #define LOG_E(...) {printf("[%s]", time_stamp()); printf(__VA_ARGS__); printf("\n");}
 // #define LOG_D(...) {printf("[%s]", time_stamp()); printf(__VA_ARGS__); printf("\n");}
 
-#define LOG_I(...) {printf(__VA_ARGS__); printf("\n");}
-#define LOG_E(...) {printf(__VA_ARGS__); printf("\n");}
-#define LOG_D(...) {printf(__VA_ARGS__); printf("\n");}
+#define LOG_I(...) if(LOG_LEVEL>=LOG_LEVEL_INFO){printf(__VA_ARGS__);printf("\n");}
+#define LOG_E(...) if(LOG_LEVEL>=LOG_LEVEL_ERROR){printf(__VA_ARGS__);printf("\n");}
+#define LOG_D(...) if(LOG_LEVEL>=LOG_LEVEL_DEBUG){printf(__VA_ARGS__);printf("\n");}
+#define LOG_U(...) if(LOG_LEVEL>=LOG_LEVEL_UNCOND){printf(__VA_ARGS__);printf("\n");}
 
 typedef struct SCTP_DATA {
   unsigned char *data;

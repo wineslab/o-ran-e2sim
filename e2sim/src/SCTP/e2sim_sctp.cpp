@@ -75,12 +75,12 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
     addr_len    = sizeof(server6_addr);
   }
   else {
-    perror("inet_pton()");
+    LOG_E("inet_pton()");
     exit(1);
   }
 
   if((server_fd = socket(af, SOCK_STREAM, IPPROTO_SCTP)) == -1) {
-    perror("socket");
+    LOG_E("socket");
     exit(1);
   }
 
@@ -88,7 +88,7 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
   // int sendbuff = 10000;
   // socklen_t optlen = sizeof(sendbuff);
   // if(getsockopt(server_fd, SOL_SOCKET, SO_SNDBUF, &sendbuff, &optlen) == -1) {
-  //   perror("getsockopt send");
+  //   LOG_E("getsockopt send");
   //   exit(1);
   // }
   // else
@@ -96,12 +96,12 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
 
 
   if(bind(server_fd, server_addr, addr_len) == -1) {
-    perror("bind");
+    LOG_E("bind");
     exit(1);
   }
 
   if(listen(server_fd, SERVER_LISTEN_QUEUE_SIZE) != 0) {
-    perror("listen");
+    LOG_E("listen");
     exit(1);
   }
 
@@ -114,7 +114,7 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
 
 int sctp_start_client(const char *server_ip_str, const int server_port, const int client_port)
 {
-  int client_fd, af;
+  int client_fd;
 
   struct sockaddr* server_addr;
   size_t server_addr_len;
@@ -140,20 +140,20 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
     server_addr_len    = sizeof(server6_addr);
   }
   else {
-    perror("inet_pton() server");
+    LOG_E("inet_pton() server");
     exit(1);
   }
 
   if((client_fd = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP)) == -1)
   {
-     perror("socket");
+     LOG_E("socket");
      exit(1);
   }
 
   // int sendbuff = 10000;
   // socklen_t optlen = sizeof(sendbuff);
   // if(getsockopt(client_fd, SOL_SOCKET, SO_SNDBUF, &sendbuff, &optlen) == -1) {
-  //   perror("getsockopt send");
+  //   LOG_E("getsockopt send");
   //   exit(1);
   // }
   // else
@@ -163,12 +163,12 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
   //Bind before connect
   auto optval = 1;
   if( setsockopt(client_fd, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof optval) != 0 ){
-    perror("setsockopt port");
+    LOG_E("setsockopt port");
     exit(1);
   }
 
   if( setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval) != 0 ){
-    perror("setsockopt addr");
+    LOG_E("setsockopt addr");
     exit(1);
   }
 
@@ -179,14 +179,14 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
 
   LOG_I("[SCTP] Binding client socket with source port %d", client_port);
   if(bind(client_fd,(struct sockaddr*) &client6_addr,sizeof(client6_addr)) == -1) {
-    perror("bind");
+    LOG_E("bind");
     exit(1);
   }
   // end binding ---------------------
 
   LOG_I("[SCTP] Connecting to server at %s:%d ...", server_ip_str, server_port);
   if(connect(client_fd, server_addr, server_addr_len) == -1) {
-    perror("connect");
+    LOG_E("connect");
     exit(1);
   }
   assert(client_fd != 0);
@@ -206,9 +206,9 @@ int sctp_accept_connection(const char *server_ip_str, const int server_fd)
 
   //Blocking call
   client_fd = accept(server_fd, &client_addr, &client_addr_size);
-  fprintf(stderr, "client fd is %d\n", client_fd);
+
   if(client_fd == -1){
-    perror("accept()");
+    LOG_E("accept()");
     close(client_fd);
     exit(1);
   }
@@ -232,13 +232,13 @@ int sctp_accept_connection(const char *server_ip_str, const int server_fd)
 
 int sctp_send_data(int &socket_fd, sctp_buffer_t &data)
 {
-  fprintf(stderr,"in sctp send data func\n");
-  fprintf(stderr,"data.len is %d", data.len);
+  LOG_D("in sctp send data func\n");
+  LOG_D("data.len is %d", data.len);
   int sent_len = send(socket_fd, (void*)(&(data.buffer[0])), data.len, 0);
-  fprintf(stderr,"after getting sent_len\n");
+  LOG_D("after getting sent_len\n");
 
   if(sent_len == -1) {
-    perror("[SCTP] sctp_send_data");
+    LOG_E("[SCTP] sctp_send_data");
     exit(1);
   }
 
@@ -252,7 +252,7 @@ int sctp_send_data_X2AP(int &socket_fd, sctp_buffer_t &data)
                   NULL, 0, (uint32_t) X2AP_PPID, 0, 0, 0, 0);
 
   if(sent_len == -1) {
-    perror("[SCTP] sctp_send_data");
+    LOG_E("[SCTP] sctp_send_data");
     exit(1);
   }
   */
@@ -269,18 +269,18 @@ Outcome of recv()
 int sctp_receive_data(int &socket_fd, sctp_buffer_t &data)
 {
   //clear out the data before receiving
-  fprintf(stderr, "begin recv data \n");
+  LOG_I("begin recv data");
   memset(data.buffer, 0, sizeof(data.buffer));
-  fprintf(stderr, "memset buf\n");
+  LOG_I( "memset buf");
   data.len = 0;
 
   //receive data from the socket
   int recv_len = recv(socket_fd, &(data.buffer), sizeof(data.buffer), 0);
-  fprintf(stderr, "receive data3\n");
+  LOG_D("receive data3\n");
 
   if(recv_len == -1)
   {
-    perror("[SCTP] recv");
+    LOG_E("[SCTP] recv");
     exit(1);
   }
   else if (recv_len == 0)
@@ -288,7 +288,7 @@ int sctp_receive_data(int &socket_fd, sctp_buffer_t &data)
     LOG_I("[SCTP] Connection closed by remote peer");
     if(close(socket_fd) == -1)
     {
-      perror("[SCTP] close");
+      LOG_E("[SCTP] close");
     }
     return -1;
   }

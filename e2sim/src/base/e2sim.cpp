@@ -44,7 +44,7 @@ void E2Sim::register_subscription_callback(long func_id, SubscriptionCallback cb
 }
 
 SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
-  fprintf(stderr, "%%%%we are getting the subscription callback for func id %ld\n", func_id);
+  LOG_D("%%%%we are getting the subscription callback for func id %ld\n", func_id);
   SubscriptionCallback cb;
 
   try {
@@ -56,16 +56,17 @@ SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
 }
 
 void E2Sim::register_sm_callback(long func_id, SmCallback cb) {
-    fprintf(stderr, "%%%%about to register callback for e2sm for func_id %ld\n", func_id);
+    LOG_D("%%%%about to register callback for e2sm for func_id %ld\n", func_id);
     sm_callbacks[func_id] = cb;
 }
 
 SmCallback E2Sim::get_sm_callback(long func_id) {
-    fprintf(stderr, "%%%%we are getting the e2sm callback for func id %ld\n", func_id);
+    LOG_D("%%%%we are getting the e2sm callback for func id %ld\n", func_id);
     SmCallback cb;
     try {
         cb = sm_callbacks.at(func_id);
     } catch (const std::out_of_range &e) {
+        LOG_E("Function ID is not registered");
         throw std::out_of_range("Function ID is not registered");
     }
     return cb;
@@ -76,7 +77,7 @@ void E2Sim::register_e2sm(long func_id, OCTET_STRING_t *ostr) {
   //Error conditions:
   //If we already have an entry for func_id
 
-  printf("%%%%about to register e2sm func desc for %ld\n", func_id);
+  LOG_D("%%%%about to register e2sm func desc for %ld\n", func_id);
 
   ran_functions_registered[func_id] = ostr;
 
@@ -118,7 +119,7 @@ void E2Sim::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_pdu,
 
 int E2Sim::run_loop(int argc, char* argv[]){
 
-  printf("Start E2 Agent (E2 Simulator)\n");
+  LOG_U("Start E2 Agent (E2 Simulator)\n");
 
   ifstream simfile;
   string line;
@@ -139,7 +140,7 @@ int E2Sim::run_loop(int argc, char* argv[]){
 
   options_t ops = read_input_options(argc, argv);
 
-  printf("After reading input options\n");
+  LOG_D("After reading input options\n");
 
   //E2 Agent will automatically restart upon sctp disconnection
   //  int server_fd = sctp_start_server(ops.server_ip, ops.server_port);
@@ -147,15 +148,15 @@ int E2Sim::run_loop(int argc, char* argv[]){
   client_fd = sctp_start_client(ops.server_ip, ops.server_port, ops.client_port);
   E2AP_PDU_t* pdu_setup = (E2AP_PDU_t*)calloc(1,sizeof(E2AP_PDU));
 
-  printf("After starting client\n");
-  printf("client_fd value is %d\n", client_fd);
+  LOG_D("After starting client\n");
+  LOG_D("client_fd value is %d\n", client_fd);
 
   std::vector<encoding::ran_func_info> all_funcs;
 
   //Loop through RAN function definitions that are registered
 
   for (std::pair<long, OCTET_STRING_t*> elem : ran_functions_registered) {
-    printf("looping through ran func\n");
+    LOG_D("looping through ran func\n");
     encoding::ran_func_info next_func{};
 
     next_func.ranFunctionId = elem.first;
@@ -164,19 +165,19 @@ int E2Sim::run_loop(int argc, char* argv[]){
     all_funcs.push_back(next_func);
   }
 
-  printf("about to call setup request encode\n");
+  LOG_D("about to call setup request encode\n");
 
-  printf("creation of gnb_id... ");
+  LOG_D("creation of gnb_id... ");
   uint8_t *gnb_id = (uint8_t *)ops.gnb_id;
   size_t gnb_id_size = 4; // strlen(ops.gnb_id);
-  printf("done\n");
+  LOG_D("done\n");
   generate_e2apv1_setup_request_parameterized(pdu_setup, all_funcs,gnb_id,gnb_id_size);
 
-  printf("After generating e2setup req\n");
+  LOG_D("After generating e2setup req\n");
 
-  xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_setup);
+//  xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_setup);
 
-  printf("After XER Encoding\n");
+  LOG_D("After XER Encoding\n");
 
   auto buffer_size = MAX_SCTP_BUFFER;
   unsigned char buffer[MAX_SCTP_BUFFER];
@@ -187,15 +188,10 @@ int E2Sim::run_loop(int argc, char* argv[]){
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, pdu_setup, error_buf, &errlen);
-//  printf("error length %zu\n", errlen);
-//  printf("error buf %s\n", error_buf);
 
   auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_setup, buffer, buffer_size);
 
   data.len = er.encoded;
-
-//  fprintf(stderr, "er encded is %zd\n", er.encoded);
-
   memcpy(data.buffer, buffer, er.encoded);
 
   if(sctp_send_data(client_fd, data) > 0) {

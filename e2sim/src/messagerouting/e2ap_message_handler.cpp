@@ -31,23 +31,20 @@
 
 
 void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2Sim *e2sim) {
-    fprintf(stderr, "in e2ap_handle_sctp_data()\n");
+    LOG_D("in e2ap_handle_sctp_data()\n");
     //decode the data into E2AP-PDU
     auto *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
     ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, pdu);
 
-//    fprintf(stderr, "decoding...\n");
+    LOG_D("decoding...\n");
 
     asn_transfer_syntax syntax = ATS_ALIGNED_BASIC_PER;
 
-//    fprintf(stderr, "full buffer\n%s\n", data.buffer);
+    LOG_D("full buffer\n%s\n", data.buffer);
 
     e2ap_asn1c_decode_pdu(pdu, syntax, data.buffer, data.len);
     E2AP_PDU_PR pr_type_of_message = pdu->present;
 
-//    LOG_E("length of data %zu\n", rval.consumed);
-//    LOG_E("result %d\n", rval.code);
-//    LOG_E("pr_type_of_message is %d\n",  pr_type_of_message);
 
     e2ap_asn1c_print_pdu(pdu);
 
@@ -94,7 +91,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
                     LOG_I("[E2AP] Received RIC-SUBSCRIPTION-REQUEST");
                     //          e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
                     long func_id = encoding::get_function_id_from_subscription(pdu);
-                    fprintf(stderr, "Function Id of message is %ld\n", func_id);
+                    LOG_D("Function Id of message is %ld\n", func_id);
                     SubscriptionCallback cb;
 
                     bool func_exists = true;
@@ -106,10 +103,10 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
                     }
 
                     if (func_exists) {
-                        fprintf(stderr, "Calling callback function\n");
+                        LOG_D("Calling callback function\n");
                         cb(pdu);
                     } else {
-                        fprintf(stderr, "Error: No RAN Function with this ID exists\n");
+                        LOG_D("Error: No RAN Function with this ID exists\n");
                     }
                     //	  callback_kpm_subscription_request(pdu, socket_fd);
 
@@ -227,7 +224,7 @@ void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim
     sctp_buffer_t data;
     auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
 
-    fprintf(stderr, "er encoded is %zd\n", er.encoded);
+    LOG_D("er encoded is %zd\n", er.encoded);
     data.len = (int) er.encoded;
 
     memcpy(data.buffer, buffer, er.encoded);
@@ -253,7 +250,7 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
   //Loop through RAN function definitions that are registered
 
   for (std::pair<long, OCTET_STRING_t*> elem : e2sim->getRegistered_ran_functions()) {
-    printf("looping through ran func\n");
+    LOG_D("looping through ran func\n");
     encoding::ran_func_info next_func{};
 
     next_func.ranFunctionId = elem.first;
@@ -262,7 +259,7 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
     all_funcs.push_back(next_func);
   }
 
-  printf("about to call service update encode\n");
+  LOG_D("about to call service update encode\n");
 
   encoding::generate_e2apv1_service_update(res_pdu, all_funcs);
 
@@ -276,13 +273,11 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, res_pdu, error_buf, &errlen);
-//  printf("error length %zu\n", errlen);
-//  printf("error buf %s\n", error_buf);
 
   auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
 
   data.len = (int) er.encoded;
-  fprintf(stderr, "er encoded is %zd\n", er.encoded);
+  LOG_D( "er encoded is %zd\n", er.encoded);
 
   memcpy(data.buffer, buffer, er.encoded);
 
@@ -312,7 +307,7 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
   auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
 
 
-  fprintf(stderr, "er encoded is %zd\n", er.encoded);
+  LOG_D( "er encoded is %zd\n", er.encoded);
   data.len = er.encoded;
 
   //data.len = e2ap_asn1c_encode_pdu(res_pdu, &buf);
@@ -345,7 +340,7 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
   data2.len = (int) er2.encoded;
   memcpy(data2.buffer, buffer2, er2.encoded);
 
-  fprintf(stderr, "er encded is %zd\n", er2.encoded);
+  LOG_D( "er encded is %zd\n", er2.encoded);
 
   if(sctp_send_data(socket_fd, data2) > 0) {
     LOG_I("[SCTP] Sent E2-SUBSCRIPTION-REQUEST");
@@ -364,7 +359,7 @@ void e2ap_handle_RICSubscriptionRequest(E2AP_PDU_t* pdu, int &socket_fd)
 
   generate_e2apv1_subscription_response(pdu_resp, pdu);
 
-  fprintf(stderr, "Subscription Response\n");
+  LOG_D( "Subscription Response\n");
 
   xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_resp);
 
@@ -376,7 +371,7 @@ void e2ap_handle_RICSubscriptionRequest(E2AP_PDU_t* pdu, int &socket_fd)
   auto er2 = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_resp, buffer2, buffer_size2);
   data2.len = er2.encoded;
 
-  fprintf(stderr, "er encded is %d\n", er2.encoded);
+  LOG_D( "er encded is %d\n", er2.encoded);
 
   memcpy(data2.buffer, buffer2, er2.encoded);
 
@@ -403,7 +398,7 @@ void e2ap_handle_RICSubscriptionRequest(E2AP_PDU_t* pdu, int &socket_fd)
   auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_ind, buffer, buffer_size);
   data.len = er.encoded;
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  LOG_D( "er encded is %d\n", er.encoded);
 
   memcpy(data.buffer, buffer, er.encoded);
 
