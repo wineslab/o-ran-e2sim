@@ -39,12 +39,12 @@ std::unordered_map<long , OCTET_STRING_t*> E2Sim::getRegistered_ran_functions() 
 }
 
 void E2Sim::register_subscription_callback(long func_id, SubscriptionCallback cb) {
-  fprintf(stderr,"%%%%about to register callback for subscription for func_id %ld\n", func_id);
+  LOG_I("%%%%about to register callback for subscription for func_id %ld", func_id);
   subscription_callbacks[func_id] = cb;
 }
 
 SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
-  LOG_D("%%%%we are getting the subscription callback for func id %ld\n", func_id);
+  LOG_I("%%%%we are getting the subscription callback for func id %ld", func_id);
   SubscriptionCallback cb;
 
   try {
@@ -56,12 +56,12 @@ SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
 }
 
 void E2Sim::register_sm_callback(long func_id, SmCallback cb) {
-    LOG_D("%%%%about to register callback for e2sm for func_id %ld\n", func_id);
+    LOG_I("%%%%about to register callback for e2sm for func_id %ld", func_id);
     sm_callbacks[func_id] = cb;
 }
 
 SmCallback E2Sim::get_sm_callback(long func_id) {
-    LOG_D("%%%%we are getting the e2sm callback for func id %ld\n", func_id);
+    LOG_I("%%%%we are getting the e2sm callback for func id %ld\n", func_id);
     SmCallback cb;
     try {
         cb = sm_callbacks.at(func_id);
@@ -77,7 +77,7 @@ void E2Sim::register_e2sm(long func_id, OCTET_STRING_t *ostr) {
   //Error conditions:
   //If we already have an entry for func_id
 
-  LOG_D("%%%%about to register e2sm func desc for %ld\n", func_id);
+  LOG_I("%%%%about to register e2sm func desc for %ld\n", func_id);
 
   ran_functions_registered[func_id] = ostr;
 
@@ -101,7 +101,7 @@ void E2Sim::wait_for_sctp_data()
   sctp_buffer_t recv_buf;
   if(sctp_receive_data(client_fd, recv_buf) > 0)
   {
-    LOG_I("[SCTP] Received new data of size %d", recv_buf.len);
+    LOG_D("[SCTP] Received new data of size %d", recv_buf.len);
     e2ap_handle_sctp_data(client_fd, recv_buf, false, this);
   }
 }
@@ -175,7 +175,8 @@ int E2Sim::run_loop(int argc, char* argv[]){
 
   LOG_D("After generating e2setup req\n");
 
-//  xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_setup);
+  if (LOG_LEVEL == LOG_LEVEL_DEBUG)
+      xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_setup);
 
   LOG_D("After XER Encoding\n");
 
@@ -202,14 +203,14 @@ int E2Sim::run_loop(int argc, char* argv[]){
 
   sctp_buffer_t recv_buf;
 
-  LOG_I("[SCTP] Waiting for SCTP data");
+  LOG_D("[SCTP] Waiting for SCTP data");
 
   while(true) //constantly looking for data on SCTP interface
   {
     if(sctp_receive_data(client_fd, recv_buf) <= 0)
       break;
 
-    LOG_I("[SCTP] Received new data of size %d", recv_buf.len);
+    LOG_D("[SCTP] Received new data of size %d", recv_buf.len);
 
     e2ap_handle_sctp_data(client_fd, recv_buf, xmlenc, this);
     if (xmlenc) xmlenc = false;

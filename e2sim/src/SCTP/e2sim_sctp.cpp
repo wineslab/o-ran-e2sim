@@ -269,14 +269,11 @@ Outcome of recv()
 int sctp_receive_data(int &socket_fd, sctp_buffer_t &data)
 {
   //clear out the data before receiving
-  LOG_I("begin recv data");
   memset(data.buffer, 0, sizeof(data.buffer));
-  LOG_I( "memset buf");
   data.len = 0;
 
   //receive data from the socket
   int recv_len = recv(socket_fd, &(data.buffer), sizeof(data.buffer), 0);
-  LOG_D("receive data3\n");
 
   if(recv_len == -1)
   {
@@ -285,7 +282,7 @@ int sctp_receive_data(int &socket_fd, sctp_buffer_t &data)
   }
   else if (recv_len == 0)
   {
-    LOG_I("[SCTP] Connection closed by remote peer");
+    LOG_E("[SCTP] Connection closed by remote peer");
     if(close(socket_fd) == -1)
     {
       LOG_E("[SCTP] close");

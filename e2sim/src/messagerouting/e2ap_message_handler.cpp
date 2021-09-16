@@ -31,20 +31,14 @@
 
 
 void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2Sim *e2sim) {
-    LOG_D("in e2ap_handle_sctp_data()\n");
+    LOG_D("in e2ap_handle_sctp_data()");
     //decode the data into E2AP-PDU
     auto *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
     ASN_STRUCT_RESET(asn_DEF_E2AP_PDU, pdu);
-
-    LOG_D("decoding...\n");
-
     asn_transfer_syntax syntax = ATS_ALIGNED_BASIC_PER;
-
-    LOG_D("full buffer\n%s\n", data.buffer);
 
     e2ap_asn1c_decode_pdu(pdu, syntax, data.buffer, data.len);
     E2AP_PDU_PR pr_type_of_message = pdu->present;
-
 
     e2ap_asn1c_print_pdu(pdu);
 
@@ -106,7 +100,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
                         LOG_D("Calling callback function\n");
                         cb(pdu);
                     } else {
-                        LOG_D("Error: No RAN Function with this ID exists\n");
+                        LOG_E("Error: No RAN Function with this ID exists\n");
                     }
                     //	  callback_kpm_subscription_request(pdu, socket_fd);
 
