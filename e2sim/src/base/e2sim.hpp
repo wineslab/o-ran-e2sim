@@ -40,6 +40,8 @@ private:
   std::unordered_map<long, SubscriptionCallback> subscription_callbacks;
   std::unordered_map<long, SmCallback> sm_callbacks;
 
+  int client_fd {0};
+
   void wait_for_sctp_data();
   
 public:
