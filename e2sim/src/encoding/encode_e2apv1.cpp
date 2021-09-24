@@ -60,7 +60,6 @@ long encoding::get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu) {
 
   RICsubscriptionRequest_t orig_req =
     e2ap_pdu->choice.initiatingMessage->value.choice.RICsubscriptionRequest;
-  
   RICsubscriptionResponse_IEs_t *ricreqid =
     (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
 					   
@@ -851,7 +850,6 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   
   e2ap_pdu->present = pres5;
   e2ap_pdu->choice.initiatingMessage = initmsg;
-
   char *error_buf = (char*)calloc(300, sizeof(char));
   size_t errlen;
 
