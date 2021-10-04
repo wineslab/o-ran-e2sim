@@ -27,23 +27,14 @@
 #include <assert.h>
 
 #include "e2sim_sctp.hpp"
-// #include "e2sim_defs.h"
 
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/sctp.h>
-#include <signal.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cerrno>
 
 int sctp_start_server(const char *server_ip_str, const int server_port)
 {
   if(server_port < 1 || server_port > 65535) {
       LOG_E("Invalid port number (%d). Valid values are between 1 and 65535.\n", server_port);
-      exit(1);
+      exit(EXIT_FAILURE);
   }
 
   int server_fd, af;
@@ -76,12 +67,12 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
   }
   else {
     LOG_E("inet_pton()");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   if((server_fd = socket(af, SOCK_STREAM, IPPROTO_SCTP)) == -1) {
     LOG_E("socket");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   //set send_buffer
@@ -89,7 +80,7 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
   // socklen_t optlen = sizeof(sendbuff);
   // if(getsockopt(server_fd, SOL_SOCKET, SO_SNDBUF, &sendbuff, &optlen) == -1) {
   //   LOG_E("getsockopt send");
-  //   exit(1);
+  //   exit(EXIT_FAILURE);
   // }
   // else
   //   LOG_D("[SCTP] send buffer size = %d\n", sendbuff);
@@ -97,12 +88,12 @@ int sctp_start_server(const char *server_ip_str, const int server_port)
 
   if(bind(server_fd, server_addr, addr_len) == -1) {
     LOG_E("bind");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   if(listen(server_fd, SERVER_LISTEN_QUEUE_SIZE) != 0) {
     LOG_E("listen");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   assert(server_fd != 0);
@@ -140,14 +131,14 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
     server_addr_len    = sizeof(server6_addr);
   }
   else {
-    LOG_E("inet_pton() server");
-    exit(1);
+    LOG_E("inet_pton() server, error message: %s", strerror(errno));
+    exit(EXIT_FAILURE);
   }
 
   if((client_fd = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP)) == -1)
   {
-     LOG_E("socket");
-     exit(1);
+     LOG_E("Socket creation, error message: %s", strerror(errno));
+     exit(EXIT_FAILURE);
   }
 
   // int sendbuff = 10000;
@@ -162,14 +153,14 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
   //--------------------------------
   //Bind before connect
   auto optval = 1;
-  if( setsockopt(client_fd, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof optval) != 0 ){
-    LOG_E("setsockopt port");
-    exit(1);
+  if(setsockopt(client_fd, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof optval) != 0 ){
+    LOG_E("setsockopt port, error message: %s", strerror(errno));
+    exit(EXIT_FAILURE);
   }
 
-  if( setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval) != 0 ){
-    LOG_E("setsockopt addr");
-    exit(1);
+  if (setsockopt(client_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval) != 0) {
+    LOG_E("setsockopt addr, error message: %s", strerror(errno));
+    exit(EXIT_FAILURE);
   }
 
     struct sockaddr_in6  client6_addr {};
@@ -180,14 +171,14 @@ int sctp_start_client(const char *server_ip_str, const int server_port, const in
   LOG_I("[SCTP] Binding client socket with source port %d", client_port);
   if(bind(client_fd,(struct sockaddr*) &client6_addr,sizeof(client6_addr)) == -1) {
     LOG_E("bind");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   // end binding ---------------------
 
   LOG_I("[SCTP] Connecting to server at %s:%d ...", server_ip_str, server_port);
   if(connect(client_fd, server_addr, server_addr_len) == -1) {
-    LOG_E("connect");
-    exit(1);
+    LOG_E("[SCTP] Connection error: %s", strerror(errno));
+    exit(EXIT_FAILURE);
   }
   assert(client_fd != 0);
 
@@ -210,7 +201,7 @@ int sctp_accept_connection(const char *server_ip_str, const int server_fd)
   if(client_fd == -1){
     LOG_E("accept()");
     close(client_fd);
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   //Retrieve client IP_ADDR
@@ -234,12 +225,12 @@ int sctp_send_data(int &socket_fd, sctp_buffer_t &data)
 {
   LOG_D("in sctp send data func\n");
   LOG_D("data.len is %d", data.len);
-  int sent_len = send(socket_fd, (void*)(&(data.buffer[0])), data.len, 0);
+  int sent_len = send(socket_fd, data.buffer, data.len, 0);
   LOG_D("after getting sent_len\n");
 
   if(sent_len == -1) {
-    LOG_E("[SCTP] sctp_send_data");
-    exit(1);
+    LOG_E("[SCTP] sctp_send_data, error message: %s", strerror(errno));
+    exit(EXIT_FAILURE);
   }
 
   return sent_len;
@@ -268,24 +259,24 @@ Outcome of recv()
 */
 int sctp_receive_data(int &socket_fd, sctp_buffer_t &data)
 {
-  //clear out the data before receiving
-  memset(data.buffer, 0, sizeof(data.buffer));
+  // Clear out the data before receiving
+  memset(data.buffer, 0, MAX_SCTP_BUFFER);
   data.len = 0;
 
-  //receive data from the socket
-  int recv_len = recv(socket_fd, &(data.buffer), sizeof(data.buffer), 0);
+  // Receive data from the socket
+  int recv_len = recv(socket_fd, &data.buffer, sizeof(data.buffer), 0);
 
   if(recv_len == -1)
   {
-    LOG_E("[SCTP] recv");
-    exit(1);
+    LOG_E("[SCTP] recv: %s", strerror(errno));
+    exit(EXIT_FAILURE);
   }
   else if (recv_len == 0)
   {
     LOG_E("[SCTP] Connection closed by remote peer");
     if(close(socket_fd) == -1)
     {
-      LOG_E("[SCTP] close");
+      LOG_E("[SCTP] close, error message: %s", strerror(errno));
     }
     return -1;
   }

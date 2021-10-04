@@ -31,21 +31,8 @@ extern "C" {
 typedef std::function<void(E2AP_PDU_t*)> SubscriptionCallback;
 typedef std::function<void(E2AP_PDU_t*)> SmCallback;
 
-class E2Sim;
 class E2Sim {
-
-private:
-
-  std::unordered_map<long, OCTET_STRING_t*> ran_functions_registered;
-  std::unordered_map<long, SubscriptionCallback> subscription_callbacks;
-  std::unordered_map<long, SmCallback> sm_callbacks;
-
-  int client_fd {0};
-
-  void wait_for_sctp_data();
-  
 public:
-
   std::unordered_map<long, OCTET_STRING_t *> getRegistered_ran_functions();
 
   void generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu, long reqActionIdsAccepted[], long reqActionIdsRejected[], int accept_size, int reject_size, long reqRequestorId, long reqInstanceId);
@@ -63,6 +50,17 @@ public:
   void encode_and_send_sctp_data(E2AP_PDU_t* pdu);
 
   int run_loop(int argc, char* argv[]);
+
+  int run_loop(std::string server_ip, uint16_t server_port, uint16_t local_port, std::string gnb_id, std::string plmn_id);
+
+private:
+
+    std::unordered_map<long, OCTET_STRING_t*> ran_functions_registered;
+    std::unordered_map<long, SubscriptionCallback> subscription_callbacks;
+    std::unordered_map<long, SmCallback> sm_callbacks;
+
+    int client_fd {0};
+    void wait_for_sctp_data();
 
 };
 

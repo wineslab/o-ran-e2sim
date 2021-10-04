@@ -30,7 +30,7 @@
 #include <ProtocolIE-Field.h>
 
 
-void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2Sim *e2sim) {
+void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
     LOG_D("in e2ap_handle_sctp_data()");
     //decode the data into E2AP-PDU
     auto *pdu = (E2AP_PDU_t *) calloc(1, sizeof(E2AP_PDU));
@@ -46,7 +46,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
 
     switch (procedureCode) {
 
-        case ProcedureCode_id_E2setup:
+        case ProcedureCode_id_E2setup: // Procedure code: 1
             switch (pr_type_of_message) {
                 case E2AP_PDU_PR_initiatingMessage:
                     e2ap_handle_E2SetupRequest(pdu, socket_fd);
@@ -64,7 +64,25 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
             }
             break;
 
-        case ProcedureCode_id_Reset: // RESET = 7
+        case ProcedureCode_id_ErrorIndication: // Procedure code: 2
+            switch (pr_type_of_message) {
+                case E2AP_PDU_PR_initiatingMessage:
+                    e2ap_handle_E2SetupRequest(pdu, socket_fd);
+                    LOG_I("[E2AP] Received ERROR-INDICATION");
+                    break;
+
+                case E2AP_PDU_PR_successfulOutcome: LOG_I("[E2AP] Received ERROR-INDICATION SUCCESS");
+                    break;
+
+                case E2AP_PDU_PR_unsuccessfulOutcome: LOG_I("[E2AP] Received ERROR-INDICATION FAILURE");
+                    break;
+
+                default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU", pr_type_of_message);
+                    break;
+            }
+            break;
+
+        case ProcedureCode_id_Reset: // RESET = 3
             switch (pr_type_of_message) {
                 case E2AP_PDU_PR_initiatingMessage:
                     LOG_I("[E2AP] Received RESET-REQUEST");
@@ -79,7 +97,75 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
             }
             break;
 
-        case ProcedureCode_id_RICsubscription: // RIC SUBSCRIPTION = 201
+        case ProcedureCode_id_RICcontrol: // Procedure code = 4
+            switch (pr_type_of_message) {
+                case E2AP_PDU_PR_initiatingMessage: {
+                    LOG_I("[E2AP] Received RIC-CONTROL-REQUEST");
+                    e2ap_handle_RICControlRequest(pdu, socket_fd, e2sim);
+                    break;
+                }
+                case E2AP_PDU_PR_successfulOutcome: LOG_I("[E2SM] Received RIC-CONTROL-RESPONSE");
+                    break;
+
+                case E2AP_PDU_PR_unsuccessfulOutcome: LOG_I("[E2SM] Received RIC-CONTROL-FAILURE");
+                    break;
+
+                default: LOG_E("[E2SM] Invalid message index=%d in PDU %ld", pr_type_of_message,
+                               ProcedureCode_id_RICcontrol);
+                    break;
+            }
+            break;
+
+        case ProcedureCode_id_RICindication: // 5
+            switch (pr_type_of_message) {
+                case E2AP_PDU_PR_initiatingMessage: //initiatingMessage
+                    LOG_I("[E2AP] Received RIC-INDICATION-REQUEST");
+                    // e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
+                    break;
+                case E2AP_PDU_PR_successfulOutcome: LOG_I("[E2AP] Received RIC-INDICATION-RESPONSE");
+                    break;
+
+                case E2AP_PDU_PR_unsuccessfulOutcome: LOG_I("[E2AP] Received RIC-INDICATION-FAILURE");
+                    break;
+
+                default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %ld", pr_type_of_message,
+                               ProcedureCode_id_RICindication);
+                    break;
+            }
+            break;
+
+        case ProcedureCode_id_RICserviceQuery: // 6
+            switch (pr_type_of_message) {
+                case E2AP_PDU_PR_initiatingMessage: LOG_I("[E2AP] Received RIC-Service-Query")
+                    e2ap_handle_E2SeviceRequest(pdu, socket_fd, e2sim);
+                    break;
+                    break;
+                case E2AP_PDU_PR_NOTHING:
+                    break;
+                case E2AP_PDU_PR_successfulOutcome:
+                    break;
+                case E2AP_PDU_PR_unsuccessfulOutcome:
+                    break;
+                default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", pr_type_of_message,
+                               (int) ProcedureCode_id_RICserviceQuery);
+            }
+            break;
+
+        case ProcedureCode_id_RICserviceUpdate: // 7
+            switch (pr_type_of_message) {
+                case E2AP_PDU_PR_successfulOutcome: LOG_I("[E2AP] Received RIC-SERVICE-UPDATE-SUCCESS")
+                    break;
+
+                case E2AP_PDU_PR_unsuccessfulOutcome: LOG_I("[E2AP] Received RIC-SERVICE-UPDATE-FAILURE")
+                    break;
+
+                default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %ld", pr_type_of_message,
+                               ProcedureCode_id_RICserviceUpdate);
+                    break;
+            }
+            break;
+
+        case ProcedureCode_id_RICsubscription: // RIC SUBSCRIPTION = 8
             switch (pr_type_of_message) {
                 case E2AP_PDU_PR_initiatingMessage: { //initiatingMessage
                     LOG_I("[E2AP] Received RIC-SUBSCRIPTION-REQUEST");
@@ -117,66 +203,19 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
                     break;
             }
             break;
-
-        case ProcedureCode_id_RICindication: // 205
+        case ProcedureCode_id_RICsubscriptionDelete: // Procedure code: 9
             switch (pr_type_of_message) {
-                case E2AP_PDU_PR_initiatingMessage: //initiatingMessage
-                LOG_I("[E2AP] Received RIC-INDICATION-REQUEST");
-                    // e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
-                    break;
-                case E2AP_PDU_PR_successfulOutcome: LOG_I("[E2AP] Received RIC-INDICATION-RESPONSE");
+                case E2AP_PDU_PR_initiatingMessage:
+                    LOG_I("[E2AP] Received RIC-SUBSCRIPTION-DELETE");
                     break;
 
-                case E2AP_PDU_PR_unsuccessfulOutcome: LOG_I("[E2AP] Received RIC-INDICATION-FAILURE");
+                case E2AP_PDU_PR_successfulOutcome: LOG_I("[E2AP] Received SUBSCRIPTION-DELETE SUCCESS");
                     break;
 
-                default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %ld", pr_type_of_message,
-                               ProcedureCode_id_RICindication);
-                    break;
-            }
-            break;
-
-        case ProcedureCode_id_RICserviceQuery:
-            switch (pr_type_of_message) {
-                case E2AP_PDU_PR_initiatingMessage: LOG_I("[E2AP] Received RIC-Service-Query")
-                    e2ap_handle_E2SeviceRequest(pdu, socket_fd, e2sim);
+                case E2AP_PDU_PR_unsuccessfulOutcome: LOG_I("[E2AP] Received SUBSCRIPTION-DELETE FAILURE");
                     break;
 
-                default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", pr_type_of_message,
-                               (int) ProcedureCode_id_RICserviceQuery);
-                    break;
-            }
-            break;
-
-        case ProcedureCode_id_RICserviceUpdate:
-            switch (pr_type_of_message) {
-                case E2AP_PDU_PR_successfulOutcome: LOG_I("[E2AP] Received RIC-SERVICE-UPDATE-SUCCESS")
-                    break;
-
-                case E2AP_PDU_PR_unsuccessfulOutcome: LOG_I("[E2AP] Received RIC-SERVICE-UPDATE-FAILURE")
-                    break;
-
-                default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %ld", pr_type_of_message,
-                               ProcedureCode_id_RICserviceUpdate);
-                    break;
-            }
-            break;
-
-        case ProcedureCode_id_RICcontrol: // Procedure code = 4
-            switch (pr_type_of_message) {
-                case E2AP_PDU_PR_initiatingMessage: {
-                    LOG_I("[E2AP] Received RIC-CONTROL-REQUEST");
-                    e2ap_handle_RICControlRequest(pdu, socket_fd, e2sim);
-                    break;
-                }
-                case E2AP_PDU_PR_successfulOutcome: LOG_I("[E2SM] Received RIC-CONTROL-RESPONSE");
-                    break;
-
-                case E2AP_PDU_PR_unsuccessfulOutcome: LOG_I("[E2SM] Received RIC-CONTROL-FAILURE");
-                    break;
-
-                default: LOG_E("[E2SM] Invalid message index=%d in PDU %ld", pr_type_of_message,
-                               ProcedureCode_id_RICcontrol);
+                default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU", pr_type_of_message);
                     break;
             }
             break;

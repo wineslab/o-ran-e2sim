@@ -6,6 +6,12 @@ set ( major_version "1" )
 set ( minor_version "0" )
 set ( patch_level "0" )
 
+if(NOT ${LOG_LEVEL})
+	set(LOG_LEVEL 3)
+endif()
+
+message(STATUS "LOG_LEVEL: ${LOG_LEVEL}")
+
 set( install_root "${CMAKE_INSTALL_PREFIX}" )
 set( install_inc "include/e2sim" )
 
@@ -63,6 +69,7 @@ endif()
 
 # bleeding cmake names are short novels; and when lines cannot be split they're a pain
 set ( srcd "${CMAKE_CURRENT_SOURCE_DIR}" )
+
 
 # this gets us round a chicken/egg problem. include files don't exist until make is run
 # but Cmake insists on having these exist when we add them to include directories to

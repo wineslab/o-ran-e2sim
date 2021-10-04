@@ -22,6 +22,7 @@
 #define ENCODE_E2APV1_HPP
 
 #include <vector>
+#include <e2sim.hpp>
 
 
 extern "C" {
@@ -42,8 +43,8 @@ namespace encoding {
   long get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu);
   
   void buildSubsReq(E2AP_PDU_t *pdu);
-  
-  void generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *setup_req_pdu, std::vector<ran_func_info> all_funcs, uint8_t* gnb_id,size_t gnb_id_size);
+
+  void generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *setup_req_pdu, std::vector<ran_func_info> all_funcs, uint8_t *gnb_id, uint8_t *plmn_id);
   
   void generate_e2apv1_setup_response(E2AP_PDU_t *setup_resp_pdu);
   

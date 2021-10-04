@@ -20,11 +20,12 @@
 #
 add_library( def_objects OBJECT e2sim_defs.cpp)
 
+#configure_file(e2sim_defs.h e2sim_defs.h)
+
 target_include_directories (def_objects PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   PRIVATE src)
-
 
 if( DEV_PKG )
   install( FILES
