@@ -1,0 +1,29 @@
+<E2AP-PDU>
+    <initiatingMessage>
+        <procedureCode>9</procedureCode>
+        <criticality><ignore/></criticality>
+        <value>
+            <RICsubscriptionDeleteRequest>
+                <protocolIEs>
+                    <RICsubscriptionDeleteRequest-IEs>
+                        <id>29</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICrequestID>
+                                <ricRequestorID>123</ricRequestorID>
+                                <ricInstanceID>34</ricInstanceID>
+                            </RICrequestID>
+                        </value>
+                    </RICsubscriptionDeleteRequest-IEs>
+                    <RICsubscriptionDeleteRequest-IEs>
+                        <id>5</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RANfunctionID>1</RANfunctionID>
+                        </value>
+                    </RICsubscriptionDeleteRequest-IEs>
+                </protocolIEs>
+            </RICsubscriptionDeleteRequest>
+        </value>
+    </initiatingMessage>
+</E2AP-PDU>

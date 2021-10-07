@@ -1,0 +1,55 @@
+<E2AP-PDU>
+    <initiatingMessage>
+        <procedureCode>8</procedureCode>
+        <criticality><ignore/></criticality>
+        <value>
+            <RICsubscriptionRequest>
+                <protocolIEs>
+                    <RICsubscriptionRequest-IEs>
+                        <id>29</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICrequestID>
+                                <ricRequestorID>123</ricRequestorID>
+                                <ricInstanceID>34</ricInstanceID>
+                            </RICrequestID>
+                        </value>
+                    </RICsubscriptionRequest-IEs>
+                    <RICsubscriptionRequest-IEs>
+                        <id>5</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RANfunctionID>1</RANfunctionID>
+                        </value>
+                    </RICsubscriptionRequest-IEs>
+                    <RICsubscriptionRequest-IEs>
+                        <id>30</id>
+                        <criticality><reject/></criticality>
+                        <value>
+                            <RICsubscriptionDetails>
+                                <ricEventTriggerDefinition>31 32 33 34</ricEventTriggerDefinition>
+                                <ricAction-ToBeSetup-List>
+                                    <ProtocolIE-SingleContainer>
+                                        <id>19</id>
+                                        <criticality><ignore/></criticality>
+                                        <value>
+                                            <RICaction-ToBeSetup-Item>
+                                                <ricActionID>1</ricActionID>
+                                                <ricActionType><report/></ricActionType>
+                                                <ricActionDefinition>35 36 37 38</ricActionDefinition>
+                                                <ricSubsequentAction>
+                                                    <ricSubsequentActionType><continue/></ricSubsequentActionType>
+                                                    <ricTimeToWait><w10ms/></ricTimeToWait>
+                                                </ricSubsequentAction>
+                                            </RICaction-ToBeSetup-Item>
+                                        </value>
+                                    </ProtocolIE-SingleContainer>
+                                </ricAction-ToBeSetup-List>
+                            </RICsubscriptionDetails>
+                        </value>
+                    </RICsubscriptionRequest-IEs>
+                </protocolIEs>
+            </RICsubscriptionRequest>
+        </value>
+    </initiatingMessage>
+</E2AP-PDU>
