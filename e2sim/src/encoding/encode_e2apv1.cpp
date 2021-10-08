@@ -748,11 +748,13 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
     e2ap_pdu->present = E2AP_PDU_PR_initiatingMessage;
     e2ap_pdu->choice.initiatingMessage = initmsg;
 
-    char *error_buf = (char *) calloc(300, sizeof(char));
-    size_t errlen;
+    size_t errlen = 10000;
+    auto errbuff = (char *) calloc(errlen, sizeof(char));
 
-    asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
-    if (LOG_LEVEL == LOG_LEVEL_DEBUG)
+    int ret = asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, errbuff, &errlen);
+    if (ret < 0) {
+        LOG_E("%s", errbuff);
+    } else if (LOG_LEVEL == LOG_LEVEL_DEBUG)
         xer_fprint(stderr, &asn_DEF_E2AP_PDU, e2ap_pdu);
-
+    free(errbuff);
 }

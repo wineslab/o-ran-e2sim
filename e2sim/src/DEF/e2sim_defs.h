@@ -34,7 +34,7 @@
 
 //#define LOG_LEVEL           strtol("@LOG_LEVEL@", NULL ,10)
 
-#define LOG_LEVEL          1
+#define LOG_LEVEL          3
 
 #define LOG_LEVEL_DEBUG     3
 #define LOG_LEVEL_INFO      2
@@ -44,10 +44,10 @@
 
 char* time_stamp(void);
 
-#define LOG_I(...) if(LOG_LEVEL>=LOG_LEVEL_INFO){printf("[%s] ", "INFO ");printf(__VA_ARGS__);printf("\n");}
-#define LOG_E(...) if(LOG_LEVEL>=LOG_LEVEL_ERROR){printf("[%s] ", "ERROR");printf(__VA_ARGS__);printf("\n");}
-#define LOG_D(...) if(LOG_LEVEL>=LOG_LEVEL_DEBUG){printf("[%s] ", "DEBUG");printf(__VA_ARGS__);printf("\n");}
-#define LOG_U(...) if(LOG_LEVEL>=LOG_LEVEL_UNCOND){printf("[%s] ", "UNCON");printf(__VA_ARGS__);printf("\n");}
+#define LOG_I(...) if(LOG_LEVEL>=LOG_LEVEL_INFO){printf("[%s][%s] ", time_stamp(), "INFO ");printf(__VA_ARGS__);printf("\n");}
+#define LOG_E(...) if(LOG_LEVEL>=LOG_LEVEL_ERROR){printf("[%s][%s] ", time_stamp(), "ERROR");printf(__VA_ARGS__);printf("\n");}
+#define LOG_D(...) if(LOG_LEVEL>=LOG_LEVEL_DEBUG){printf("[%s][%s] ", time_stamp(), "DEBUG");printf(__VA_ARGS__);printf("\n");}
+#define LOG_U(...) if(LOG_LEVEL>=LOG_LEVEL_UNCOND){printf("[%s][%s] ", time_stamp(), "UNCON");printf(__VA_ARGS__);printf("\n");}
 
 typedef struct SCTP_DATA {
   unsigned char *data;

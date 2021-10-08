@@ -145,7 +145,7 @@ int e2ap_asn1c_encode_pdu(E2AP_PDU_t* pdu, unsigned char **buffer)
 
     if (len < 0) {
         LOG_E("[E2AP ASN] Unable to aper encode");
-        exit(1);
+        exit(EXIT_FAILURE);
     } else {
         LOG_D("[E2AP ASN] Encoded succesfully, encoded size = %d", len);
     }
@@ -162,7 +162,7 @@ struct asn_dec_rval_s e2ap_asn1c_decode_pdu(E2AP_PDU_t *pdu, enum asn_transfer_s
     dec_ret = asn_decode(NULL, syntax, &asn_DEF_E2AP_PDU, (void **) &pdu, buffer, len);
     if (dec_ret.code != RC_OK) {
         LOG_E("[E2AP ASN] Failed to decode pdu");
-        exit(1);
+        exit(EXIT_FAILURE);
     } else {
         LOG_D("[E2AP ASN] Decoded successfully");
         return dec_ret;
