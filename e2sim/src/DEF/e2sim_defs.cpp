@@ -23,7 +23,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-char *time_stamp(void) {
+char *time_stamp() {
     timeval curTime;
     gettimeofday(&curTime, NULL);
     int milli = curTime.tv_usec / 1000;

@@ -42,7 +42,7 @@
 #define LOG_LEVEL_UNCOND    0
 
 
-char* time_stamp(void);
+char* time_stamp();
 
 #define LOG_I(...) if(LOG_LEVEL>=LOG_LEVEL_INFO){printf("[%s][%s] ", time_stamp(), "INFO ");printf(__VA_ARGS__);printf("\n");}
 #define LOG_E(...) if(LOG_LEVEL>=LOG_LEVEL_ERROR){printf("[%s][%s] ", time_stamp(), "ERROR");printf(__VA_ARGS__);printf("\n");}
