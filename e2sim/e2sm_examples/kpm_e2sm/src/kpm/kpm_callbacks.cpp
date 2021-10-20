@@ -245,7 +245,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  
 	  json::json_pointer p5(std::string("/ueMeasReport/ueMeasReportList/") + std::to_string(i) +"/neighbourCellList");
 	  
-	  uint8_t *crnti_buf = (uint8_t*)calloc(1,2);
+	  uint8_t crnti_buf[3] = {0, };
 
 	  if (ueId.find("Pedestrian") != string::npos) {
 	    std::string ind = ueId.substr(11);
@@ -306,14 +306,14 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	    }
 
 
-	    uint8_t *neighbor_cellid_buf = (uint8_t*)calloc(1,5);
+	    uint8_t neighbor_cellid_buf[6] = {0, };
 	    neighbor_cellid_buf[0] = 0x22;
 	    neighbor_cellid_buf[1] = 0x5B;
 	    neighbor_cellid_buf[2] = 0xD6;
 	    neighbor_cellid_buf[3] = nextNbCell;
 	    neighbor_cellid_buf[4] = 0x70;
 	    
-	    char *cid_buf = (char*)calloc(1,24);
+	    char cid_buf[25] = {0, };
 	    get_cell_id(neighbor_cellid_buf,cid_buf);
 	    
 	    
@@ -333,22 +333,22 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  const uint8_t *neighbor_buf = reinterpret_cast<const uint8_t*>(neighbor_str.c_str());
 
 
-	  uint8_t *nrcellid_buf = (uint8_t*)calloc(1,5);
+	  uint8_t nrcellid_buf[6] = {0, };
 	  nrcellid_buf[0] = 0x22;
 	  nrcellid_buf[1] = 0x5B;
 	  nrcellid_buf[2] = 0xD6;
 	  nrcellid_buf[3] = nextCellId;
 	  nrcellid_buf[4] = 0x70;
 
-	  uint8_t *gnbid_buf = (uint8_t*)calloc(1,3);
+	  uint8_t gnbid_buf[4] = {0, };
 	  gnbid_buf[0] = 0x22;
 	  gnbid_buf[1] = 0x5B;
 	  gnbid_buf[2] = 0xD6;
 
-	  uint8_t cuupid_buf[1];
+	  uint8_t cuupid_buf[2] = {0, };
 	  cuupid_buf[0] = 20000;
 
-	  uint8_t duid_buf[1];
+	  uint8_t duid_buf[2] = {0, };
 	  duid_buf[0] = 20000;
 
 	  uint8_t *cuupname_buf = (uint8_t*)"GNBCUUP5";	  
@@ -557,22 +557,22 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  uint8_t *sd_buf = (uint8_t*)"100";
 	  uint8_t *plmnid_buf = (uint8_t*)"747";
 
-	  uint8_t *nrcellid_buf = (uint8_t*)calloc(1,5);
+	  uint8_t nrcellid_buf[6] = {0, };
 	  nrcellid_buf[0] = 0x22;
 	  nrcellid_buf[1] = 0x5B;
 	  nrcellid_buf[2] = 0xD6;
 	  nrcellid_buf[3] = cellid;
 	  nrcellid_buf[4] = 0x70;
 
-	  uint8_t *gnbid_buf = (uint8_t*)calloc(1,3);
+	  uint8_t gnbid_buf[4] = {0, };
 	  gnbid_buf[0] = 0x22;
 	  gnbid_buf[1] = 0x5B;
 	  gnbid_buf[2] = 0xD6;
 
-	  uint8_t cuupid_buf[1];
+	  uint8_t cuupid_buf[2] = {0, };
 	  cuupid_buf[0] = 20000;
 
-	  uint8_t duid_buf[1];
+	  uint8_t duid_buf[2] = {0, };
 	  duid_buf[0] = 20000;
 
 	  uint8_t *cuupname_buf = (uint8_t*)"GNBCUUP5";	  	  

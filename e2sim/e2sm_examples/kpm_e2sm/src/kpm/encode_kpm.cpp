@@ -769,7 +769,7 @@ void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
@@ -830,7 +830,7 @@ void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessag
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
@@ -880,7 +880,7 @@ void encode_kpm_report_rancontainer_cucp(E2SM_KPM_IndicationMessage_t* indicatio
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
@@ -938,7 +938,7 @@ void encode_kpm_report_rancontainer_cuup_parameterized(E2SM_KPM_IndicationMessag
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
@@ -1068,7 +1068,7 @@ void encode_kpm_report_rancontainer_cuup(E2SM_KPM_IndicationMessage_t* indicatio
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
@@ -1215,7 +1215,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
@@ -1358,7 +1358,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
@@ -1617,7 +1617,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
@@ -1787,7 +1787,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
 
-  char *error_buf = (char*)calloc(300, sizeof(char));
+  char error_buf[300] = {0, };
   size_t errlen;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
