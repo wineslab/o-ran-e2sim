@@ -179,7 +179,7 @@ int e2ap_asn1c_encode_pdu(E2AP_PDU_t* pdu, unsigned char **buffer)
     LOG_D("[E2AP ASN] Encoded succesfully, encoded size = %d", len);
   }
 
-  ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_E2AP_PDU, pdu);
+  ASN_STRUCT_FREE(asn_DEF_E2AP_PDU, pdu);
 
   return len;
 }
