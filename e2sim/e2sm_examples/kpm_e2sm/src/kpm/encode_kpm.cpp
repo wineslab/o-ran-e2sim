@@ -183,11 +183,6 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8
   E2SM_KPM_IndicationHeader_Format1_t* ind_header =
     (E2SM_KPM_IndicationHeader_Format1_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_Format1_t));
   
-  OCTET_STRING_t *plmnid = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
-  plmnid->buf = (uint8_t*)calloc(3,1);
-  plmnid->size = 3;
-  memcpy(plmnid->buf, plmnid_buf, plmnid->size);
-  
   //  long fqival = 9;
   //  long qcival = 9;
   
@@ -214,18 +209,6 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8
   */  
   nrcellid->bits_unused = 4;
   
-  BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
-  gnb_bstring->buf = (uint8_t*)calloc(1,4);
-  gnb_bstring->size = 4;
-  memcpy(gnb_bstring->buf, gnbid_buf, 4);
-  /*
-  gnb_bstring->buf[0] = 0xB5;
-  gnb_bstring->buf[1] = 0xC6;
-  gnb_bstring->buf[2] = 0x77;
-  gnb_bstring->buf[3] = 0x88;
-  */
-  
-  gnb_bstring->bits_unused = gnbid_unused;
   
   INTEGER_t *cuup_id = (INTEGER_t*)calloc(1, sizeof(INTEGER_t));
   //  uint8_t buffer[1];
@@ -248,21 +231,44 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8
   cuupname->buf = (uint8_t*)calloc(1,8);
   memcpy(cuupname->buf, cuupname_buf, cuupname->size);
 
+  OCTET_STRING_t *plmnid_id_GlobalKPMnode_ID = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
+  plmnid_id_GlobalKPMnode_ID->size = strlen((char *)plmnid_buf);
+  plmnid_id_GlobalKPMnode_ID->buf = (uint8_t*)calloc(plmnid_id_GlobalKPMnode_ID->size, sizeof(uint8_t));
+  memcpy(plmnid_id_GlobalKPMnode_ID->buf, plmnid_buf, plmnid_id_GlobalKPMnode_ID->size);
+
+  BIT_STRING_t *gnb_bstring_id_GlobalKPMnode_ID = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));
+  gnb_bstring_id_GlobalKPMnode_ID->size = strlen((char *)gnbid_buf);
+  gnb_bstring_id_GlobalKPMnode_ID->buf = (uint8_t*)calloc(gnb_bstring_id_GlobalKPMnode_ID->size, sizeof(uint8_t));
+  memcpy(gnb_bstring_id_GlobalKPMnode_ID->buf, gnbid_buf, gnb_bstring_id_GlobalKPMnode_ID->size);
+  gnb_bstring_id_GlobalKPMnode_ID->bits_unused = gnbid_unused;
 
   ind_header->id_GlobalKPMnode_ID = (GlobalKPMnode_ID*)calloc(1,sizeof(GlobalKPMnode_ID));
   ind_header->id_GlobalKPMnode_ID->present = GlobalKPMnode_ID_PR_gNB;
   ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
-  ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.choice.gnb_ID = *gnb_bstring;
-  ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.plmn_id = *plmnid;
+  ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.gnb_id.choice.gnb_ID = *gnb_bstring_id_GlobalKPMnode_ID;
+  ind_header->id_GlobalKPMnode_ID->choice.gNB.global_gNB_ID.plmn_id = *plmnid_id_GlobalKPMnode_ID;
   ind_header->id_GlobalKPMnode_ID->choice.gNB.gNB_CU_UP_ID = cuup_id;
+  if (plmnid_id_GlobalKPMnode_ID) free(plmnid_id_GlobalKPMnode_ID);
+  if (gnb_bstring_id_GlobalKPMnode_ID) free(gnb_bstring_id_GlobalKPMnode_ID);
 
 
-  
+  OCTET_STRING_t *plmnid_nRCGI = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
+  plmnid_nRCGI->buf = (uint8_t*)calloc(3,1);
+  plmnid_nRCGI->size = 3;
+  memcpy(plmnid_nRCGI->buf, plmnid_buf, plmnid_nRCGI->size);
+
   ind_header->nRCGI = (NRCGI*)calloc(1,sizeof(NRCGI));
-  ind_header->nRCGI->pLMN_Identity = *plmnid;
+  ind_header->nRCGI->pLMN_Identity = *plmnid_nRCGI;
   ind_header->nRCGI->nRCellIdentity = *nrcellid;
+  if (plmnid_nRCGI) free(plmnid_nRCGI);
   if (nrcellid) free(nrcellid);
-  
+
+
+  OCTET_STRING_t *plmnid = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
+  plmnid->buf = (uint8_t*)calloc(3,1);
+  plmnid->size = 3;
+  memcpy(plmnid->buf, plmnid_buf, plmnid->size);
+
   ind_header->pLMN_Identity = plmnid;
   //  memcpy(ind_header->fiveQI, &fqival, 4);
   
@@ -275,11 +281,24 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8
   ind_header->gNB_Name->choice.gNB_CU_UP_Name = *cuupname;
   if (cuupname) free(cuupname);
 
- 
+
+  OCTET_STRING_t *plmnid_global_GNB_ID = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
+  plmnid_global_GNB_ID->buf = (uint8_t*)calloc(3,1);
+  plmnid_global_GNB_ID->size = 3;
+  memcpy(plmnid_global_GNB_ID->buf, plmnid_buf, plmnid_global_GNB_ID->size);
+
+  BIT_STRING_t *gnb_bstring_global_GNB_ID = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
+  gnb_bstring_global_GNB_ID->buf = (uint8_t*)calloc(1,4);
+  gnb_bstring_global_GNB_ID->size = 4;
+  memcpy(gnb_bstring_global_GNB_ID->buf, gnbid_buf, 4);
+  gnb_bstring_global_GNB_ID->bits_unused = gnbid_unused;
+
   ind_header->global_GNB_ID = (GlobalgNB_ID*)calloc(1,sizeof(GlobalgNB_ID));
-  ind_header->global_GNB_ID->plmn_id = *plmnid;
+  ind_header->global_GNB_ID->plmn_id = *plmnid_global_GNB_ID;
   ind_header->global_GNB_ID->gnb_id.present = GNB_ID_Choice_PR_gnb_ID;
-  ind_header->global_GNB_ID->gnb_id.choice.gnb_ID = *gnb_bstring;
+  ind_header->global_GNB_ID->gnb_id.choice.gnb_ID = *gnb_bstring_global_GNB_ID;
+  if (plmnid_global_GNB_ID) free(plmnid_global_GNB_ID);
+  if (gnb_bstring_global_GNB_ID) free(gnb_bstring_global_GNB_ID);
 
 
   //  long msg_type = 2;
