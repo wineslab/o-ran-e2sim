@@ -167,7 +167,7 @@ int E2Sim::run_loop(int argc, char* argv[]){
   sctp_buffer_t data;
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, pdu_setup, error_buf, &errlen);
   printf("error length %d\n", errlen);

@@ -33,17 +33,13 @@ void encode_kpm_function_description(E2SM_KPM_RANfunction_Description_t* ranfunc
   uint8_t *buf = (uint8_t*)"ORAN-E2SM-KPM";
   uint8_t *buf2 = (uint8_t*)"KPM monitor";
   uint8_t *buf3 = (uint8_t*)"OID123";
-
-  OCTET_STRING_t *sname = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sname->buf = (uint8_t*)calloc(1,13);
-  
-  memcpy(sname->buf, buf, 13);
-  sname->size = strlen((char*)buf);
-  ranfunc_desc->ranFunction_Name.ranFunction_ShortName = *sname;
-
   long inst = 1;
 
   ASN_STRUCT_RESET(asn_DEF_E2SM_KPM_RANfunction_Description, ranfunc_desc);
+
+  ranfunc_desc->ranFunction_Name.ranFunction_ShortName.size = strlen((char*)buf);
+  ranfunc_desc->ranFunction_Name.ranFunction_ShortName.buf = (uint8_t*)calloc(strlen((char*)buf), sizeof(uint8_t));
+  memcpy(ranfunc_desc->ranFunction_Name.ranFunction_ShortName.buf, buf, ranfunc_desc->ranFunction_Name.ranFunction_ShortName.size);
 
   //  ranfunc_desc->ranFunction_Name.ranFunction_Description = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
   ranfunc_desc->ranFunction_Name.ranFunction_Description.buf = (uint8_t*)calloc(1,strlen((char*)buf2));
@@ -724,14 +720,18 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco,
 
   printf("enc4\n");  
 
+  long *p_prb_usage_dl = (long*)calloc(1, sizeof(long));
+  long *p_prb_usage_ul = (long*)calloc(1, sizeof(long));
+  *p_prb_usage_dl = (long)prb_usage_dl;
+  *p_prb_usage_ul = (long)prb_usage_ul;
   
   ue_report_item->c_RNTI = *crnti;
-  ue_report_item->dl_PRBUsage = &prb_usage_dl;
+  ue_report_item->dl_PRBUsage = p_prb_usage_dl;
   if (crnti) free(crnti);
 
   printf("enc5\n");
   
-  ue_report_item->ul_PRBUsage = &prb_usage_ul;
+  ue_report_item->ul_PRBUsage = p_prb_usage_ul;
 
   printf("enc6\n");
   
@@ -779,7 +779,7 @@ void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -789,10 +789,10 @@ void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_
 
   asn_codec_ctx_t *opt_cod;
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;
 
   asn_enc_rval_t er =
@@ -841,7 +841,7 @@ void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessag
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -851,10 +851,10 @@ void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessag
 
   asn_codec_ctx_t *opt_cod;
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;
 
   asn_enc_rval_t er =
@@ -892,7 +892,7 @@ void encode_kpm_report_rancontainer_cucp(E2SM_KPM_IndicationMessage_t* indicatio
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -902,10 +902,10 @@ void encode_kpm_report_rancontainer_cucp(E2SM_KPM_IndicationMessage_t* indicatio
 
   asn_codec_ctx_t *opt_cod;
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;
 
   asn_enc_rval_t er =
@@ -951,7 +951,7 @@ void encode_kpm_report_rancontainer_cuup_parameterized(E2SM_KPM_IndicationMessag
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -961,10 +961,10 @@ void encode_kpm_report_rancontainer_cuup_parameterized(E2SM_KPM_IndicationMessag
 
   asn_codec_ctx_t *opt_cod;
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;
 
   //  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);  
@@ -1085,7 +1085,7 @@ void encode_kpm_report_rancontainer_cuup(E2SM_KPM_IndicationMessage_t* indicatio
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -1095,10 +1095,10 @@ void encode_kpm_report_rancontainer_cuup(E2SM_KPM_IndicationMessage_t* indicatio
 
   asn_codec_ctx_t *opt_cod;
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;
 
   asn_enc_rval_t er =
@@ -1117,8 +1117,8 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
 					    long fiveqi,
 					    long dl_prb_usage,
 					    long ul_prb_usage,
-					    uint8_t* sd_buf,
 					    uint8_t* sst_buf,
+					    uint8_t* sd_buf,
 					    uint8_t* plmnid_buf,
 					    uint8_t* nrcellid_buf,
 					    long *dl_prbs,
@@ -1129,9 +1129,15 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
 
   FQIPERSlicesPerPlmnPerCellListItem_t *fqi_item =
     (FQIPERSlicesPerPlmnPerCellListItem_t*)calloc(1,sizeof(FQIPERSlicesPerPlmnPerCellListItem_t));
+
+  long *p_dl_prb_usage = (long*)calloc(1, sizeof(long));
+  long *p_ul_prb_usage = (long*)calloc(1, sizeof(long));
+  *p_dl_prb_usage = (long)dl_prb_usage;
+  *p_ul_prb_usage = (long)ul_prb_usage;
+
   fqi_item->fiveQI = fiveqi;
-  fqi_item->dl_PRBUsage = &dl_prb_usage;
-  fqi_item->ul_PRBUsage = &ul_prb_usage;
+  fqi_item->dl_PRBUsage = p_dl_prb_usage;
+  fqi_item->ul_PRBUsage = p_ul_prb_usage;
 
   uint8_t *buf1 = (uint8_t*)"4";  
 
@@ -1230,7 +1236,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -1239,10 +1245,10 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
   
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;  
 
   asn_enc_rval_t er =
@@ -1369,7 +1375,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -1378,10 +1384,10 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
   
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;  
 
   asn_enc_rval_t er =
@@ -1542,7 +1548,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   asn_codec_ctx_t *opt_cod;  
 
 
-  uint8_t e2smbuffera[8192];
+  uint8_t e2smbuffera[8192] = {0, };
   size_t e2smbuffer_sizea = 8192;
 
 
@@ -1622,7 +1628,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -1631,10 +1637,10 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
   
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;  
 
   asn_enc_rval_t er =
@@ -1706,7 +1712,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   asn_codec_ctx_t *opt_cod;  
 
 
-  uint8_t e2smbuffera[8192];
+  uint8_t e2smbuffera[8192] = {0, };
   size_t e2smbuffer_sizea = 8192;
 
 
@@ -1785,7 +1791,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   if (format) free(format);
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -1794,10 +1800,10 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
   
 
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
 
-  uint8_t e2smbuffer2[8192];
+  uint8_t e2smbuffer2[8192] = {0, };
   size_t e2smbuffer_size2 = 8192;  
 
   asn_enc_rval_t er =

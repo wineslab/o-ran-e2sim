@@ -414,7 +414,7 @@ void encoding::generate_e2apv1_subscription_request(E2AP_PDU *e2ap_pdu) {
   e2ap_pdu->choice.initiatingMessage = initmsg;
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 									  
   asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -527,7 +527,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   e2ap_pdu->choice.successfulOutcome = successoutcome;
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -682,7 +682,7 @@ void encoding::generate_e2apv1_subscription_response(E2AP_PDU *e2ap_pdu, E2AP_PD
   e2ap_pdu->choice.successfulOutcome = successoutcome;
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
   printf("error length %d\n", errlen);
@@ -850,7 +850,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   e2ap_pdu->present = pres5;
   e2ap_pdu->choice.initiatingMessage = initmsg;
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
   printf("error length %d\n", errlen);

@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
     (E2SM_KPM_RANfunction_Description_t*)calloc(1,sizeof(E2SM_KPM_RANfunction_Description_t));
   encode_kpm_function_description(ranfunc_desc);
   
-  uint8_t e2smbuffer[8192];
+  uint8_t e2smbuffer[8192] = {0, };
   size_t e2smbuffer_size = 8192;
   
   asn_enc_rval_t er =
@@ -359,7 +359,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  
 	  encode_kpm_report_rancontainer_cucp_parameterized(ind_msg_cucp_ue, plmnid_buf, nrcellid_buf, crnti_buf, serving_buf, neighbor_buf);
 	  
-	  uint8_t e2sm_message_buf_cucp_ue[8192];
+	  uint8_t e2sm_message_buf_cucp_ue[8192] = {0, };
 	  size_t e2sm_message_buf_size_cucp_ue = 8192;
 	  
 	  asn_codec_ctx_t *opt_cod;
@@ -380,7 +380,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  fprintf(stderr, "Now printing xer outside of function call\n");
 	  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationHeader, ind_header_cucp_ue);	  
 
-	  uint8_t e2sm_header_buf_cucp_ue[8192];
+	  uint8_t e2sm_header_buf_cucp_ue[8192] = {0, };
 	  size_t e2sm_header_buf_size_cucp_ue = 8192;
 	  
 	  asn_enc_rval_t er_header_cucp_ue = asn_encode_to_buffer(opt_cod,
@@ -419,7 +419,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  
 	  encode_kpm_report_rancontainer_cuup_parameterized(ind_msg_cuup_ue, plmnid_buf, nrcellid_buf, crnti_buf, bytes, 0);
 	  
-	  uint8_t e2sm_message_buf_cuup_ue[8192];
+	  uint8_t e2sm_message_buf_cuup_ue[8192] = {0, };
 	  size_t e2sm_message_buf_size_cuup_ue = 8192;
 	  
 	  asn_codec_ctx_t *opt_cod2;
@@ -438,7 +438,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
 	  encode_e2sm_kpm_indication_header(ind_header_cuup_ue, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 
-	  uint8_t e2sm_header_buf_cuup_ue[8192];
+	  uint8_t e2sm_header_buf_cuup_ue[8192] = {0, };
 	  size_t e2sm_header_buf_size_cuup_ue = 8192;
 	  
 	  asn_enc_rval_t er_header_cuup_ue = asn_encode_to_buffer(opt_cod,
@@ -472,7 +472,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  encode_kpm_report_rancontainer_du_parameterized(ind_message_du_ue,
 							  plmnid_buf, nrcellid_buf, crnti_buf, prb_usage, 0);
 	  
-	  uint8_t e2sm_message_buf_du_ue[8192];
+	  uint8_t e2sm_message_buf_du_ue[8192] = {0, };
 	  size_t e2sm_message_buf_size_du_ue = 8192;
 	  
 	  asn_codec_ctx_t *opt_cod3;
@@ -493,7 +493,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
 	  encode_e2sm_kpm_indication_header(ind_header_du_ue, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 
-	  uint8_t e2sm_header_buf_du_ue[8192];
+	  uint8_t e2sm_header_buf_du_ue[8192] = {0, };
 	  size_t e2sm_header_buf_size_du_ue = 8192;
 	  
 	  asn_enc_rval_t er_header_du_ue = asn_encode_to_buffer(opt_cod,
@@ -596,7 +596,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  
 	  encode_kpm_report_style5_parameterized(ind_msg_style5 , cuupname_buf, bytes_dl, bytes_ul, sst_buf, sd_buf, plmnid_buf);
 	  
-	  uint8_t e2sm_message_buf_style5[8192];
+	  uint8_t e2sm_message_buf_style5[8192] = {0, };
 	  size_t e2sm_message_buf_size_style5 = 8192;
 	  
 	  asn_enc_rval_t er_message_style5 = asn_encode_to_buffer(opt_cod,
@@ -615,7 +615,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
 	  encode_e2sm_kpm_indication_header(ind_header_style5, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 
-	  uint8_t e2sm_header_buf_style5[8192];
+	  uint8_t e2sm_header_buf_style5[8192] = {0, };
 	  size_t e2sm_header_buf_size_style5 = 8192;
 	  
 	  asn_enc_rval_t er_header_style5 = asn_encode_to_buffer(opt_cod,
@@ -653,14 +653,16 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	  
 
 	  
-	  long l_dl_prbs = prb_dl;
-	  long l_ul_prbs = prb_ul;
+	  long *l_dl_prbs = (long*)calloc(1, sizeof(long));
+	  long *l_ul_prbs = (long*)calloc(1, sizeof(long));
+	  *l_dl_prbs = (long)prb_dl;
+	  *l_ul_prbs = (long)prb_ul;
 	  
 	  encode_kpm_report_style1_parameterized(ind_message_style1, fiveqi,
 						 prb_dl, prb_ul, sst_buf, sd_buf,
-						 plmnid_buf, nrcellid_buf, &l_dl_prbs, &l_ul_prbs);
+						 plmnid_buf, nrcellid_buf, l_dl_prbs, l_ul_prbs);
 	  
-	  uint8_t e2sm_message_buf_style1[8192];
+	  uint8_t e2sm_message_buf_style1[8192] = {0, };
 	  size_t e2sm_message_buf_size_style1 = 8192;
 	  
 	  asn_enc_rval_t er_message_style1 = asn_encode_to_buffer(opt_cod2,
@@ -682,7 +684,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 	    (E2SM_KPM_IndicationHeader_t*)calloc(1,sizeof(E2SM_KPM_IndicationHeader_t));
 	  encode_e2sm_kpm_indication_header(ind_header_style1, plmnid_buf, sst_buf, sd_buf, fqival, qcival, nrcellid_buf, gnbid_buf, 0, cuupid_buf, duid_buf, cuupname_buf);
 
-	  uint8_t e2sm_header_buf_style1[8192];
+	  uint8_t e2sm_header_buf_style1[8192] = {0, };
 	  size_t e2sm_header_buf_size_style1 = 8192;
 	  
 	  asn_enc_rval_t er_header_style1 = asn_encode_to_buffer(opt_cod,

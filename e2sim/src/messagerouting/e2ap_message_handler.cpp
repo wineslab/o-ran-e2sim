@@ -248,7 +248,7 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
   sctp_buffer_t data;
 
   char error_buf[300] = {0, };
-  size_t errlen;
+  size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, res_pdu, error_buf, &errlen);
   printf("error length %d\n", errlen);
