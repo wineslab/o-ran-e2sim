@@ -60,9 +60,7 @@ long encoding::get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu) {
 
   RICsubscriptionRequest_t orig_req =
     e2ap_pdu->choice.initiatingMessage->value.choice.RICsubscriptionRequest;
-  RICsubscriptionResponse_IEs_t *ricreqid =
-    (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
-					   
+
   int count = orig_req.protocolIEs.list.count;
   int size = orig_req.protocolIEs.list.size;
   
@@ -180,13 +178,17 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   GNB_ID_Choice_PR pres2 = GNB_ID_Choice_PR_gnb_ID;
   gnbchoice->present = pres2;
   gnbchoice->choice.gnb_ID = *gnb_bstring;
+  if (gnb_bstring) free(gnb_bstring);
 
   GlobalgNB_ID_t *gnb = (GlobalgNB_ID_t*)calloc(1, sizeof(GlobalgNB_ID_t));
   gnb->plmn_id = *plmn;
   gnb->gnb_id = *gnbchoice;
+  if (plmn) free(plmn);
+  if (gnbchoice) free(gnbchoice);
 
   GlobalE2node_gNB_ID_t *e2gnb = (GlobalE2node_gNB_ID_t*)calloc(1, sizeof(GlobalE2node_gNB_ID_t));
   e2gnb->global_gNB_ID = *gnb;
+  if (gnb) free(gnb);
 
   GlobalE2node_ID_t *globale2nodeid = (GlobalE2node_ID_t*)calloc(1, sizeof(GlobalE2node_ID_t));
   GlobalE2node_ID_PR pres;
@@ -201,6 +203,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   e2setuprid->criticality = 0;
   e2setuprid->value.choice.GlobalE2node_ID = *globale2nodeid;
   e2setuprid->value.present = pres3;
+  if(globale2nodeid) free(globale2nodeid);
 
 
   auto *ranFlistIEs = (E2setupRequestIEs_t *)calloc(1, sizeof(E2setupRequestIEs_t));
@@ -244,6 +247,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   initmsg->criticality = Criticality_reject;
   initmsg->value.present = pres4;
   initmsg->value.choice.E2setupRequest = *e2setupreq;
+  if (e2setupreq) free(e2setupreq);
 
   E2AP_PDU_PR pres5;
   pres5 = E2AP_PDU_PR_initiatingMessage;
@@ -450,6 +454,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   RICaction_Admitted_List_t* admlist = 
     (RICaction_Admitted_List_t*)calloc(1,sizeof(RICaction_Admitted_List_t));
   ricactionadmitted->value.choice.RICaction_Admitted_List = *admlist;
+  if (admlist) free(admlist);
 
 
   int numAccept = accept_size;
@@ -514,6 +519,7 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   successoutcome->criticality = 0;
   successoutcome->value.present = pres2;
   successoutcome->value.choice.RICsubscriptionResponse = *ricsubresp;
+  if (ricsubresp) free(ricsubresp);
 
   E2AP_PDU_PR pres5 = E2AP_PDU_PR_successfulOutcome;
   
@@ -745,14 +751,6 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   ricind_ies5->value.present = pres3;
   ricind_ies5->value.choice.RICindicationType = 0;
 
-
-  uint8_t *buf2 = (uint8_t *)"reportheader";
-  OCTET_STRING_t *hdr_str = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
-
-  hdr_str->buf = (uint8_t*)calloc(1,header_length);
-  hdr_str->size = header_length;
-  memcpy(hdr_str->buf, ind_header_buf, header_length);
-
   fprintf(stderr, "ind3\n");
 
   ricind_ies6->value.choice.RICindicationHeader.buf = (uint8_t*)calloc(1,header_length);
@@ -844,6 +842,7 @@ void encoding::generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_p
   initmsg->criticality = 1;
   initmsg->value.present = pres4;
   initmsg->value.choice.RICindication = *ricindication;
+  if (ricindication) free(ricindication);
 
   E2AP_PDU_PR pres5;
   pres5 = E2AP_PDU_PR_initiatingMessage;

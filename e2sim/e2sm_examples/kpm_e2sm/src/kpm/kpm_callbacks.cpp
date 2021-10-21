@@ -369,6 +369,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								   ATS_ALIGNED_BASIC_PER,
 								   &asn_DEF_E2SM_KPM_IndicationMessage,
 								   ind_msg_cucp_ue, e2sm_message_buf_cucp_ue, e2sm_message_buf_size_cucp_ue);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_msg_cucp_ue);
 	  
 	  fprintf(stderr, "er encded is %d\n", er_message_cucp_ue.encoded);
 	  fprintf(stderr, "after encoding message\n");
@@ -386,6 +387,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								  ATS_ALIGNED_BASIC_PER,
 								  &asn_DEF_E2SM_KPM_IndicationHeader,
 								  ind_header_cucp_ue, e2sm_header_buf_cucp_ue, e2sm_header_buf_size_cucp_ue);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationHeader, ind_header_cucp_ue);
 
 	  fprintf(stderr, "er encded is %d\n", er_header_cucp_ue.encoded);
 	  fprintf(stderr, "error buf is %s\n", (char*)e2sm_header_buf_cucp_ue);
@@ -427,6 +429,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 							       ATS_ALIGNED_BASIC_PER,
 							       &asn_DEF_E2SM_KPM_IndicationMessage,
 							       ind_msg_cuup_ue, e2sm_message_buf_cuup_ue, e2sm_message_buf_size_cuup_ue);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_msg_cuup_ue);
 	  
 	  fprintf(stderr, "er encded is %d\n", er_message_cuup_ue.encoded);
 	  fprintf(stderr, "after encoding message\n");
@@ -442,6 +445,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								  ATS_ALIGNED_BASIC_PER,
 								  &asn_DEF_E2SM_KPM_IndicationHeader,
 								  ind_header_cuup_ue, e2sm_header_buf_cuup_ue, e2sm_header_buf_size_cuup_ue);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationHeader, ind_header_cuup_ue);
 	  
 	  
 	  E2AP_PDU *pdu_cuup_ue = (E2AP_PDU*)calloc(1,sizeof(E2AP_PDU));	
@@ -480,6 +484,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								 ind_message_du_ue,
 								 e2sm_message_buf_du_ue,
 								 e2sm_message_buf_size_du_ue);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_message_du_ue);
 	  
 	  fprintf(stderr, "er encded is %d\n", er_message_du_ue.encoded);
 	  fprintf(stderr, "after encoding message\n");
@@ -496,6 +501,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								&asn_DEF_E2SM_KPM_IndicationHeader,
 								ind_header_du_ue, e2sm_header_buf_du_ue,
 								e2sm_header_buf_size_du_ue);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationHeader, ind_header_du_ue);
 	  
 	  
 	  E2AP_PDU *pdu_du_ue = (E2AP_PDU*)calloc(1,sizeof(E2AP_PDU));
@@ -597,6 +603,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								  ATS_ALIGNED_BASIC_PER,
 								  &asn_DEF_E2SM_KPM_IndicationMessage,
 								  ind_msg_style5, e2sm_message_buf_style5, e2sm_message_buf_size_style5);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_msg_style5);
 	  
 	  fprintf(stderr, "er encded is %d\n", er_message_style5.encoded);
 	  fprintf(stderr, "after encoding message\n");
@@ -616,6 +623,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								 &asn_DEF_E2SM_KPM_IndicationHeader,
 								 ind_header_style5,
 								 e2sm_header_buf_style5, e2sm_header_buf_size_style5);	  
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationHeader, ind_header_style5);
 	  
 	  
 	  encoding::generate_e2apv1_indication_request_parameterized(pdu_style5, requestorId,
@@ -660,6 +668,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								  &asn_DEF_E2SM_KPM_IndicationMessage,
 								  ind_message_style1,
 								  e2sm_message_buf_style1, e2sm_message_buf_size_style1);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_message_style1);
 	  
 	  fprintf(stderr, "er encded is %d\n", er_message_style1.encoded);
 	  fprintf(stderr, "after encoding message\n");
@@ -681,6 +690,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								 &asn_DEF_E2SM_KPM_IndicationHeader,
 								 ind_header_style1,
 								 e2sm_header_buf_style1, e2sm_header_buf_size_style1);
+	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationHeader, ind_header_style1);
 	  
 	  encoding::generate_e2apv1_indication_request_parameterized(pdu_style1, requestorId,
 								     instanceId, ranFunctionId,

@@ -195,18 +195,6 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8
   //  long fqival = 9;
   //  long qcival = 9;
   
-  OCTET_STRING_t *sst = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sst->size = 6;
-  sst->buf = (uint8_t*)calloc(1,6);
-  memcpy(sst->buf,sst_buf,sst->size);
-  
-  
-  OCTET_STRING_t *sds = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sds->size = 3;
-  sds->buf = (uint8_t*)calloc(1,3);
-  memcpy(sds->buf, sd_buf, sds->size);
-  
-  
   SNSSAI_t *snssai = (SNSSAI_t*)calloc(1, sizeof(SNSSAI_t));
   ASN_STRUCT_RESET(asn_DEF_SNSSAI,snssai);
   snssai->sST.buf = (uint8_t*)calloc(1,1);
@@ -277,6 +265,7 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8
   ind_header->nRCGI = (NRCGI*)calloc(1,sizeof(NRCGI));
   ind_header->nRCGI->pLMN_Identity = *plmnid;
   ind_header->nRCGI->nRCellIdentity = *nrcellid;
+  if (nrcellid) free(nrcellid);
   
   ind_header->pLMN_Identity = plmnid;
   //  memcpy(ind_header->fiveQI, &fqival, 4);
@@ -288,6 +277,7 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8
   ind_header->gNB_Name = (GNB_Name*)calloc(1,sizeof(GNB_Name));
   ind_header->gNB_Name->present = GNB_Name_PR_gNB_CU_UP_Name;
   ind_header->gNB_Name->choice.gNB_CU_UP_Name = *cuupname;
+  if (cuupname) free(cuupname);
 
  
   ind_header->global_GNB_ID = (GlobalgNB_ID*)calloc(1,sizeof(GlobalgNB_ID));
@@ -303,6 +293,7 @@ void encode_e2sm_kpm_indication_header(E2SM_KPM_IndicationHeader_t *ihead, uint8
   
   ihead->present = E2SM_KPM_IndicationHeader_PR_indicationHeader_Format1;
   ihead->choice.indicationHeader_Format1 = *ind_header;
+  if (ind_header) free(ind_header);
   
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationHeader, ihead);
   
@@ -347,10 +338,13 @@ void encode_kpm_ocuup_user_level(RAN_Container_t *ranco,
   NRCGI *nrcgi = (NRCGI*)calloc(1,sizeof(NRCGI));
   nrcgi->pLMN_Identity = *plmnidstr;
   nrcgi->nRCellIdentity = *nrcellid;
+  if (plmnidstr) free(plmnidstr);
+  if (nrcellid) free(nrcellid);
  
   printf("enc3\n");
   
   report_item->nRCGI = *nrcgi;
+  if (nrcgi) free(nrcgi);
 
   CU_UP_Usage_Report_UeResourceReportItem *ue_report_item =
     (CU_UP_Usage_Report_UeResourceReportItem*)calloc(1,sizeof(CU_UP_Usage_Report_UeResourceReportItem));
@@ -467,6 +461,7 @@ void encode_kpm_ocuup_user_level(RAN_Container_t *ranco,
   ue_report_item->c_RNTI = *crnti;
   ue_report_item->pDCPBytesDL = bytesdl;
   ue_report_item->pDCPBytesUL = bytesul;
+  if (crnti) free(crnti);
 
 
   ASN_SEQUENCE_ADD(&report_item->ueResourceReportList.list, ue_report_item);  
@@ -474,6 +469,7 @@ void encode_kpm_ocuup_user_level(RAN_Container_t *ranco,
   ranco->timestamp = *ts;
   ranco->reportContainer.present = RAN_Container__reportContainer_PR_oCU_UP_UE;
   ASN_SEQUENCE_ADD(&ranco->reportContainer.choice.oCU_UP_UE.cellResourceReportList.list, report_item);
+  if (ts) free(ts);
 
   xer_fprint(stderr, &asn_DEF_RAN_Container, ranco);
 
@@ -516,10 +512,13 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
   NRCGI *nrcgi = (NRCGI*)calloc(1,sizeof(NRCGI));
   nrcgi->pLMN_Identity = *plmnidstr;
   nrcgi->nRCellIdentity = *nrcellid;
+  if (plmnidstr) free(plmnidstr);
+  if (nrcellid) free(nrcellid);
  
   printf("enc3\n");
   
   report_item->nRCGI = *nrcgi;
+  if (nrcgi) free(nrcgi);
 
   CU_CP_Usage_Report_UeResourceReportItem *ue_report_item =
     (CU_CP_Usage_Report_UeResourceReportItem*)calloc(1,sizeof(CU_CP_Usage_Report_UeResourceReportItem));
@@ -558,6 +557,7 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
   ue_report_item->c_RNTI = *crnti;
   ue_report_item->serving_Cell_RF_Type = servingstr;
   ue_report_item->neighbor_Cell_RF = neighborstr;
+  if (crnti) free(crnti);
 
 
   ASN_SEQUENCE_ADD(&report_item->ueResourceReportList.list, ue_report_item);  
@@ -565,6 +565,8 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
   ranco->timestamp = *ts;
   ranco->reportContainer.present = RAN_Container__reportContainer_PR_oCU_CP_UE;
   ASN_SEQUENCE_ADD(&ranco->reportContainer.choice.oCU_CP_UE.cellResourceReportList.list, report_item);
+  if (ts->buf) free(ts->buf);
+  if (ts) free(ts);
 
   xer_fprint(stderr, &asn_DEF_RAN_Container, ranco);
   
@@ -607,6 +609,7 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco) {
   printf("enc3\n");
   
   report_item->nRCGI = *nrcgi;
+  if (nrcgi) free(nrcgi);
 
   CU_CP_Usage_Report_UeResourceReportItem *ue_report_item =
     (CU_CP_Usage_Report_UeResourceReportItem*)calloc(1,sizeof(CU_CP_Usage_Report_UeResourceReportItem));
@@ -692,10 +695,13 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco,
   NRCGI *nrcgi = (NRCGI*)calloc(1,sizeof(NRCGI));
   nrcgi->pLMN_Identity = *plmnidstr;
   nrcgi->nRCellIdentity = *nrcellid;
+  if (plmnidstr) free(plmnidstr);
+  if (nrcellid) free(nrcellid);
  
   printf("enc3\n"); 
   
   report_item->nRCGI = *nrcgi;
+  if (nrcgi) free(nrcgi);
 
   printf("enc3.1\n");   
 
@@ -721,6 +727,7 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco,
   
   ue_report_item->c_RNTI = *crnti;
   ue_report_item->dl_PRBUsage = &prb_usage_dl;
+  if (crnti) free(crnti);
 
   printf("enc5\n");
   
@@ -734,6 +741,7 @@ void encode_kpm_odu_user_level(RAN_Container_t *ranco,
   ranco->timestamp = *ts;
   ranco->reportContainer.present = RAN_Container__reportContainer_PR_oDU_UE;
   ASN_SEQUENCE_ADD(&ranco->reportContainer.choice.oDU_UE.cellResourceReportList.list, report_item);
+  if (ts) free(ts);
 
   xer_fprint(stderr, &asn_DEF_RAN_Container, ranco);
 
@@ -768,6 +776,7 @@ void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;
@@ -829,6 +838,7 @@ void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessag
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;
@@ -879,6 +889,7 @@ void encode_kpm_report_rancontainer_cucp(E2SM_KPM_IndicationMessage_t* indicatio
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;
@@ -937,6 +948,7 @@ void encode_kpm_report_rancontainer_cuup_parameterized(E2SM_KPM_IndicationMessag
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;
@@ -1005,10 +1017,13 @@ void encode_kpm_report_rancontainer_cuup(E2SM_KPM_IndicationMessage_t* indicatio
   NRCGI *nrcgi = (NRCGI*)calloc(1,sizeof(NRCGI));
   nrcgi->pLMN_Identity = *plmnidstr;
   nrcgi->nRCellIdentity = *nrcellid;
+  if (plmnidstr) free(plmnidstr);
+  if (nrcellid) free(nrcellid);
  
   printf("enc3\n"); 
   
   report_item->nRCGI = *nrcgi;
+  if (nrcgi) free(nrcgi);
 
   CU_CP_Usage_Report_UeResourceReportItem *ue_report_item =
     (CU_CP_Usage_Report_UeResourceReportItem*)calloc(1,sizeof(CU_CP_Usage_Report_UeResourceReportItem));
@@ -1067,6 +1082,7 @@ void encode_kpm_report_rancontainer_cuup(E2SM_KPM_IndicationMessage_t* indicatio
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;
@@ -1118,20 +1134,11 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   fqi_item->ul_PRBUsage = &ul_prb_usage;
 
   uint8_t *buf1 = (uint8_t*)"4";  
-  OCTET_STRING_t *sst = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sst->size = 6;
-  sst->buf = (uint8_t*)calloc(1,6);
-  memcpy(sst->buf,buf1,sst->size);
 
   //  std::string sd = "SD1";
   //  std::vector<uint8_t> sdvec(sd.begin(), sd.end());
   //  uint8_t *bufz = &sdvec[0];
   uint8_t *bufz = (uint8_t*)"SD1";
-  OCTET_STRING_t *sds = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sds->size = 3;
-  sds->buf = (uint8_t*)calloc(1,3);
-  memcpy(sds->buf, bufz, sds->size);
-
   
   SNSSAI_t *snssai = (SNSSAI_t*)calloc(1, sizeof(SNSSAI_t));
   ASN_STRUCT_RESET(asn_DEF_SNSSAI,snssai);
@@ -1148,6 +1155,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
     (SlicePerPlmnPerCellListItem_t*)calloc(1,sizeof(SlicePerPlmnPerCellListItem_t));
   sliceitem->sliceID = *snssai;
   ASN_SEQUENCE_ADD(&sliceitem->fQIPERSlicesPerPlmnPerCellList.list, fqi_item);
+  if (snssai) free(snssai);
 
   uint8_t *buf2 = (uint8_t*)"747";
   
@@ -1161,6 +1169,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   percellitem1->pLMN_Identity = *plmnid;
   percellitem1->du_PM_5GC = (FGC_DU_PM_Container*)calloc(1,sizeof(FGC_DU_PM_Container));
   ASN_SEQUENCE_ADD(&percellitem1->du_PM_5GC->slicePerPlmnPerCellList.list, sliceitem);
+  if (plmnid) free(plmnid);
 
   OCTET_STRING_t *plmnidstr = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
   plmnidstr->buf = (uint8_t*)calloc(3,1);
@@ -1179,6 +1188,8 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   NRCGI *nrcgi = (NRCGI*)calloc(1,sizeof(NRCGI));
   nrcgi->pLMN_Identity = *plmnidstr;
   nrcgi->nRCellIdentity = *nrcellid;
+  if (plmnidstr) free(plmnidstr);
+  if (nrcellid) free(nrcellid);
     
 
   CellResourceReportListItem_t *listitem1 = (CellResourceReportListItem_t*)calloc(1,sizeof(CellResourceReportListItem_t));
@@ -1186,6 +1197,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   listitem1->dl_TotalofAvailablePRBs = dl_prbs;
   listitem1->ul_TotalofAvailablePRBs = ul_prbs;
   ASN_SEQUENCE_ADD(&listitem1->servedPlmnPerCellList.list, percellitem1);
+  if (nrcgi) free(nrcgi);
   
 
   ODU_PF_Container_t *ducont = (ODU_PF_Container_t*)calloc(1,sizeof(ODU_PF_Container_t));
@@ -1198,6 +1210,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   ASN_STRUCT_RESET(asn_DEF_PF_Container, pfcontainer);
   pfcontainer->present = pres1;
   pfcontainer->choice.oDU = *ducont;
+  if (ducont) free(ducont);
 
   PM_Containers_List_t *containers_list = (PM_Containers_List_t*)calloc(1, sizeof(PM_Containers_List_t));
   ASN_STRUCT_RESET(asn_DEF_PM_Containers_List, containers_list);
@@ -1214,6 +1227,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;
@@ -1259,20 +1273,10 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   fqi_item->ul_PRBUsage = &ul_prb_usage;
 
   uint8_t *buf1 = (uint8_t*)"4";  
-  OCTET_STRING_t *sst = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sst->size = 6;
-  sst->buf = (uint8_t*)calloc(1,6);
-  memcpy(sst->buf,buf1,sst->size);
-
   //  std::string sd = "SD1";
   //  std::vector<uint8_t> sdvec(sd.begin(), sd.end());
   //  uint8_t *bufz = &sdvec[0];
   uint8_t *bufz = (uint8_t*)"SD1";
-  OCTET_STRING_t *sds = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sds->size = 3;
-  sds->buf = (uint8_t*)calloc(1,3);
-  memcpy(sds->buf, bufz, sds->size);
-
   
   SNSSAI_t *snssai = (SNSSAI_t*)calloc(1, sizeof(SNSSAI_t));
   ASN_STRUCT_RESET(asn_DEF_SNSSAI,snssai);
@@ -1289,6 +1293,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
     (SlicePerPlmnPerCellListItem_t*)calloc(1,sizeof(SlicePerPlmnPerCellListItem_t));
   sliceitem->sliceID = *snssai;
   ASN_SEQUENCE_ADD(&sliceitem->fQIPERSlicesPerPlmnPerCellList.list, fqi_item);
+  if (snssai) free(snssai);
 
   uint8_t *buf2 = (uint8_t*)"747";
   
@@ -1320,6 +1325,8 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   NRCGI *nrcgi = (NRCGI*)calloc(1,sizeof(NRCGI));
   nrcgi->pLMN_Identity = *plmnidstr;
   nrcgi->nRCellIdentity = *nrcellid;
+  if (plmnidstr) free(plmnidstr);
+  if (nrcellid) free(nrcellid);
     
   long dl_prbs = (long)100;
   long ul_prbs = (long)120;
@@ -1329,6 +1336,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   listitem1->dl_TotalofAvailablePRBs = &dl_prbs;
   listitem1->ul_TotalofAvailablePRBs = &ul_prbs;
   ASN_SEQUENCE_ADD(&listitem1->servedPlmnPerCellList.list, percellitem1);
+  if (nrcgi) free(nrcgi);
   
 
   ODU_PF_Container_t *ducont = (ODU_PF_Container_t*)calloc(1,sizeof(ODU_PF_Container_t));
@@ -1341,6 +1349,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   ASN_STRUCT_RESET(asn_DEF_PF_Container, pfcontainer);
   pfcontainer->present = pres1;
   pfcontainer->choice.oDU = *ducont;
+  if (ducont) free(ducont);
 
   PM_Containers_List_t *containers_list = (PM_Containers_List_t*)calloc(1, sizeof(PM_Containers_List_t));
   ASN_STRUCT_RESET(asn_DEF_PM_Containers_List, containers_list);
@@ -1357,6 +1366,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;
@@ -1509,18 +1519,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
 
 
   uint8_t *buf1 = (uint8_t*)"4";  
-  OCTET_STRING_t *sst = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sst->size = 6;
-  sst->buf = (uint8_t*)calloc(1,6);
-  memcpy(sst->buf,sst_buf,sst->size);
-
-
   uint8_t *bufz = (uint8_t*)"SD1";
-  OCTET_STRING_t *sds = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sds->size = 3;
-  sds->buf = (uint8_t*)calloc(1,3);
-  memcpy(sds->buf, sd_buf, sds->size);
-
   
   SNSSAI_t *snssai = (SNSSAI_t*)calloc(1, sizeof(SNSSAI_t));
   ASN_STRUCT_RESET(asn_DEF_SNSSAI,snssai);
@@ -1538,6 +1537,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   ASN_STRUCT_RESET(asn_DEF_SliceToReportListItem, slicelistitem);
   slicelistitem->sliceID = *snssai;
   int ret = ASN_SEQUENCE_ADD(&slicelistitem->fQIPERSlicesPerPlmnList.list, fqilistitem);
+  if (snssai) free(snssai);
 
   asn_codec_ctx_t *opt_cod;  
 
@@ -1576,6 +1576,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   ASN_STRUCT_RESET(asn_DEF_PlmnID_List, plmnidlist);
   plmnidlist->pLMN_Identity = *plmnid;
   plmnidlist->cu_UP_PM_5GC = pm_format;
+  if (plmnid) free(plmnid);
 
   CUUPMeasurement_Container_t *meas_cont = (CUUPMeasurement_Container_t*)calloc(1, sizeof(CUUPMeasurement_Container_t));
   ASN_STRUCT_RESET(asn_DEF_CUUPMeasurement_Container, meas_cont);
@@ -1588,6 +1589,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   ASN_STRUCT_RESET(asn_DEF_PF_ContainerListItem, listitem1);
   listitem1->interface_type = 2;
   listitem1->o_CU_UP_PM_Container = *meas_cont;
+  if (meas_cont) free(meas_cont);
 
   OCUUP_PF_Container_t *cuupcont = (OCUUP_PF_Container_t*)calloc(1,sizeof(OCUUP_PF_Container_t));
   ASN_STRUCT_RESET(asn_DEF_OCUUP_PF_Container, cuupcont);
@@ -1600,6 +1602,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   ASN_STRUCT_RESET(asn_DEF_PF_Container, pfcontainer);
   pfcontainer->present = pres1;
   pfcontainer->choice.oCU_UP = *cuupcont;
+  if (cuupcont) free(cuupcont);
 
   PM_Containers_List_t *containers_list = (PM_Containers_List_t*)calloc(1, sizeof(PM_Containers_List_t));
   ASN_STRUCT_RESET(asn_DEF_PM_Containers_List, containers_list);
@@ -1616,6 +1619,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;
@@ -1679,18 +1683,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
 
 
   uint8_t *buf1 = (uint8_t*)"4";  
-  OCTET_STRING_t *sst = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sst->size = 6;
-  sst->buf = (uint8_t*)calloc(1,6);
-  memcpy(sst->buf,buf1,sst->size);
-
-
   uint8_t *bufz = (uint8_t*)"SD1";
-  OCTET_STRING_t *sds = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
-  sds->size = 3;
-  sds->buf = (uint8_t*)calloc(1,3);
-  memcpy(sds->buf, bufz, sds->size);
-
   
   SNSSAI_t *snssai = (SNSSAI_t*)calloc(1, sizeof(SNSSAI_t));
   ASN_STRUCT_RESET(asn_DEF_SNSSAI,snssai);
@@ -1708,6 +1701,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   ASN_STRUCT_RESET(asn_DEF_SliceToReportListItem, slicelistitem);
   slicelistitem->sliceID = *snssai;
   int ret = ASN_SEQUENCE_ADD(&slicelistitem->fQIPERSlicesPerPlmnList.list, fqilistitem);
+  if (snssai) free(snssai);
 
   asn_codec_ctx_t *opt_cod;  
 
@@ -1758,6 +1752,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   ASN_STRUCT_RESET(asn_DEF_PF_ContainerListItem, listitem1);
   listitem1->interface_type = 2;
   listitem1->o_CU_UP_PM_Container = *meas_cont;
+  if (meas_cont) free(meas_cont);
 
   OCUUP_PF_Container_t *cuupcont = (OCUUP_PF_Container_t*)calloc(1,sizeof(OCUUP_PF_Container_t));
   ASN_STRUCT_RESET(asn_DEF_OCUUP_PF_Container, cuupcont);
@@ -1770,6 +1765,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   ASN_STRUCT_RESET(asn_DEF_PF_Container, pfcontainer);
   pfcontainer->present = pres1;
   pfcontainer->choice.oCU_UP = *cuupcont;
+  if (cuupcont) free(cuupcont);
 
   PM_Containers_List_t *containers_list = (PM_Containers_List_t*)calloc(1, sizeof(PM_Containers_List_t));
   ASN_STRUCT_RESET(asn_DEF_PM_Containers_List, containers_list);
@@ -1786,6 +1782,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   indicationmessage->indicationMessage.present = pres;
 
   indicationmessage->indicationMessage.choice.indicationMessage_Format1 = *format;
+  if (format) free(format);
 
   char error_buf[300] = {0, };
   size_t errlen;

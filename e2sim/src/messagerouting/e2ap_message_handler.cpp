@@ -213,6 +213,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
 
       break;
     }
+  ASN_STRUCT_FREE(asn_DEF_E2AP_PDU, pdu);
 }
 
 void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) {

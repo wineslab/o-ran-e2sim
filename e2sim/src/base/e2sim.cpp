@@ -76,6 +76,7 @@ void E2Sim::encode_and_send_sctp_data(E2AP_PDU_t* pdu)
 
   data.len = e2ap_asn1c_encode_pdu(pdu, &buf);
   memcpy(data.buffer, buf, min(data.len, MAX_SCTP_BUFFER));
+  if (buf) free(buf);
 
   sctp_send_data(client_fd, data);
 }
