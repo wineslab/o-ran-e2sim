@@ -6,11 +6,15 @@ set ( major_version "1" )
 set ( minor_version "0" )
 set ( patch_level "0" )
 
-if(NOT ${LOG_LEVEL})
-	set(LOG_LEVEL 3)
-endif()
-
 message(STATUS "LOG_LEVEL: ${LOG_LEVEL}")
+
+if(${LOG_LEVEL})
+	message(STATUS "Gonna use custom log level")
+	add_compile_definitions(LOG_LEVEL_USER=${LOG_LEVEL})
+else()
+	message(STATUS "Gonna set default log level")
+	add_compile_definitions(LOG_LEVEL_USER=3)
+endif()
 
 set( install_root "${CMAKE_INSTALL_PREFIX}" )
 set( install_inc "include/e2sim" )
@@ -178,3 +182,5 @@ IF( EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake" )
 
 	INCLUDE( CPack )
 ENDIF()
+
+unset( LOG_LEVEL CACHE ) # prevent from being a hidden setting if user redoes things

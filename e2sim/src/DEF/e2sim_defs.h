@@ -32,10 +32,12 @@
 #define MAX_SCTP_BUFFER     10000
 #define WORKDIR_ENV         "E2SIM_DIR" //environment variable
 
-//#define LOG_LEVEL           strtol("@LOG_LEVEL@", NULL ,10)
 
-#define LOG_LEVEL          3
-
+#ifndef LOG_LEVEL_USER
+    #define LOG_LEVEL       3
+#else
+    #define LOG_LEVEL       LOG_LEVEL_USER
+#endif
 #define LOG_LEVEL_DEBUG     3
 #define LOG_LEVEL_INFO      2
 #define LOG_LEVEL_ERROR     1

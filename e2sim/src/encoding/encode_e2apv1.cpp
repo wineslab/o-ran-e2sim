@@ -334,8 +334,7 @@ void encoding::generate_e2apv1_setup_response(E2AP_PDU_t *e2ap_pdu) {
 
 void encoding::generate_e2apv1_subscription_request(E2AP_PDU *e2ap_pdu) {
 
-    auto *ricreqid = (RICsubscriptionRequest_IEs_t *) calloc(1,
-                                                                                     sizeof(RICsubscriptionRequest_IEs_t));
+    auto *ricreqid = (RICsubscriptionRequest_IEs_t *) calloc(1,  sizeof(RICsubscriptionRequest_IEs_t));
     ASN_STRUCT_RESET(asn_DEF_RICsubscriptionRequest_IEs, ricreqid);
 
     auto *ricsubrid = (RICsubscriptionRequest_IEs_t *) calloc(1, sizeof(RICsubscriptionRequest_IEs_t));
