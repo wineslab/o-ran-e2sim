@@ -28,7 +28,7 @@ extern "C" {
 
 #include "E2AP-PDU.h"
 #include "OCTET_STRING.h"
-
+#include "PrintableString.h"
 }
 
 namespace encoding {
@@ -37,6 +37,7 @@ namespace encoding {
     long ranFunctionId;
     OCTET_STRING_t *ranFunctionDesc;
     long ranFunctionRev;
+    PrintableString_t *ranFunctionOId;
   };
   
   long get_function_id_from_subscription(E2AP_PDU_t *e2ap_pdu);

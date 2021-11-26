@@ -225,7 +225,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
     itemIes->criticality = Criticality_reject;
     itemIes->value.present = RANfunction_ItemIEs__value_PR_RANfunction_Item;
     itemIes->value.choice.RANfunction_Item.ranFunctionID = nextRanFuncId;
-
+    itemIes->value.choice.RANfunction_Item.ranFunctionOID = nextRanFunc.ranFunctionOId;
     int ranFuncLength = strlen((char*)nextRanFuncDesc);
 
     itemIes->value.choice.RANfunction_Item.ranFunctionDefinition = *nextRanFuncDesc;

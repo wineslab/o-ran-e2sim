@@ -29,6 +29,7 @@
 #include "e2sim_sctp.hpp"
 #include "e2ap_message_handler.hpp"
 #include "encode_e2apv1.hpp"
+#include "RANfunctionOID.h"
 
 using namespace std;
 
@@ -138,6 +139,11 @@ int E2Sim::run_loop(int argc, char* argv[]){
   printf("client_fd value is %d\n", client_fd);
   
   std::vector<encoding::ran_func_info> all_funcs;
+  RANfunctionOID_t *ranFunctionOIDe = (RANfunctionOID_t*)calloc(1,sizeof(RANfunctionOID_t));
+  uint8_t *buf = (uint8_t*)"OID123";
+  ranFunctionOIDe->buf = (uint8_t*)calloc(1,strlen((char*)buf)+1);
+  memcpy(ranFunctionOIDe->buf, buf, strlen((char*)buf)+1);
+  ranFunctionOIDe->size = strlen((char*)buf);
 
   //Loop through RAN function definitions that are registered
 
@@ -148,6 +154,8 @@ int E2Sim::run_loop(int argc, char* argv[]){
     next_func.ranFunctionId = elem.first;
     next_func.ranFunctionDesc = elem.second;
     next_func.ranFunctionRev = (long)2;
+    next_func.ranFunctionOId = ranFunctionOIDe;
+
     all_funcs.push_back(next_func);
   }
     
