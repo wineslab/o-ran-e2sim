@@ -53,6 +53,10 @@ extern "C" {
 #include "RICsubsequentActionType.h"
 #include "RICsubsequentAction.h"  
 #include "RICtimeToWait.h"
+#include "E2nodeComponentGNB-CU-UP-ID.h"
+#include "E2nodeComponentID.h"
+#include "E2nodeComponentConfigUpdate.h"
+#include "E2nodeComponentConfigUpdateGNB.h"
   
 }
 
@@ -235,9 +239,71 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
 
   }
 
+    auto *e2nodeconfigupdatelistIEs = (E2setupRequestIEs_t *)calloc(1, sizeof(E2setupRequestIEs_t));
+  ASN_STRUCT_RESET(asn_DEF_E2setupRequestIEs, e2nodeconfigupdatelistIEs);
+  e2nodeconfigupdatelistIEs->criticality = 0;
+  e2nodeconfigupdatelistIEs->id = ProtocolIE_ID_id_E2nodeComponentConfigUpdate;
+  e2nodeconfigupdatelistIEs->value.present = E2setupRequestIEs__value_PR_E2nodeComponentConfigUpdate_List;
+
+
+  OCTET_STRING_t *ngAPconfigUpdate =  (OCTET_STRING_t *)calloc(1,sizeof(OCTET_STRING_t));
+  ngAPconfigUpdate->buf = (uint8_t*)calloc(1,13);
+  memcpy(ngAPconfigUpdate->buf, (uint8_t *)"gnbngapupdate", 13);
+  ngAPconfigUpdate->size = 13;
+
+  OCTET_STRING_t *xnAPconfigUpdate =  (OCTET_STRING_t *)calloc(1,sizeof(OCTET_STRING_t));
+  xnAPconfigUpdate->buf = (uint8_t*)calloc(1,13);
+  memcpy(xnAPconfigUpdate->buf, (uint8_t *)"gnbxnapupdate", 13);
+  xnAPconfigUpdate->size = 13;
+
+  OCTET_STRING_t *e1APconfigUpdate =  (OCTET_STRING_t *)calloc(1,sizeof(OCTET_STRING_t));
+  e1APconfigUpdate->buf = (uint8_t*)calloc(1,13);
+  memcpy(e1APconfigUpdate->buf, (uint8_t *)"gnbe1apupdate", 13);
+  e1APconfigUpdate->size = 13;
+
+  OCTET_STRING_t *f1APconfigUpdate =  (OCTET_STRING_t *)calloc(1,sizeof(OCTET_STRING_t));
+  f1APconfigUpdate->buf = (uint8_t*)calloc(1,13);
+  memcpy(f1APconfigUpdate->buf, (uint8_t *)"gnbf1apupdate", 13);
+  f1APconfigUpdate->size = 13;
+
+  E2nodeComponentConfigUpdateGNB_t *e2nodecomponentconfigupdategnb = (E2nodeComponentConfigUpdateGNB_t *)calloc(1,sizeof(E2nodeComponentConfigUpdateGNB_t));
+  e2nodecomponentconfigupdategnb->ngAPconfigUpdate = ngAPconfigUpdate;
+  e2nodecomponentconfigupdategnb->xnAPconfigUpdate = xnAPconfigUpdate;
+  e2nodecomponentconfigupdategnb->e1APconfigUpdate = e1APconfigUpdate;
+  e2nodecomponentconfigupdategnb->f1APconfigUpdate = f1APconfigUpdate;
+
+  E2nodeComponentConfigUpdate_t e2nodecomponentconfigupdate = {};
+  e2nodecomponentconfigupdate.present = E2nodeComponentConfigUpdate_PR_gNBconfigUpdate;
+  e2nodecomponentconfigupdate.choice.gNBconfigUpdate = e2nodecomponentconfigupdategnb;
+
+  GNB_CU_UP_ID_t gnbcuupid = {};
+  gnbcuupid.buf = (uint8_t*)calloc(1,4);
+  memcpy(gnbcuupid.buf, (uint8_t *)"1234", 4);
+  gnbcuupid.size = 4;
+
+  E2nodeComponentGNB_CU_UP_ID_t *e2nodecomponentgnbcuupid = (E2nodeComponentGNB_CU_UP_ID_t *)calloc(1,sizeof(E2nodeComponentGNB_CU_UP_ID_t));
+  e2nodecomponentgnbcuupid->gNB_CU_UP_ID = gnbcuupid;
+
+  E2nodeComponentID_t *e2nodecomponentid = (E2nodeComponentID_t*)calloc(1, sizeof(E2nodeComponentID_t));
+
+  e2nodecomponentid->present = E2nodeComponentID_PR_e2nodeComponentTypeGNB_CU_UP;
+  e2nodecomponentid->choice.e2nodeComponentTypeGNB_CU_UP = e2nodecomponentgnbcuupid;
+
+  auto *configupdateitemIes = (E2nodeComponentConfigUpdate_ItemIEs_t *)calloc(1, sizeof(E2nodeComponentConfigUpdate_ItemIEs_t));
+  configupdateitemIes->id = ProtocolIE_ID_id_E2nodeComponentConfigUpdate_Item;
+  configupdateitemIes->criticality = Criticality_reject;
+  configupdateitemIes->value.present = E2nodeComponentConfigUpdate_ItemIEs__value_PR_E2nodeComponentConfigUpdate_Item;
+  configupdateitemIes->value.choice.E2nodeComponentConfigUpdate_Item.e2nodeComponentType = E2nodeComponentType_gNB_CU_UP;
+  configupdateitemIes->value.choice.E2nodeComponentConfigUpdate_Item.e2nodeComponentID = e2nodecomponentid;
+  configupdateitemIes->value.choice.E2nodeComponentConfigUpdate_Item.e2nodeComponentConfigUpdate = e2nodecomponentconfigupdate;
+
+  ASN_SEQUENCE_ADD(&e2nodeconfigupdatelistIEs->value.choice.E2nodeComponentConfigUpdate_List.list, configupdateitemIes);
+
   E2setupRequest_t *e2setupreq = (E2setupRequest_t*)calloc(1, sizeof(E2setupRequest_t));
   ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, e2setuprid);
   ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, ranFlistIEs);
+  ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, e2nodeconfigupdatelistIEs);
+
 
   InitiatingMessage__value_PR pres4;
   pres4 = InitiatingMessage__value_PR_E2setupRequest;
