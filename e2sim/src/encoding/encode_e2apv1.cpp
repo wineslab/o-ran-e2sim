@@ -53,10 +53,10 @@ extern "C" {
 #include "RICsubsequentActionType.h"
 #include "RICsubsequentAction.h"  
 #include "RICtimeToWait.h"
-#include "E2nodeComponentGNB-CU-UP-ID.h"
-#include "E2nodeComponentID.h"
-#include "E2nodeComponentConfigUpdate.h"
-#include "E2nodeComponentConfigUpdateGNB.h"
+// #include "E2nodeComponentGNB-CU-UP-ID.h"
+// #include "E2nodeComponentID.h"
+// #include "E2nodeComponentConfigUpdate.h"
+// #include "E2nodeComponentConfigUpdateGNB.h"
   
 }
 
@@ -238,7 +238,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
     ASN_SEQUENCE_ADD(&ranFlistIEs->value.choice.RANfunctions_List.list, itemIes);
 
   }
-
+/*
     auto *e2nodeconfigupdatelistIEs = (E2setupRequestIEs_t *)calloc(1, sizeof(E2setupRequestIEs_t));
   ASN_STRUCT_RESET(asn_DEF_E2setupRequestIEs, e2nodeconfigupdatelistIEs);
   e2nodeconfigupdatelistIEs->criticality = 0;
@@ -298,11 +298,11 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   configupdateitemIes->value.choice.E2nodeComponentConfigUpdate_Item.e2nodeComponentConfigUpdate = e2nodecomponentconfigupdate;
 
   ASN_SEQUENCE_ADD(&e2nodeconfigupdatelistIEs->value.choice.E2nodeComponentConfigUpdate_List.list, configupdateitemIes);
-
+*/
   E2setupRequest_t *e2setupreq = (E2setupRequest_t*)calloc(1, sizeof(E2setupRequest_t));
   ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, e2setuprid);
   ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, ranFlistIEs);
-  ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, e2nodeconfigupdatelistIEs);
+  //ASN_SEQUENCE_ADD(&e2setupreq->protocolIEs.list, e2nodeconfigupdatelistIEs);
 
 
   InitiatingMessage__value_PR pres4;
