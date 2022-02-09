@@ -3,7 +3,6 @@
 
 log_level=$1
 
-log_level=$1
 
 if [ -n "${log_level}" ]; then
   echo "Setting custom log level"

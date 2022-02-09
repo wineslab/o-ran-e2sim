@@ -20,8 +20,8 @@
 ******************************************************************************/
 #include "e2ap_message_handler.hpp"
 
-//#include <iostream>
-//#include <vector>
+#include <iostream>
+#include <vector>
 
 #include "encode_e2apv1.hpp"
 

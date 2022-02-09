@@ -22,6 +22,7 @@
 
 #include <unordered_map>
 #include <functional>
+#include <string>
 
 extern "C" {
 #include "E2AP-PDU.h"

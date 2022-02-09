@@ -18,16 +18,20 @@ else
 fi
 
 # build
-cd build || (echo "build folder does not exist" && return)
+cd build || (echo "build folder does not exist, the script will create it" && mkdir build && cd build)
 cmake .. -DDEV_PKG=1 -DLOG_LEVEL=${log_level}
 make package
 
 # uninstall old versions
+echo "Going to remove e2sim-dev"
 sudo apt-get purge -y e2sim-dev
-sudo apt-get purge -y e2sim
+# echo "Going to remove e2sim"
+# sudo apt-get purge -y e2sim
 
 # install new ones
-sudo dpkg --install ./e2sim_1.0.0_amd64.deb
+#echo "Going to install e2sim"
+#sudo dpkg --install ./e2sim_1.0.0_amd64.deb
+echo "Going to install e2sim-dev"
 sudo dpkg --install ./e2sim-dev_1.0.0_amd64.deb
 
 cd ..
