@@ -71,28 +71,31 @@ E2SM Callback Functions:
 
 
 # INSTALLATION Instructions (tested on Ubuntu 16.04)
-  1. Install dependencies
-    $ sudo apt-get update
-    $ sudo apt-get install -y
-        build-essential
-        git
-        cmake
-        libsctp-dev
-        lksctp-tools
-        autoconf
-        automake
-        libtool
-        bison
-        flex
-        libboost-all-dev
-    $ sudo apt-get clean
+1. Install dependencies
 
-  2. Build the official e2sim
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ make package
-    $ cmake .. -DDEV_PKG=1
-    $ make package
+```
+apt-get update && apt-get install -y \
+  build-essential \
+  git \
+  cmake \
+  libsctp-dev \
+  lksctp-tools \
+  autoconf \
+  automake \
+  libtool \
+  bison \
+  flex \
+  libboost-all-dev
+```
 
+2. Build the official e2sim
+
+```    
+mkdir build
+cd build
+cmake ..
+make package
+cmake .. -DDEV_PKG=1
+make package
+```
 
