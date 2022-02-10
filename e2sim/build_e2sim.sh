@@ -19,8 +19,18 @@ apt-get remove --purge -y e2sim
 dpkg --install ./e2sim_?.?.?_amd64.deb
 dpkg --install ./e2sim-dev_?.?.?_amd64.deb
 
+# build json
+git submodule init && git submodule update
+cd ../e2sm_examples/kpm_e2sm/nlohmann_json_release
+mkdir build || true
+cd build/
+cmake ..
+make -j ${nproc}
+make install
+ldconfig
+
 # build example
-cd ../e2sm_examples/kpm_e2sm
+cd ../../
 rm -Rf build
 mkdir build
 cd build
