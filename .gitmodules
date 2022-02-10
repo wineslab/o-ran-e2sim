@@ -1,0 +1,4 @@
+[submodule "e2sim/e2sm_examples/kpm_e2sm/nlohmann_json_release"]
+	path = e2sim/e2sm_examples/kpm_e2sm/nlohmann_json_release
+	url = https://github.com/nlohmann/json.git
+	branch = release/3.10.5
