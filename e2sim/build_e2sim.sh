@@ -1,9 +1,7 @@
 #!/bin/bash
 
-PWD=$(pwd)
-
 # build e2sim
-rm -rf build
+rm -Rf build
 mkdir build
 cd build
 cmake ..
@@ -14,18 +12,16 @@ make -j ${nproc} install
 ldconfig
 
 # unistall old versions
-apt-get remove --purge e2sim-dev
-apt-get remove --purge e2sim
+apt-get remove --purge -y e2sim-dev
+apt-get remove --purge -y e2sim
 
 # install new ones
 dpkg --install ./e2sim_?.?.?_amd64.deb
-#dpkg --install ./e2sim_1.0.0_amd64.deb
 dpkg --install ./e2sim-dev_?.?.?_amd64.deb
-#dpkg --install ./e2sim-dev_1.0.0_amd64.deb
 
 # build example
-cd ${PWD}/e2sm_examples/kpm_e2sm
-rm -rf build
+cd ../e2sm_examples/kpm_e2sm
+rm -Rf build
 mkdir build
 cd build
 cmake ..
