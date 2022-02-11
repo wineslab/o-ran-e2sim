@@ -17,6 +17,7 @@
 #                                                                            *
 ******************************************************************************/
 #include "e2ap_asn1c_codec.h"
+#include <errno.h>
 
 
 void e2ap_asn1c_print_pdu(const E2AP_PDU_t* pdu)
@@ -173,6 +174,7 @@ int e2ap_asn1c_encode_pdu(E2AP_PDU_t* pdu, unsigned char **buffer)
 
   if (len < 0)  {
     LOG_E("[E2AP ASN] Unable to aper encode");
+    LOG_E("[E2AP ASN] %s", strerror(errno));
     exit(1);
   }
   else {
