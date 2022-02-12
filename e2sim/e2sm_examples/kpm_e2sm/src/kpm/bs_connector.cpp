@@ -4,9 +4,8 @@ int report_data_nrt_ric = 1;
 
 // handle timer got from RIC Subscription Request
 // timer is in seconds
-void handleTimer(float timer, long ric_req_id) {
+void handleTimer(int timer, long ric_req_id) {
 
-  std::thread thread;
   fprintf(stderr, "Handle timer %f seconds, ricReqId %ld\n", timer, ric_req_id);
 
   // // populate thread arguments
@@ -16,16 +15,14 @@ void handleTimer(float timer, long ric_req_id) {
 
   // start thread
   report_data_nrt_ric = 1;
-  if (thread(periodicDataReport, timer, ric_req_id) != 0) {
-    fprintf(stderr, "Error creating thread\n");
-  }
+  std::thread t1(periodicDataReport, timer, ric_req_id);
 
   fprintf(stderr, "periodicDataReport thread created successfully\n");
 }
 
 
 // function to periodically report data
-void periodicDataReport(float timer, long ric_req_id) {
+void periodicDataReport(int timer, long ric_req_id) {
 
   fprintf(stderr, "timer expired, timer_deref %f\n", timer);
   fprintf(stderr, "ricReqId %ld\n", ric_req_id);
@@ -45,9 +42,10 @@ void periodicDataReport(float timer, long ric_req_id) {
   //   sendMetricsXapp(ric_req_id_deref);
   // }
 
-  sleep(timer);
+  std::chrono::seconds sleep_duration(timer);
+  std::this_thread::sleep_for(sleep_duration);
 
   if (report_data_nrt_ric) {
-    periodicDataReport(timer, ric_req_id;
+    periodicDataReport(timer, ric_req_id);
   }
 }

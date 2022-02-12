@@ -15,7 +15,7 @@
 #==================================================================================
 #
 
-add_executable( kpm_sim kpm_callbacks.cpp encode_kpm.cpp )
+add_executable( kpm_sim kpm_callbacks.cpp encode_kpm.cpp bs_connector.cpp )
 
 add_dependencies( kpm_sim asn1_objects )
 include_directories(.)

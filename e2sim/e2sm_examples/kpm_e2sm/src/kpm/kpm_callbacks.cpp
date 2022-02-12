@@ -746,6 +746,10 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   std::vector<long> actionIdsAccept;
   std::vector<long> actionIdsReject;
 
+  long requestorId;
+  std::string trigger_buf;
+  RICeventTriggerDefinition_t triggerDef;
+
   for (int i=0; i < count; i++) {
     RICsubscriptionRequest_IEs_t *next_ie = ies[i];
     pres = next_ie->value.present;
@@ -757,7 +761,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
       {
 	fprintf(stderr,"in case request id\n");	
 	RICrequestID_t reqId = next_ie->value.choice.RICrequestID;
-	long requestorId = reqId.ricRequestorID;
+	requestorId = reqId.ricRequestorID;
 	long instanceId = reqId.ricInstanceID;
 	fprintf(stderr, "requestorId %d\n", requestorId);
 	fprintf(stderr, "instanceId %d\n", instanceId);
@@ -776,13 +780,11 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	fprintf(stderr,"in case subscription details\n");
 	RICsubscriptionDetails_t subDetails = next_ie->value.choice.RICsubscriptionDetails;
 	fprintf(stderr,"in case subscription details 1\n");	
-	RICeventTriggerDefinition_t triggerDef = subDetails.ricEventTriggerDefinition;
+	triggerDef = subDetails.ricEventTriggerDefinition;
 	fprintf(stderr,"in case subscription details 2\n");	
 	RICactions_ToBeSetup_List_t actionList = subDetails.ricAction_ToBeSetup_List;
 	fprintf(stderr,"in case subscription details 3\n");
 	//We are ignoring the trigger definition
-
-	fprintf(stderr,"received trigger %s\n", triggerDef.buf);
 
 	//We identify the first action whose type is REPORT
 	//That is the only one accepted; all others are rejected
@@ -857,10 +859,10 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   //  loop_thread = std::thread(&run_report_loop);
 
   if (triggerDef.buf) {
-  	float trigger_timer = ((float) stoi(e2apMsgDb.ricEventTrigger) / 1000.0);
-  	fprintf(stderr, "received trigger_timer %f seconds from requestorId %ld\n", trigger_timer, requestorId);
+  	int trigger_timer = ((int) atoi(triggerDef.buf) / 1000.0);
+  	fprintf(stderr, "received trigger_timer %d seconds from requestorId %ld\n", trigger_timer, requestorId);
 
-  	handleTimer(timer, requestorId);
+  	handleTimer(trigger_timer, requestorId);
   }
   else {
   	fprintf(stderr, "no trigger received\n");
