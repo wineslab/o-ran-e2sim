@@ -10,3 +10,6 @@ tools/asn_defs/*.asn1
 
 test/WLG/build/
 test/X2/build/
+
+diff.txt
+
