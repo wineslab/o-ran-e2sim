@@ -595,7 +595,8 @@ void encoding::generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu,
   char error_buf[300] = {0, };
   size_t errlen = 0;
 
-  asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
+  int ret = asn_check_constraints(&asn_DEF_E2AP_PDU, e2ap_pdu, error_buf, &errlen);
+  printf("ret %d\n", ret);
   printf("error length %d\n", errlen);
   printf("error buf %s\n", error_buf);
 

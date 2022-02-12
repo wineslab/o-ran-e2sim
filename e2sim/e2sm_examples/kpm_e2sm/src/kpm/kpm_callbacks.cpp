@@ -780,6 +780,8 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	fprintf(stderr,"in case subscription details 3\n");
 	//We are ignoring the trigger definition
 
+	fprintf(stderr,"received trigger %s\n", triggerDef.buf);
+
 	//We identify the first action whose type is REPORT
 	//That is the only one accepted; all others are rejected
 	
