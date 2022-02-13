@@ -25,6 +25,8 @@ void handleTimer(int* timer, long* ric_req_id) {
 void periodicDataReport(int* timer, long* ric_req_id) {
 
   fprintf(stderr, "timer expired for ric_req_id %ld: %d s\n", ric_req_id[0], timer[0]);
+
+  E2AP_PDU *e2ap_pdu = (E2AP_PDU*)calloc(1,sizeof(E2AP_PDU));
   
   if (DEBUG) {
     // debug
@@ -36,10 +38,16 @@ void periodicDataReport(int* timer, long* ric_req_id) {
     //asprintf(&payload, "%g", timer_deref);
 
     // BuildAndSendRicIndicationReport(payload, strlen(payload), ric_req_id_deref);
+
+    fprintf(stderr, "Encoding RIC Indication Report\n");
+    encoding::generate_e2apv1_indication_report(e2ap_pdu, payload, payload.length(), ric_req_id[0]);
+    fprintf(stderr, "RIC Indication Report successfully encoded\n");
   }
   // else {
   //   sendMetricsXapp(ric_req_id_deref);
   // }
+
+  // TODO: send message and free memory
 
   std::chrono::seconds sleep_duration(timer[0]);
   std::this_thread::sleep_for(sleep_duration);
