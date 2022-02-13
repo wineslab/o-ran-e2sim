@@ -858,15 +858,15 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   //  loop_thread = std::thread(&run_report_loop);
 
   if (triggerDef.buf) {
-	std::string trigger_str((char*) triggerDef.buf);
+		std::string trigger_str((char*) triggerDef.buf);
   	int trigger_timer = ((int) std::stoi(trigger_str) / 1000.0);
   	fprintf(stderr, "received trigger_timer %d seconds from requestorId %ld\n", trigger_timer, requestorId);
 
-	int *report_timer = (int*) calloc(1, sizeof(int));
-	report_timer[0] = trigger_timer;
+		int *report_timer = (int*) calloc(1, sizeof(int));
+		report_timer[0] = trigger_timer;
 
-	long *ric_req_id = (long*) calloc(1, sizeof(long));
-	ric_req_id[0] = requestorId;
+		long *ric_req_id = (long*) calloc(1, sizeof(long));
+		ric_req_id[0] = requestorId;
 
   	handleTimer(report_timer, ric_req_id);
   }
