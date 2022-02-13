@@ -1,4 +1,5 @@
 #include "bs_connector.hpp"
+#include "encode_e2apv1.hpp"
 
 int report_data_nrt_ric = 1;
 
