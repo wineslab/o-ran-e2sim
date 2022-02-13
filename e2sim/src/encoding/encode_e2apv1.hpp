@@ -61,8 +61,8 @@ namespace encoding {
   
   void generate_e2apv1_service_update(E2AP_PDU_t *e2ap_pdu, std::vector<ran_func_info> all_funcs);
 
-  void generate_e2apv1_indication_report(E2AP_PDU *e2ap_pdu, char* payload, int payload_len, uint32_t ric_req_id);
-  uint8_t fill_ric_indication_report(RICindication_t *ricIndicationMsg, char* payload, int payload_len, uint32_t ric_req_id);
+  void generate_e2apv1_indication_report(E2AP_PDU *e2ap_pdu, char* payload, int payload_len, uint32_t ric_req_id, long instanceId, long ranFunctionId, long ricActionId);
+  uint8_t fill_ric_indication_report(RICindication_t *ricIndicationMsg, char* payload, int payload_len, uint32_t ric_req_id, long instanceId, long ranFunctionId, long ricActionId);
 }
 
 #endif
