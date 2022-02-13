@@ -19,7 +19,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
+#include <string>
 
 
 extern "C" {
@@ -747,7 +747,6 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   std::vector<long> actionIdsReject;
 
   long requestorId;
-  std::string trigger_buf;
   RICeventTriggerDefinition_t triggerDef;
 
   for (int i=0; i < count; i++) {
@@ -763,8 +762,8 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	RICrequestID_t reqId = next_ie->value.choice.RICrequestID;
 	requestorId = reqId.ricRequestorID;
 	long instanceId = reqId.ricInstanceID;
-	fprintf(stderr, "requestorId %d\n", requestorId);
-	fprintf(stderr, "instanceId %d\n", instanceId);
+	fprintf(stderr, "requestorId %ld\n", requestorId);
+	fprintf(stderr, "instanceId %ld\n", instanceId);
 	reqRequestorId = requestorId;
 	reqInstanceId = instanceId;
 
@@ -828,8 +827,8 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
   fprintf(stderr, "After Processing Subscription Request\n");
 
-  fprintf(stderr, "requestorId %d\n", reqRequestorId);
-  fprintf(stderr, "instanceId %d\n", reqInstanceId);
+  fprintf(stderr, "requestorId %ld\n", reqRequestorId);
+  fprintf(stderr, "instanceId %ld\n", reqInstanceId);
 
 
   for (int i=0; i < actionIdsAccept.size(); i++) {
@@ -859,10 +858,17 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   //  loop_thread = std::thread(&run_report_loop);
 
   if (triggerDef.buf) {
-  	int trigger_timer = ((int) atoi(triggerDef.buf) / 1000.0);
+	std::string trigger_str((char*) triggerDef.buf);
+  	int trigger_timer = ((int) std::stoi(trigger_str) / 1000.0);
   	fprintf(stderr, "received trigger_timer %d seconds from requestorId %ld\n", trigger_timer, requestorId);
 
-  	handleTimer(trigger_timer, requestorId);
+	int *report_timer = (int*) calloc(1, sizeof(int));
+	report_timer[0] = trigger_timer;
+
+	long *ric_req_id = (long*) calloc(1, sizeof(long));
+	ric_req_id[0] = requestorId;
+
+  	handleTimer(report_timer, ric_req_id);
   }
   else {
   	fprintf(stderr, "no trigger received\n");
