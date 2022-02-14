@@ -868,7 +868,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 		long *ric_req_id = (long*) calloc(1, sizeof(long));
 		ric_req_id[0] = requestorId;
 
-  	handleTimer(report_timer, ric_req_id);
+  	handleTimer(&e2sim, report_timer, ric_req_id);
   }
   else {
   	fprintf(stderr, "no trigger received\n");
