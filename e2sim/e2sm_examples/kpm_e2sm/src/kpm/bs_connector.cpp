@@ -31,8 +31,8 @@ void periodicDataReport(int* timer, long* ric_req_id) {
   
   if (DEBUG) {
     // debug
-    std::string payload = R"(0,1,2,3,4,5\n1,6,7,8,9,10\n2,11,12,13,14,15)";
-    std::cout << "Debug mode, sending " << payload << std::endl;
+    char* payload = "0,1,2,3,4,5\n1,6,7,8,9,10\n2,11,12,13,14,15";
+    fprintf(stderr, "DEBUG mode, sending\n%s\n", payload);
 
     // to send timer as payload
     //char *payload = NULL;
@@ -41,7 +41,7 @@ void periodicDataReport(int* timer, long* ric_req_id) {
     // BuildAndSendRicIndicationReport(payload, strlen(payload), ric_req_id_deref);
 
     fprintf(stderr, "Encoding RIC Indication Report\n");
-    encoding::generate_e2apv1_indication_report(e2ap_pdu, payload, payload.length(), ric_req_id[0]);
+    encoding::generate_e2apv1_indication_report(e2ap_pdu, payload, strlen(payload), ric_req_id[0], 0, 0, 0);
     fprintf(stderr, "RIC Indication Report successfully encoded\n");
   }
   // else {

@@ -801,7 +801,7 @@ void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -820,7 +820,7 @@ void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
 
 
@@ -863,7 +863,7 @@ void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessag
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -882,7 +882,7 @@ void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessag
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
   
 }
@@ -914,7 +914,7 @@ void encode_kpm_report_rancontainer_cucp(E2SM_KPM_IndicationMessage_t* indicatio
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   //  xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -933,7 +933,7 @@ void encode_kpm_report_rancontainer_cucp(E2SM_KPM_IndicationMessage_t* indicatio
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
 
 
@@ -973,7 +973,7 @@ void encode_kpm_report_rancontainer_cuup_parameterized(E2SM_KPM_IndicationMessag
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -994,7 +994,7 @@ void encode_kpm_report_rancontainer_cuup_parameterized(E2SM_KPM_IndicationMessag
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");  
 
 
@@ -1107,7 +1107,7 @@ void encode_kpm_report_rancontainer_cuup(E2SM_KPM_IndicationMessage_t* indicatio
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -1126,7 +1126,7 @@ void encode_kpm_report_rancontainer_cuup(E2SM_KPM_IndicationMessage_t* indicatio
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
 
 
@@ -1258,7 +1258,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -1276,7 +1276,7 @@ void encode_kpm_report_style1_parameterized(E2SM_KPM_IndicationMessage_t* indica
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
 
 
@@ -1397,7 +1397,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -1415,7 +1415,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage) {
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
 
 
@@ -1577,7 +1577,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
 			 ATS_ALIGNED_BASIC_PER,
 			 &asn_DEF_SliceToReportListItem,
 			 slicelistitem, e2smbuffera, e2smbuffer_sizea);
-  fprintf(stderr, "inner er encded is %d\n", era.encoded);
+  fprintf(stderr, "inner er encded is %ld\n", era.encoded);
   fprintf(stderr, "after encoding message\n");      
 
 
@@ -1650,7 +1650,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -1668,7 +1668,7 @@ void encode_kpm_report_style5_parameterized(E2SM_KPM_IndicationMessage_t* indica
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");  
 
 
@@ -1741,7 +1741,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
 			 ATS_ALIGNED_BASIC_PER,
 			 &asn_DEF_SliceToReportListItem,
 			 slicelistitem, e2smbuffera, e2smbuffer_sizea);
-  fprintf(stderr, "inner er encded is %d\n", era.encoded);
+  fprintf(stderr, "inner er encded is %ld\n", era.encoded);
   fprintf(stderr, "after encoding message\n");
 
 
@@ -1813,7 +1813,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   xer_fprint(stderr, &asn_DEF_E2SM_KPM_IndicationMessage, indicationmessage);
@@ -1831,7 +1831,7 @@ void encode_kpm_report_style5(E2SM_KPM_IndicationMessage_t* indicationmessage) {
 			 &asn_DEF_E2SM_KPM_IndicationMessage,
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
 
 }
