@@ -124,7 +124,7 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
   long unsigned int curr_ts;
 
   if (CSV_DEBUG) {
-    curr_ts = 1602173692928;
+    curr_ts = 1644102906466;
   }
   else {
     curr_ts = get_time_milliseconds();
