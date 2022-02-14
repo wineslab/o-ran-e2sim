@@ -1048,13 +1048,17 @@ uint8_t encoding::fill_ric_indication_report(RICindication_t *ricIndicationMsg, 
       ricIndicationMsg->protocolIEs.list.array[idx]->value.present = RICindication_IEs__value_PR_RICindicationHeader;
       ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.size = 3 * sizeof(uint8_t);
       
-      ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.buf = calloc(1, ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.size);
+      ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.buf = (uint8_t*) calloc(1, ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.size);
       if(ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.buf == NULL) {
         printf("\nE2AP : Memory allocation for RICindicationIEs failed");
         ret = RFAILED;
       }
       else {
-        buildPlmnId(duCfgParam.srvdCellLst[0].duCellInfo.cellInfo.nrCgi.plmn, &ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader);
+        uint8_t *buf2 = (uint8_t *)"747";
+        ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader->buf = (uint8_t*)calloc(1,3);
+        memcpy(ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader->buf, buf2, 3);
+        ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader->size = 3;
+
         idx++;
         /* TO BE CHANGED: RIC INDICATION DATA */
         /* For now filling a dummy octect data, need to tested with PRBs*/
@@ -1065,15 +1069,12 @@ uint8_t encoding::fill_ric_indication_report(RICindication_t *ricIndicationMsg, 
         // sizeof(uint8_t);
         ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage.size = payload_len * sizeof(uint8_t);
         
-        ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage.buf = calloc(1, ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage.size);
+        ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage.buf = (uint8_t*) calloc(1, ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage.size);
         if(ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage.buf == NULL) {
-          fprintf("\nE2AP : Memory allocation for RICindicationIEs failed");
+          printf("\nE2AP : Memory allocation for RICindicationIEs failed");
           ret = RFAILED;
         }
         else {
-          //buildPlmnId(duCfgParam.srvdCellLst[0].duCellInfo.cellInfo.nrCgi.plmn, \
-          &ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage);
-
           memcpy(ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage.buf, payload,\
             ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationMessage.size);
         }
