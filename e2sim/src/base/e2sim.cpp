@@ -40,13 +40,13 @@ std::unordered_map<long, OCTET_STRING_t*> E2Sim::getRegistered_ran_functions() {
 }
 
 void E2Sim::register_subscription_callback(long func_id, SubscriptionCallback cb) {
-  fprintf(stderr,"%%%%about to register callback for subscription for func_id %d\n", func_id);
+  fprintf(stderr,"%%%%about to register callback for subscription for func_id %ld\n", func_id);
   subscription_callbacks[func_id] = cb;
   
 }
 
 SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
-  fprintf(stderr, "%%%%we are getting the subscription callback for func id %d\n", func_id);
+  fprintf(stderr, "%%%%we are getting the subscription callback for func id %ld\n", func_id);
   SubscriptionCallback cb;
 
   try {
@@ -63,7 +63,7 @@ void E2Sim::register_e2sm(long func_id, OCTET_STRING_t *ostr) {
   //Error conditions:
   //If we already have an entry for func_id
   
-  printf("%%%%about to register e2sm func desc for %d\n", func_id);
+  printf("%%%%about to register e2sm func desc for %ld\n", func_id);
 
   ran_functions_registered[func_id] = ostr;
 
@@ -178,7 +178,7 @@ int E2Sim::run_loop(int argc, char* argv[]){
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, pdu_setup, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, pdu_setup, buffer, buffer_size);

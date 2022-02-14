@@ -116,7 +116,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
           LOG_I("[E2AP] Received RIC-SUBSCRIPTION-REQUEST");
 	  //          e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
 	  long func_id = encoding::get_function_id_from_subscription(pdu);
-	  fprintf(stderr, "Function Id of message is %d\n", func_id);
+	  fprintf(stderr, "Function Id of message is %ld\n", func_id);
 	  SubscriptionCallback cb;
 
 	  bool func_exists = true;
@@ -251,7 +251,7 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
   size_t errlen = 0;
 
   asn_check_constraints(&asn_DEF_E2AP_PDU, res_pdu, error_buf, &errlen);
-  printf("error length %d\n", errlen);
+  printf("error length %lu\n", errlen);
   printf("error buf %s\n", error_buf);
 
   auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);

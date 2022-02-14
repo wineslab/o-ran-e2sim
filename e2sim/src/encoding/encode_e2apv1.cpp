@@ -1055,9 +1055,9 @@ uint8_t encoding::fill_ric_indication_report(RICindication_t *ricIndicationMsg, 
       }
       else {
         uint8_t *buf2 = (uint8_t *)"747";
-        ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader->buf = (uint8_t*)calloc(1,3);
-        memcpy(ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader->buf, buf2, 3);
-        ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader->size = 3;
+        ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.buf = (uint8_t*)calloc(1,3);
+        memcpy(ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.buf, buf2, 3);
+        ricIndicationMsg->protocolIEs.list.array[idx]->value.choice.RICindicationHeader.size = 3;
 
         idx++;
         /* TO BE CHANGED: RIC INDICATION DATA */
