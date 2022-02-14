@@ -65,154 +65,143 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
   LOG_D("[E2AP] Unpacked E2AP-PDU: index = %d, procedureCode = %d\n",
                             index, procedureCode);
 
-  switch(procedureCode)
-    {
-      
+  switch(procedureCode) { 
     case ProcedureCode_id_E2setup:
-      switch(index)
-	{
+      switch(index) {
         case E2AP_PDU_PR_initiatingMessage:
-	  e2ap_handle_E2SetupRequest(pdu, socket_fd);
+	        e2ap_handle_E2SetupRequest(pdu, socket_fd);
           LOG_I("[E2AP] Received SETUP-REQUEST");
           break;
-	  
+
         case E2AP_PDU_PR_successfulOutcome:
           LOG_I("[E2AP] Received SETUP-RESPONSE-SUCCESS");
           break;
-	  
+
         case E2AP_PDU_PR_unsuccessfulOutcome:
           LOG_I("[E2AP] Received SETUP-RESPONSE-FAILURE");
           break;
-	  
+
         default:
           LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU", index);
           break;
-	}
+	    }
       break;    
       
     case ProcedureCode_id_Reset: //reset = 7
-      switch(index)
-	{
+      switch(index) {
         case E2AP_PDU_PR_initiatingMessage:
           LOG_I("[E2AP] Received RESET-REQUEST");
           break;
-	  
+
         case E2AP_PDU_PR_successfulOutcome:
           break;
-	  
+
         case E2AP_PDU_PR_unsuccessfulOutcome:
           break;
-	  
+
         default:
           LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU", index);
           break;
-	}
+      }
       break;
       
     case ProcedureCode_id_RICsubscription: //RIC SUBSCRIPTION = 201
-      switch(index)
-	{
+      switch(index) {
         case E2AP_PDU_PR_initiatingMessage: { //initiatingMessage 
           LOG_I("[E2AP] Received RIC-SUBSCRIPTION-REQUEST");
-	  //          e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
-	  long func_id = encoding::get_function_id_from_subscription(pdu);
-	  fprintf(stderr, "Function Id of message is %ld\n", func_id);
-	  SubscriptionCallback cb;
+	        // e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
+	        long func_id = encoding::get_function_id_from_subscription(pdu);
+	        fprintf(stderr, "Function Id of message is %ld\n", func_id);
+	        SubscriptionCallback cb;
 
-	  bool func_exists = true;
+	        bool func_exists = true;
 
-	  try {
-	    cb = e2sim->get_subscription_callback(func_id);
-	  } catch(const std::out_of_range& e) {
-	    func_exists = false;
-	  }
+	        try {
+	          cb = e2sim->get_subscription_callback(func_id);
+	        }
+          catch(const std::out_of_range& e) {
+	          func_exists = false;
+	        }
 
-	  if (func_exists) {
-	    fprintf(stderr, "Calling callback function\n");
-	    cb(pdu);
-	  } else {
-	    fprintf(stderr, "Error: No RAN Function with this ID exists\n");
-	  }
-	  //	  callback_kpm_subscription_request(pdu, socket_fd);
+	        if (func_exists) {
+	          fprintf(stderr, "Calling callback function\n");
+	          cb(pdu);
+	        }
+          else {
+	          fprintf(stderr, "Error: No RAN Function with this ID exists\n");
+	        }
+	        // callback_kpm_subscription_request(pdu, socket_fd);
+	      }
+        break;
 
-	}
-          break;
-	  
         case E2AP_PDU_PR_successfulOutcome:
           LOG_I("[E2AP] Received RIC-SUBSCRIPTION-RESPONSE");
           break;
-	  
+
         case E2AP_PDU_PR_unsuccessfulOutcome:
           LOG_I("[E2AP] Received RIC-SUBSCRIPTION-FAILURE");
           break;
-	  
+
         default:
           LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU", index);
           break;
-	}
+	    }
       break;
 
     case ProcedureCode_id_RICindication: // 205
-      switch(index)
-	{
+      switch(index) {
         case E2AP_PDU_PR_initiatingMessage: //initiatingMessage
           LOG_I("[E2AP] Received RIC-INDICATION-REQUEST");
           // e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
           break;
+
         case E2AP_PDU_PR_successfulOutcome:
           LOG_I("[E2AP] Received RIC-INDICATION-RESPONSE");
           break;
-	  
+
         case E2AP_PDU_PR_unsuccessfulOutcome:
           LOG_I("[E2AP] Received RIC-INDICATION-FAILURE");
           break;
-	  
+
         default:
-          LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", index,
-                                    (int)ProcedureCode_id_RICindication);
+          LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", index, (int)ProcedureCode_id_RICindication);
           break;
-	}
+	    }
       break;
 
     case ProcedureCode_id_RICserviceQuery:
-      switch (index)
-        {
-          case E2AP_PDU_PR_initiatingMessage:
+      switch (index) {
+        case E2AP_PDU_PR_initiatingMessage:
           LOG_I("[E2AP] Received RIC-Service-Query")
           e2ap_handle_E2SeviceRequest(pdu, socket_fd, e2sim);
           break;
 
-          default:
-            LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", index,
-                                    (int)ProcedureCode_id_RICserviceQuery);
+        default:
+          LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", index, (int)ProcedureCode_id_RICserviceQuery);
           break;
-        }
+      }
       break;
 
     case ProcedureCode_id_RICserviceUpdate:
-      switch (index)
-        {
-          case E2AP_PDU_PR_successfulOutcome:
+      switch (index) {
+        case E2AP_PDU_PR_successfulOutcome:
           LOG_I("[E2AP] Received RIC-SERVICE-UPDATE-SUCCESS")
           break;
 
-          case E2AP_PDU_PR_unsuccessfulOutcome:
+        case E2AP_PDU_PR_unsuccessfulOutcome:
           LOG_I("[E2AP] Received RIC-SERVICE-UPDATE-FAILURE")
           break;
 
-          default:
-            LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", index,
-                                    (int)ProcedureCode_id_RICserviceUpdate);
+        default:
+          LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", index, (int)ProcedureCode_id_RICserviceUpdate);
           break;
-        }
+      }
       break;
     
     default:
-      
       LOG_E("[E2AP] No available handler for procedureCode=%d", procedureCode);
-
       break;
-    }
+  }
   ASN_STRUCT_FREE(asn_DEF_E2AP_PDU, pdu);
 }
 
