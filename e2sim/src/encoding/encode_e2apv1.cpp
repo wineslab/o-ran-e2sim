@@ -324,7 +324,57 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
 
 }
 
+// For the moment it has just the mandatory fields, check documentation
+void encoding::generate_e2apv1_ric_control_acknowledge(E2AP_PDU_t *control_resp_pdu) {
 
+    auto *req_id_ie = (RICcontrolAcknowledge_IEs *) calloc(1, sizeof(RICcontrolAcknowledge_IEs_t));
+
+    auto *ricRequestId = (RICrequestID_t *) calloc(1, sizeof(RICrequestID_t));
+    // TODO fill
+    //    ricRequestId->ricRequestorID;
+    //    ricRequestId->ricInstanceID;
+
+    req_id_ie->id = ProtocolIE_ID_id_RICrequestID;
+    req_id_ie->criticality = Criticality_reject;
+    req_id_ie->value.present = RICcontrolAcknowledge_IEs__value_PR_RICrequestID;
+    req_id_ie->value.choice.RICrequestID = *ricRequestId;
+
+    auto *ran_func_id_ie = (RICcontrolAcknowledge_IEs *) calloc(1, sizeof(RICcontrolAcknowledge_IEs_t));
+
+    auto *ranFunctionId = (RANfunctionID_t *) calloc(1, sizeof(RANfunctionID_t));
+    // TODO fill
+//        ranFunctionId
+
+    ran_func_id_ie->id = ProtocolIE_ID_id_RANfunctionID;
+    ran_func_id_ie->criticality = Criticality_reject;
+    ran_func_id_ie->value.present = RICcontrolAcknowledge_IEs__value_PR_RANfunctionID;
+    ran_func_id_ie->value.choice.RANfunctionID = *ranFunctionId;
+
+    auto *ric_control_status_ie = (RICcontrolAcknowledge_IEs *) calloc(1, sizeof(RICcontrolAcknowledge_IEs_t));
+
+    auto *ricControlStatus = (RICcontrolStatus_t *) calloc(1, sizeof(RICcontrolStatus_t));
+    // TODO fill
+//        ricControlStatus
+
+    ric_control_status_ie->id = ProtocolIE_ID_id_RICcontrolStatus;
+    ric_control_status_ie->criticality = Criticality_reject;
+    ric_control_status_ie->value.present = RICcontrolAcknowledge_IEs__value_PR_RICcontrolStatus;
+    ric_control_status_ie->value.choice.RICcontrolStatus = *ricControlStatus;
+
+    auto *riCcontrolAcknowledge = (RICcontrolAcknowledge_t *) calloc(1, sizeof(RICcontrolAcknowledge_t));
+    ASN_SEQUENCE_ADD(&riCcontrolAcknowledge->protocolIEs.list, req_id_ie);
+    ASN_SEQUENCE_ADD(&riCcontrolAcknowledge->protocolIEs.list, ran_func_id_ie);
+    ASN_SEQUENCE_ADD(&riCcontrolAcknowledge->protocolIEs.list, ric_control_status_ie);
+
+    auto *successOutcome = (SuccessfulOutcome_t *) calloc(1, sizeof(SuccessfulOutcome_t));
+    successOutcome->procedureCode = ProcedureCode_id_RICcontrol;
+    successOutcome->criticality = Criticality_reject;
+    successOutcome->value.present = SuccessfulOutcome__value_PR_RICcontrolAcknowledge;
+    successOutcome->value.choice.RICcontrolAcknowledge = *riCcontrolAcknowledge;
+
+    control_resp_pdu->present = E2AP_PDU_PR_successfulOutcome;
+    control_resp_pdu->choice.successfulOutcome = successOutcome;
+}
 
 void encoding::generate_e2apv1_setup_response(E2AP_PDU_t *e2ap_pdu) {
 

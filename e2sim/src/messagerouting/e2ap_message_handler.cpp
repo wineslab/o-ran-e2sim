@@ -66,7 +66,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
                             index, procedureCode);
 
   switch(procedureCode) { 
-    case ProcedureCode_id_E2setup:
+    case ProcedureCode_id_E2setup:  // Procedure code = 1
       switch(index) {
         case E2AP_PDU_PR_initiatingMessage:
 	        e2ap_handle_E2SetupRequest(pdu, socket_fd);
@@ -85,7 +85,28 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
           LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU", index);
           break;
 	    }
-      break;    
+      break;
+
+    case ProcedureCode_id_RICcontrol:  // Procedure code = 4
+      switch (index) {
+        case E2AP_PDU_PR_initiatingMessage:
+          LOG_I("[E2AP] Received RIC-CONTROL-REQUEST");
+          // e2ap_handle_RICControlRequest(pdu, socket_fd, e2sim);
+          break;
+
+        case E2AP_PDU_PR_successfulOutcome:
+          LOG_I("[E2SM] Received RIC-CONTROL-RESPONSE");
+          break;
+
+        case E2AP_PDU_PR_unsuccessfulOutcome:
+          LOG_I("[E2SM] Received RIC-CONTROL-FAILURE");
+          break;
+
+        default:
+          LOG_E("[E2SM] Invalid message index=%d in PDU %ld", index, ProcedureCode_id_RICcontrol);
+          break;
+      }
+        break;
       
     case ProcedureCode_id_Reset: //reset = 7
       switch(index) {
@@ -316,8 +337,50 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
   } else {
     LOG_E("[SCTP] Unable to send E2-SUBSCRIPTION-REQUEST to peer");
   }  
+}
 
+void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim) {
+    long func_id = 300;
+    SubscriptionCallback cb;
 
+    bool func_exists = true;
+    try {
+        cb = e2sim->get_subscription_callback(func_id);
+    } catch (const std::out_of_range &e) {
+        func_exists = false;
+    }
+
+    if (func_exists) {
+        LOG_D("Calling callback function");
+        cb(pdu);
+    } else {
+        LOG_E("Error: No RAN Function with this ID exists");
+    }
+
+    auto* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
+    encoding::generate_e2apv1_ric_control_acknowledge(res_pdu);
+
+    LOG_D("[E2AP] Created E2-RIC-CONTROL-ACKNOWLEDGE");
+
+    e2ap_asn1c_print_pdu(res_pdu);
+
+    auto buffer_size = MAX_SCTP_BUFFER;
+    unsigned char buffer[MAX_SCTP_BUFFER];
+
+    sctp_buffer_t data;
+    auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
+
+    LOG_D("er encoded is %zd\n", er.encoded);
+    data.len = (int) er.encoded;
+
+    memcpy(data.buffer, buffer, er.encoded);
+
+    //send response data over sctp
+    if (sctp_send_data(socket_fd, data) > 0) {
+      LOG_I("[SCTP] Sent E2-SERVICE-UPDATE");
+    } else {
+      LOG_E("[SCTP] Unable to send E2-SERVICE-UPDATE to peer");
+    }
 }
 
 /*
