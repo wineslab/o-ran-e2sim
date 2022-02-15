@@ -39,18 +39,18 @@ std::unordered_map<long, OCTET_STRING_t*> E2Sim::getRegistered_ran_functions() {
   return ran_functions_registered;
 }
 
-void E2Sim::register_subscription_callback(long func_id, SubscriptionCallback cb) {
-  fprintf(stderr,"%%%%about to register callback for subscription for func_id %ld\n", func_id);
-  subscription_callbacks[func_id] = cb;
+void E2Sim::register_sm_callback(long func_id, SmCallback cb) {
+  fprintf(stderr,"%%%%about to register the sm callback for func_id %ld\n", func_id);
+  sm_callbacks[func_id] = cb;
   
 }
 
-SubscriptionCallback E2Sim::get_subscription_callback(long func_id) {
-  fprintf(stderr, "%%%%we are getting the subscription callback for func id %ld\n", func_id);
-  SubscriptionCallback cb;
+SmCallback E2Sim::get_sm_callback(long func_id) {
+  fprintf(stderr, "%%%%we are getting the sm callback for func id %ld\n", func_id);
+  SmCallback cb;
 
   try {
-    cb = subscription_callbacks.at(func_id);
+    cb = sm_callbacks.at(func_id);
   } catch(const std::out_of_range& e) {
     throw std::out_of_range("Function ID is not registered");
   }

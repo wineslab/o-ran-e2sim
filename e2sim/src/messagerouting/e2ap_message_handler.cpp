@@ -133,12 +133,12 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
 	        // e2ap_handle_RICSubscriptionRequest(pdu, socket_fd);
 	        long func_id = encoding::get_function_id_from_subscription(pdu);
 	        fprintf(stderr, "Function Id of message is %ld\n", func_id);
-	        SubscriptionCallback cb;
+	        SmCallback cb;
 
 	        bool func_exists = true;
 
 	        try {
-	          cb = e2sim->get_subscription_callback(func_id);
+	          cb = e2sim->get_sm_callback(func_id);
 	        }
           catch(const std::out_of_range& e) {
 	          func_exists = false;
@@ -341,11 +341,11 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
 void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim) {
     long func_id = 300;
-    SubscriptionCallback cb;
+    SmCallback cb;
 
     bool func_exists = true;
     try {
-        cb = e2sim->get_subscription_callback(func_id);
+        cb = e2sim->get_sm_callback(func_id);
     } catch (const std::out_of_range &e) {
         func_exists = false;
     }

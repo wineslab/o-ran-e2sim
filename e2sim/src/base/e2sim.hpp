@@ -27,7 +27,7 @@ extern "C" {
 #include "OCTET_STRING.h"
 }
 
-typedef void (*SubscriptionCallback)(E2AP_PDU_t*);
+typedef void (*SmCallback)(E2AP_PDU_t*);
 
 class E2Sim;
 class E2Sim {
@@ -35,7 +35,7 @@ class E2Sim {
 private:
 
   std::unordered_map<long, OCTET_STRING_t*> ran_functions_registered;
-  std::unordered_map<long, SubscriptionCallback> subscription_callbacks;
+  std::unordered_map<long, SmCallback> sm_callbacks;
 
   void wait_for_sctp_data();
   
@@ -43,15 +43,18 @@ public:
 
   std::unordered_map<long, OCTET_STRING_t*> getRegistered_ran_functions();
 
-  void generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu, long reqActionIdsAccepted[], long reqActionIdsRejected[], int accept_size, int reject_size, long reqRequestorId, long reqInstanceId);
+  void generate_e2apv1_subscription_response_success(E2AP_PDU *e2ap_pdu, long reqActionIdsAccepted[], \
+    long reqActionIdsRejected[], int accept_size, int reject_size, long reqRequestorId, long reqInstanceId);
 
-  void generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_pdu, long requestorId, long instanceId, long ranFunctionId, long actionId, long seqNum, uint8_t *ind_header_buf, int header_length, uint8_t *ind_message_buf, int message_length);  
+  void generate_e2apv1_indication_request_parameterized(E2AP_PDU *e2ap_pdu, long requestorId, long instanceId, \
+    long ranFunctionId, long actionId, long seqNum, uint8_t *ind_header_buf, int header_length, uint8_t *ind_message_buf, \
+    int message_length);  
 
-  SubscriptionCallback get_subscription_callback(long func_id);
+  SmCallback get_sm_callback(long func_id);
   
   void register_e2sm(long func_id, OCTET_STRING_t* ostr);
 
-  void register_subscription_callback(long func_id, SubscriptionCallback cb);
+  void register_sm_callback(long func_id, SmCallback cb);
   
   void encode_and_send_sctp_data(E2AP_PDU_t* pdu);
 
