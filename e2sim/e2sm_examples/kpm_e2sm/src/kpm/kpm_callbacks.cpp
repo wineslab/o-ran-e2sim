@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
 			 &asn_DEF_E2SM_KPM_RANfunction_Description,
 			 ranfunc_desc, e2smbuffer, e2smbuffer_size);
   
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
   fprintf(stderr, "here is encoded message %s\n", e2smbuffer);
   
@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
   ranfunc_ostr->size = er.encoded;
   memcpy(ranfunc_ostr->buf,e2smbuffer,er.encoded);
 
-  printf("!!!lenth of ranfuncdesc is %d\n", strlen((char*)ranfuncdesc));
+  printf("!!!lenth of ranfuncdesc is %lu\n", strlen((char*)ranfuncdesc));
   printf("value of this index is %d\n", ranfuncdesc[0]);
   printf("value of this index is %d\n", ranfuncdesc[1]);
   printf("value of this index is %d\n", ranfuncdesc[2]);
@@ -120,7 +120,10 @@ int main(int argc, char* argv[]) {
   printf("value of this index is %d\n", ranfuncdesc[101]);
   
   e2sim.register_e2sm(0,ranfunc_ostr);
+
+  // register callbacks
   e2sim.register_subscription_callback(0,&callback_kpm_subscription_request);
+  e2sim.register_subscription_callback(300,&callback_kpm_control);
 
   e2sim.run_loop(argc, argv);
 
@@ -874,4 +877,77 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   	fprintf(stderr, "no trigger received\n");
   }
 
+}
+
+void callback_kpm_control(E2AP_PDU_t *control_pdu) {
+
+	long reqRequestorId;
+  long reqInstanceId;
+  long ranFunctionId;
+  uint8_t* ricEventTrigger = NULL;
+
+	uint8_t idx;
+  uint32_t recvBufLen;
+  RICcontrolRequest_t *ricControlRequest;
+
+  fprintf(stderr, "Calling callback_kpm_control\n");
+  ricControlRequest = &control_pdu->choice.initiatingMessage->value.choice.RICcontrolRequest;
+
+  fprintf(stderr, "protocolIEs elements %d\n", ricControlRequest->protocolIEs.list.count);
+
+  for (idx = 0; idx < ricControlRequest->protocolIEs.list.count; idx++) {
+    switch(ricControlRequest->protocolIEs.list.array[idx]->id) {
+      case ProtocolIE_ID_id_RICrequestID: {
+        // fprintf(stderr, "ProtocolIE_IDE2_id_RICrequestID\n");
+        reqRequestorId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICrequestID.ricRequestorID;
+        reqInstanceId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICrequestID.ricInstanceID;
+
+	      fprintf(stderr, "reqRequestorId %ld\n", reqRequestorId);
+	      fprintf(stderr, "reqInstanceId %ld\n", reqInstanceId);
+        break;
+       }
+
+      case ProtocolIE_ID_id_RANfunctionID: {
+        // fprintf(stderr, "ProtocolIE_IDE2_id_RANfunctionID\n");
+        ranFunctionId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RANfunctionID;
+	      fprintf(stderr, "ranFunctionId %ld\n", ranFunctionId);
+        break;
+      }
+
+      case ProtocolIE_ID_id_RICcontrolMessage: {
+        fprintf(stderr, "ProtocolIE_ID_id_RICcontrolMessage\n");
+        recvBufLen = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICcontrolMessage.size;
+        
+        ricEventTrigger = (uint8_t*) calloc(1, recvBufLen);
+        if(ricEventTrigger) {
+          memcpy(ricEventTrigger, ricControlRequest->protocolIEs.list.array[idx]\
+            ->value.choice.RICcontrolMessage.buf, recvBufLen);
+        }
+
+        fprintf(stderr, "Print content of ricEventTrigger (which should be the RICcontrolMessage)\n");
+        fprintf(stderr, "%s\n", ricEventTrigger);
+        fprintf(stderr, "ricEventTrigger printed\n");
+
+        // TODO: log and write control
+        // log message on file
+        // log_message((char*) ricEventTrigger, "control", (int)recvBufLen);
+
+        // write policies on config file
+        // write_scheduling_policy((char*) ricEventTrigger);
+        // if (strcmp((char*) ricEventTrigger, "terminate") == 0) {
+        //   stop_data_reporting_nrt_ric();
+        // }
+        // else {
+        //   write_control_policies((char*) ricEventTrigger);
+        // }
+
+        break;
+      }
+      
+      case ProtocolIE_ID_id_RICcontrolHeader:
+        fprintf(stderr, "ProtocolIE_ID_id_RICcontrolHeader\n");
+        // TODO
+        break;
+    }
+  }
 }

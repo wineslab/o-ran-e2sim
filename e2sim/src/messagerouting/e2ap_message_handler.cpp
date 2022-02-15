@@ -91,7 +91,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
       switch (index) {
         case E2AP_PDU_PR_initiatingMessage:
           LOG_I("[E2AP] Received RIC-CONTROL-REQUEST");
-          // e2ap_handle_RICControlRequest(pdu, socket_fd, e2sim);
+          e2ap_handle_RICControlRequest(pdu, socket_fd, e2sim);
           break;
 
         case E2AP_PDU_PR_successfulOutcome:
