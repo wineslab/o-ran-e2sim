@@ -58,3 +58,52 @@ void periodicDataReport(E2Sim* e2sim, int* timer, long* ric_req_id) {
     periodicDataReport(e2sim, timer, ric_req_id);
   }
 }
+
+
+// log message on file
+void log_message(char* message, char* message_type, int len) {
+
+  FILE *fp;
+  char filename[100] = "/logs/du_l2.log";
+
+  char buffer[26];
+  int millisec;
+  struct tm* tm_info;
+  struct timeval tv;
+
+  gettimeofday(&tv, NULL);
+
+  millisec = lrint(tv.tv_usec/1000.0);  // Round to nearest millisec
+  if (millisec>=1000) {  // Allow for rounding up to nearest second
+    millisec -=1000;
+    tv.tv_sec++;
+  }
+
+  tm_info = localtime(&tv.tv_sec);
+
+  strftime(buffer, 26, "%Y:%m:%d %H:%M:%S", tm_info);
+
+  fp = fopen(filename, "a+");
+
+  if (fp == NULL) {
+    printf("ERROR: fp is NULL\n");
+    return;
+  }
+
+  const int msg_len = len;
+  char msg_copy[msg_len];
+  strcpy(msg_copy, message);
+
+  for (int i = 0; i < msg_len; i++)
+  {
+    if (message[i] == '\n') {
+       msg_copy[i] = 'n';
+    }
+  }
+
+  // print to console and log on file
+  printf("%s,%03d\t%s\t%d\t%s\n", buffer, millisec, message_type, len, msg_copy);
+  fprintf(fp, "%s,%03d\t%s\t%d\t%s\n", buffer, millisec, message_type, len, msg_copy);
+
+  fclose(fp);
+}

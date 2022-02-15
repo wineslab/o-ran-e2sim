@@ -230,11 +230,11 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
       curr_pos += strlen(metrics_array[i]);
       valid_metrics += 1;
 
-      printf("len metrics_array[i]: %d\n", strlen(metrics_array[i]));
+      printf("len metrics_array[i]: %lu\n", strlen(metrics_array[i]));
     }
   }
 
-  printf("valid_metrics %d\noutput_string\n---%s---\n", valid_metrics, output_string);
+  printf("valid_metrics %d\noutput_string\n---%s---\n", valid_metrics, *output_string);
 
   // CHECKME: put back < 2 if sending garbage
   if (valid_metrics < 1) {
@@ -361,7 +361,7 @@ int csv_tester(void) {
   get_tx_string(&send_metrics, lines_to_read);
 
   if (send_metrics) {
-    printf("len %d\n%s", strlen(send_metrics), send_metrics);
+    printf("len %lu\n%s", strlen(send_metrics), send_metrics);
 
     // split if more than maximum payload for ric indication report
     if (strlen(send_metrics) > MAX_REPORT_PAYLOAD) {

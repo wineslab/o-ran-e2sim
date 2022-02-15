@@ -376,7 +376,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								   ind_msg_cucp_ue, e2sm_message_buf_cucp_ue, e2sm_message_buf_size_cucp_ue);
 	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_msg_cucp_ue);
 	  
-	  fprintf(stderr, "er encded is %d\n", er_message_cucp_ue.encoded);
+	  fprintf(stderr, "er encded is %ld\n", er_message_cucp_ue.encoded);
 	  fprintf(stderr, "after encoding message\n");
 
 	  E2SM_KPM_IndicationHeader_t* ind_header_cucp_ue =
@@ -394,7 +394,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								  ind_header_cucp_ue, e2sm_header_buf_cucp_ue, e2sm_header_buf_size_cucp_ue);
 	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationHeader, ind_header_cucp_ue);
 
-	  fprintf(stderr, "er encded is %d\n", er_header_cucp_ue.encoded);
+	  fprintf(stderr, "er encded is %ld\n", er_header_cucp_ue.encoded);
 	  fprintf(stderr, "error buf is %s\n", (char*)e2sm_header_buf_cucp_ue);
 	  fprintf(stderr, "after encoding header\n");	  
 	  
@@ -436,7 +436,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 							       ind_msg_cuup_ue, e2sm_message_buf_cuup_ue, e2sm_message_buf_size_cuup_ue);
 	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_msg_cuup_ue);
 	  
-	  fprintf(stderr, "er encded is %d\n", er_message_cuup_ue.encoded);
+	  fprintf(stderr, "er encded is %ld\n", er_message_cuup_ue.encoded);
 	  fprintf(stderr, "after encoding message\n");
 
 	  E2SM_KPM_IndicationHeader_t* ind_header_cuup_ue =
@@ -491,7 +491,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								 e2sm_message_buf_size_du_ue);
 	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_message_du_ue);
 	  
-	  fprintf(stderr, "er encded is %d\n", er_message_du_ue.encoded);
+	  fprintf(stderr, "er encded is %ld\n", er_message_du_ue.encoded);
 	  fprintf(stderr, "after encoding message\n");
 
 	  E2SM_KPM_IndicationHeader_t* ind_header_du_ue =
@@ -610,7 +610,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								  ind_msg_style5, e2sm_message_buf_style5, e2sm_message_buf_size_style5);
 	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_msg_style5);
 	  
-	  fprintf(stderr, "er encded is %d\n", er_message_style5.encoded);
+	  fprintf(stderr, "er encded is %ld\n", er_message_style5.encoded);
 	  fprintf(stderr, "after encoding message\n");
 	  
 	  int seqNum0 = 1;
@@ -677,7 +677,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 								  e2sm_message_buf_style1, e2sm_message_buf_size_style1);
 	  ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_message_style1);
 	  
-	  fprintf(stderr, "er encded is %d\n", er_message_style1.encoded);
+	  fprintf(stderr, "er encded is %ld\n", er_message_style1.encoded);
 	  fprintf(stderr, "after encoding message\n");
 
 	  
@@ -930,7 +930,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 
         // TODO: log and write control
         // log message on file
-        // log_message((char*) ricEventTrigger, "control", (int)recvBufLen);
+        log_message((char*) ricEventTrigger, (char*) "control", (int) recvBufLen);
 
         // write policies on config file
         // write_scheduling_policy((char*) ricEventTrigger);

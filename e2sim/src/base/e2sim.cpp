@@ -185,7 +185,7 @@ int E2Sim::run_loop(int argc, char* argv[]){
 
   data.len = er.encoded;
 
-  fprintf(stderr, "er encded is %d\n", er.encoded);
+  fprintf(stderr, "er encded is %ld\n", er.encoded);
 
   memcpy(data.buffer, buffer, er.encoded);
 

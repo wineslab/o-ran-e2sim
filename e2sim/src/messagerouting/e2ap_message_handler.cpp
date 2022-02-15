@@ -51,7 +51,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, bool xmlenc, E2S
   
 
   int index = (int)pdu->present;
-  fprintf(stderr, "length of data %d\n", rval.consumed);
+  fprintf(stderr, "length of data %lu\n", rval.consumed);
   fprintf(stderr, "result %d\n", rval.code);
   fprintf(stderr, "index is %d\n", index);
   
@@ -267,7 +267,7 @@ void e2ap_handle_E2SeviceRequest(E2AP_PDU_t* pdu, int &socket_fd, E2Sim *e2sim) 
   auto er = asn_encode_to_buffer(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
 
   data.len = er.encoded;
-  fprintf(stderr, "er encoded is %d\n", er.encoded);
+  fprintf(stderr, "er encoded is %ld\n", er.encoded);
 
   memcpy(data.buffer, buffer, er.encoded);
 
@@ -298,7 +298,7 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
   auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
 
   data.len = er.encoded;
-  fprintf(stderr, "er encoded is %d\n", er.encoded);  
+  fprintf(stderr, "er encoded is %ld\n", er.encoded);  
   
   //data.len = e2ap_asn1c_encode_pdu(res_pdu, &buf);
   memcpy(data.buffer, buffer, er.encoded);
@@ -330,7 +330,7 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
   data2.len = er2.encoded;
   memcpy(data2.buffer, buffer2, er2.encoded);
   
-  fprintf(stderr, "er encded is %d\n", er2.encoded);
+  fprintf(stderr, "er encded is %ld\n", er2.encoded);
 
   if(sctp_send_data(socket_fd, data2) > 0) {
     LOG_I("[SCTP] Sent E2-SUBSCRIPTION-REQUEST");
