@@ -36,7 +36,7 @@ void periodicDataReport(E2Sim* e2sim, int* timer, long* ric_req_id) {
   
   if (DEBUG) {
     fprintf(stderr, "DEBUG mode\n");
-    payload = "0,1,2,3,4,5\n1,6,7,8,9,10\n2,11,12,13,14,15";
+    payload = (char*) "0,1,2,3,4,5\n1,6,7,8,9,10\n2,11,12,13,14,15";
   }
   else {
     get_tx_string(&payload, LINES_TO_READ);
@@ -106,4 +106,11 @@ void log_message(char* message, char* message_type, int len) {
   fprintf(fp, "%s,%03d\t%s\t%d\t%s\n", buffer, millisec, message_type, len, msg_copy);
 
   fclose(fp);
+}
+
+
+// terminate periodic thread that reports data to near real-time RIC
+void stop_data_reporting_nrt_ric(void) {
+  printf("Terminating data reporting to non real-time RIC\n");
+  report_data_nrt_ric = 0;
 }

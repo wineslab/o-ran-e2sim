@@ -39,6 +39,7 @@ extern "C" {
   #include "ProtocolIE-Field.h"
   #include "ProtocolIE-SingleContainer.h"
   #include "InitiatingMessage.h"
+  #include "srs_connector.h"
 }
 
 #include "kpm_callbacks.hpp"
@@ -933,13 +934,12 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
         log_message((char*) ricEventTrigger, (char*) "control", (int) recvBufLen);
 
         // write policies on config file
-        // write_scheduling_policy((char*) ricEventTrigger);
-        // if (strcmp((char*) ricEventTrigger, "terminate") == 0) {
-        //   stop_data_reporting_nrt_ric();
-        // }
-        // else {
-        //   write_control_policies((char*) ricEventTrigger);
-        // }
+        if (strcmp((char*) ricEventTrigger, "terminate") == 0) {
+          stop_data_reporting_nrt_ric();
+        }
+        else {
+          write_control_policies((char*) ricEventTrigger);
+        }
 
         break;
       }
