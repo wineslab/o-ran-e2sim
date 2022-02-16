@@ -1,5 +1,7 @@
 #!/bin/bash
 
+CURR_DIR=$(pwd)
+
 # build e2sim
 rm -Rf build
 mkdir build
@@ -30,7 +32,7 @@ dpkg --install ./e2sim-dev_?.?.?_amd64.deb
 # ldconfig
 
 # build example
-cd /root/ocp-e2sim/e2sim/e2sm_examples/kpm_e2sm/
+cd ${CURR_DIR}/e2sm_examples/kpm_e2sm/
 rm -Rf build
 mkdir build
 cd build
