@@ -855,8 +855,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
   //  std::thread loop_thread;
 
-  // long funcId = 0;
-
+  long funcId = 0;
   run_report_loop(reqRequestorId, reqInstanceId, funcId, reqActionId);
 
   //  loop_thread = std::thread(&run_report_loop);
