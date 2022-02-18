@@ -857,11 +857,12 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
   // long funcId = 0;
 
-  // run_report_loop(reqRequestorId, reqInstanceId, funcId, reqActionId);
+  run_report_loop(reqRequestorId, reqInstanceId, funcId, reqActionId);
 
   //  loop_thread = std::thread(&run_report_loop);
 
-  if (triggerDef.buf) {
+  // disable for now
+  if (false && triggerDef.buf) {
 		std::string trigger_str((char*) triggerDef.buf);
 
 		try {
