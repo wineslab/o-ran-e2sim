@@ -1,15 +1,26 @@
 #include "bs_connector.hpp"
 #include "encode_e2apv1.hpp"
+#include "encode_kpm.hpp"
+#include "kpm_callbacks.hpp"
 
 extern "C" {
   #include "csv_reader.h"
+  #include "E2SM-KPM-IndicationMessage.h"
+  #include "E2SM-KPM-RANfunction-Description.h"
+  #include "E2SM-KPM-IndicationHeader-Format1.h"
+  #include "E2SM-KPM-IndicationHeader.h"
+  #include "Timestamp.h"
+  #include "E2AP-PDU.h"
 }
 
 int report_data_nrt_ric = 1;
 
 // handle timer got from RIC Subscription Request
 // timer is in seconds
-void handleTimer(E2Sim* e2sim, int* timer, long* ric_req_id) {
+void handleTimer(E2Sim* e2sim, int* timer, long* ric_req_id, long* ric_instance_id,
+  long* ran_function_id, long* action_id) {
+
+  int seq_num = 1;
 
   fprintf(stderr, "Handle timer %d seconds, ricReqId %ld\n", timer[0], ric_req_id[0]);
 
@@ -20,19 +31,27 @@ void handleTimer(E2Sim* e2sim, int* timer, long* ric_req_id) {
 
   // start thread
   report_data_nrt_ric = 1;
-  std::thread (periodicDataReport, e2sim, timer, ric_req_id).detach();
+  std::thread(periodicDataReport, e2sim, timer, seq_num, ric_req_id, ric_instance_id,
+    ran_function_id, action_id).detach();
 
   fprintf(stderr, "periodicDataReport thread created successfully\n");
 }
 
 
 // function to periodically report data
-void periodicDataReport(E2Sim* e2sim, int* timer, long* ric_req_id) {
+void periodicDataReport(E2Sim* e2sim, int* timer, long seqNum, long* ric_req_id, long* ric_instance_id,
+  long* ran_function_id, long* action_id) {
 
-  fprintf(stderr, "timer expired for ric_req_id %ld: %d s\n", ric_req_id[0], timer[0]);
+  long requestorId = ric_req_id[0];
+  long instanceId = ric_instance_id[0];
+  long ranFunctionId = ran_function_id[0];
+  long actionId = action_id[0];
+
+  fprintf(stderr, "timer expired for requestorId %ld, instanceId %ld, ranFunctionId %ld, actionId %ld: %d s\n",
+    requestorId, instanceId, ranFunctionId, actionId, timer[0]);
 
   char* payload = NULL;
-  E2AP_PDU *e2ap_pdu = (E2AP_PDU*)calloc(1,sizeof(E2AP_PDU));
+  // E2AP_PDU *e2ap_pdu = (E2AP_PDU*)calloc(1,sizeof(E2AP_PDU));
   
   if (DEBUG) {
     fprintf(stderr, "DEBUG mode\n");
@@ -46,16 +65,21 @@ void periodicDataReport(E2Sim* e2sim, int* timer, long* ric_req_id) {
   if (payload) {
     fprintf(stderr, "Sending\n%s\n", payload);
     fprintf(stderr, "Encoding RIC Indication Report\n");
-    encoding::generate_e2apv1_indication_report(e2ap_pdu, payload, strlen(payload), ric_req_id[0], 0, 0, 0);
-    fprintf(stderr, "RIC Indication Report successfully encoded\n");
-    e2sim->encode_and_send_sctp_data(e2ap_pdu);
+    // encoding::generate_e2apv1_indication_report(e2ap_pdu, payload, strlen(payload), ric_req_id[0], 0, 0, 0);
+    // fprintf(stderr, "RIC Indication Report successfully encoded\n");
+    // e2sim->encode_and_send_sctp_data(e2ap_pdu);
+
+    // ASN.1 encode payload and header
+    encode_and_send_ric_indication_report_metrics_buffer(seqNum, requestorId, instanceId, ranFunctionId, actionId);
+    seqNum++;
   }
   
   std::chrono::seconds sleep_duration(timer[0]);
   std::this_thread::sleep_for(sleep_duration);
 
+  // loop thread
   if (report_data_nrt_ric) {
-    periodicDataReport(e2sim, timer, ric_req_id);
+    periodicDataReport(e2sim, timer, seqNum, ric_req_id, ric_instance_id, ran_function_id, action_id);
   }
 }
 

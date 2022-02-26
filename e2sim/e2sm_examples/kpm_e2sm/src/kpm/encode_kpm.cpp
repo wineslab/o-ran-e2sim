@@ -560,6 +560,8 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
   servingstr->size = serving_buf_len;
   memcpy(servingstr->buf, serving_buf, servingstr->size);
 
+  // need to free buffer here since it's reallocated after
+  if (ts->buf) free(ts->buf);
 
   int neighbor_buf_len = strlen((char*)neighbor_buf);
   //  uint8_t *buf_neighbor = (uint8_t*)"-10,-15";
@@ -580,12 +582,13 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
   ranco->timestamp = *ts;
   ranco->reportContainer.present = RAN_Container__reportContainer_PR_oCU_CP_UE;
   ASN_SEQUENCE_ADD(&ranco->reportContainer.choice.oCU_CP_UE.cellResourceReportList.list, report_item);
-  if (ts->buf) free(ts->buf);
+  
+  // this piece below causes double free when doing ASN_STRUCT_FREE on the RIC Indication message
+  // if (ts->buf) free(ts->buf);
+  
   if (ts) free(ts);
 
   xer_fprint(stderr, &asn_DEF_RAN_Container, ranco);
-  
-
 }
 
 void encode_kpm_ocucp_user_level(RAN_Container_t *ranco) {
@@ -821,9 +824,7 @@ void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_
 			 indicationmessage, e2smbuffer, e2smbuffer_size);
 
   fprintf(stderr, "er encded is %ld\n", er.encoded);
-  fprintf(stderr, "after encoding message\n");
-
-
+  fprintf(stderr, "exiting of encode_kpm_report_rancontainer_du_parameterized\n");
 }
 
 void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessage_t* indicationmessage,
@@ -884,7 +885,6 @@ void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessag
 
   fprintf(stderr, "er encded is %ld\n", er.encoded);
   fprintf(stderr, "after encoding message\n");
-  
 }
 						       
 						       

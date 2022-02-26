@@ -23,3 +23,5 @@ void callback_kpm_subscription_request(E2AP_PDU_t *pdu);
 void callback_kpm_control(E2AP_PDU_t *pdu);
 
 void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long actionId);
+void encode_and_send_ric_indication_report_metrics_single(long seqNum, long requestorId, long instanceId, long ranFunctionId, long actionId);
+void encode_and_send_ric_indication_report_metrics_buffer(long seqNum, long requestorId, long instanceId, long ranFunctionId, long actionId);
