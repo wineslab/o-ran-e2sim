@@ -1071,7 +1071,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 			handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id);
 		}
 		catch (const std::invalid_argument) {
-			fprintf(stderr, "handling exception, no valid trigger. Received %s\n", triggerDef.buf);
+			fprintf(stderr, "handling exception, no valid trigger. Received %s\n", triggerDef->buf);
 
 			if (DEBUG) {
 				fprintf(stderr, "In DEBUG mode, setting trigger manually\n");
