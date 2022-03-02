@@ -959,7 +959,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				fprintf(stderr,"in case subscription details\n");
 				RICsubscriptionDetails_t subDetails = next_ie->value.choice.RICsubscriptionDetails;
 				fprintf(stderr,"in case subscription details 1\n");	
-				triggerDef = subDetails.ricEventTriggerDefinition;
+				triggerDef = &subDetails.ricEventTriggerDefinition;
 				fprintf(stderr,"in case subscription details 2\n");	
 				RICactions_ToBeSetup_List_t actionList = subDetails.ricAction_ToBeSetup_List;
 				fprintf(stderr,"in case subscription details 3\n");
