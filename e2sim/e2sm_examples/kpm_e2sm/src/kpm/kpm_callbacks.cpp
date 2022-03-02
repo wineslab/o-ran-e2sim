@@ -928,8 +928,9 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	std::vector<long> actionIdsReject;
 
 	long requestorId;
-	// E2SM_HelloWorld_EventTriggerDefinition_t *triggerDef;
 	RICeventTriggerDefinition_t *triggerDef;
+	triggerDef->buf = NULL;
+	triggerDef->size = 0;
 
 	for (int i=0; i < count; i++) {
 		RICsubscriptionRequest_IEs_t *next_ie = ies[i];
@@ -965,11 +966,17 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				fprintf(stderr,"in case subscription details 2\n");	
 				RICactions_ToBeSetup_List_t actionList = subDetails.ricAction_ToBeSetup_List;
 				fprintf(stderr,"in case subscription details 3\n");
-	//We are ignoring the trigger definition
 
-	//We identify the first action whose type is REPORT
-	//That is the only one accepted; all others are rejected
+				// print trigger information
+				if (triggerDef->buf) {
+					fprintf(stderr, "Received trigger %s\n", triggerDef->buf);
+				}
+				else {
+					fprintf(stderr, "No trigger received in subscription request\n");
+				}
 
+				// We identify the first action whose type is REPORT
+				// That is the only one accepted; all others are rejected
 				int actionCount = actionList.list.count;
 				fprintf(stderr, "action count%d\n", actionCount);
 
@@ -991,34 +998,10 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					} else {
 						reqActionId = actionId;
 						fprintf(stderr, "action rejected but not added to vector\n");
-	    // printf("adding reject\n");
-	    // actionIdsReject.push_back(reqActionId);
+	    			// printf("adding reject\n");
+	    			// actionIdsReject.push_back(reqActionId);
 					}
 				}
-
-				// TODO: process trigger
-				xer_fprint(stderr, &asn_DEF_RICeventTriggerDefinition, triggerDef);
-
-			  char out[size + 1];
-			  int size = triggerDef->size;
-			  std::memcpy (out, triggerDef->buf, size);
-			  out[size] = '\0';
-
-				std::cout << "Trigger value: " << out << std::endl;
-				// if (triggerDef->present == E2SM_HelloWorld_EventTriggerDefinition_PR_eventDefinition_Format1) {
-				// 	fprintf(stderr, "Processing triggerDef\n");
-
-				// 	// HW_TriggerNature_t trigger_nature = triggerDef->choice.eventDefinition_Format1->triggerNature;
-				// 	std::cout << "Trigger nature " << triggerDef->choice.eventDefinition_Format1->triggerNature << std::endl;
-				// }
-				// else {
-				// 	fprintf(stderr, "Unknown triggerDef\n");
-				// 	std::cout << "triggerDef: " << triggerDef->present << std::endl;
-				// }
-
-
-
-				// fprintf(stderr, "Received triggerDef: %s\n", triggerDef.buf);
 
 				break;
 			}
@@ -1064,51 +1047,46 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   //  loop_thread = std::thread(&run_report_loop);
 
   // start report loop in a dedicated thread
-  // disable for now
-	// if (triggerDef.buf) {
-	// 	std::string trigger_str((char*) triggerDef.buf);
+	if (triggerDef->buf) {
+		std::string trigger_str((char*) triggerDef->buf);
 
-	// 	long *ric_req_id = (long*) calloc(1, sizeof(long));
-	// 	ric_req_id[0] = requestorId;
+		long *ric_req_id = (long*) calloc(1, sizeof(long));
+		ric_req_id[0] = requestorId;
 
-	// 	long *ric_instance_id = (long*) calloc(1, sizeof(long));
-	// 	ric_instance_id[0] = reqInstanceId;
+		long *ric_instance_id = (long*) calloc(1, sizeof(long));
+		ric_instance_id[0] = reqInstanceId;
 
-	// 	long *ran_function_id = (long*) calloc(1, sizeof(long));
-	// 	ran_function_id[0] = funcId;
+		long *ran_function_id = (long*) calloc(1, sizeof(long));
+		ran_function_id[0] = funcId;
 
-	// 	long *action_id = (long*) calloc(1, sizeof(long));
-	// 	action_id[0] = reqActionId;
+		long *action_id = (long*) calloc(1, sizeof(long));
+		action_id[0] = reqActionId;
 
-	// 	// TODO: send trigger timer in subscription message
-	// 	try {
-	// 		int trigger_timer = ((int) std::stoi(trigger_str) / 1000.0);
-	// 		fprintf(stderr, "received trigger_timer %d seconds from requestorId %ld\n", trigger_timer, requestorId);
+		// start thread for report loop
+		try {
+			int trigger_timer = ((int) std::stoi(trigger_str) / 1000.0);
+			fprintf(stderr, "received trigger_timer %d seconds from requestorId %ld\n", trigger_timer, requestorId);
 
-	// 		int *report_timer = (int*) calloc(1, sizeof(int));
-	// 		report_timer[0] = trigger_timer;
+			int *report_timer = (int*) calloc(1, sizeof(int));
+			report_timer[0] = trigger_timer;
 
-	// 		handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id);
-	// 	}
-	// 	catch (const std::invalid_argument) {
-	// 		fprintf(stderr, "handling exception, no valid trigger. Received %s\n", triggerDef.buf);
+			handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id);
+		}
+		catch (const std::invalid_argument) {
+			fprintf(stderr, "handling exception, no valid trigger. Received %s\n", triggerDef.buf);
 
-	// 		if (DEBUG) {
-	// 			fprintf(stderr, "In DEBUG mode, setting trigger manually\n");
+			if (DEBUG) {
+				fprintf(stderr, "In DEBUG mode, setting trigger manually\n");
 
-	// 			int trigger_timer = 1;
+				int trigger_timer = 1;
 
-	// 			int *report_timer = (int*) calloc(1, sizeof(int));
-	// 			report_timer[0] = trigger_timer;
+				int *report_timer = (int*) calloc(1, sizeof(int));
+				report_timer[0] = trigger_timer;
 
-	// 			handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id);
-	// 		}
-	// 	}
-	// }
-	// else {
-	// 	fprintf(stderr, "no trigger received\n");
-	// }
-
+				handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id);
+			}
+		}
+	}
 }
 
 void callback_kpm_control(E2AP_PDU_t *control_pdu) {
