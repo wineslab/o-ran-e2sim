@@ -995,7 +995,6 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 				// process trigger
 				fprintf(stderr, "Received triggerDef: %s\n", triggerDef.buf);
-				std::cout << "triggerDef " << triggerDef << std::endl;
 
 				break;
 			}
