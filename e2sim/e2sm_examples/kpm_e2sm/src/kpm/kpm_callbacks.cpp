@@ -944,10 +944,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				fprintf(stderr, "requestorId %ld\n", requestorId);
 				fprintf(stderr, "instanceId %ld\n", instanceId);
 				reqRequestorId = requestorId;
-				reqInstanceId = instanceId;
-
-				// debug print
-				xer_fprint(stderr, &asn_DEF_RICsubscriptionRequest, next_ie);	 
+				reqInstanceId = instanceId; 
 
 				break;
 			}
@@ -986,15 +983,18 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					if (!foundAction && (actionType == RICactionType_report || actionType == RICactionType_insert)) {
 						reqActionId = actionId;
 						actionIdsAccept.push_back(reqActionId);
-						printf("adding accept\n");
+						fprintf(stderr, "adding accept\n");
 						foundAction = true;
 					} else {
 						reqActionId = actionId;
-						printf("action rejected but not added to vector\n");
+						fprintf(stderr, "action rejected but not added to vector\n");
 	    // printf("adding reject\n");
 	    // actionIdsReject.push_back(reqActionId);
 					}
 				}
+
+				// process trigger
+				fprintf(stderr, "Received triggerDef: %s", triggerDef.buf);
 
 				break;
 			}
