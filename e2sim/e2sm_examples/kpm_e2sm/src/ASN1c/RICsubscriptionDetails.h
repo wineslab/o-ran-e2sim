@@ -22,7 +22,8 @@ extern "C" {
 
 /* RICsubscriptionDetails */
 typedef struct RICsubscriptionDetails {
-	RICeventTriggerDefinition_t	 ricEventTriggerDefinition;
+	// RICeventTriggerDefinition_t	 ricEventTriggerDefinition;
+	E2SM_HelloWorld_EventTriggerDefinition_t ricEventTriggerDefinition;
 	RICactions_ToBeSetup_List_t	 ricAction_ToBeSetup_List;
 	/*
 	 * This type is extensible,
