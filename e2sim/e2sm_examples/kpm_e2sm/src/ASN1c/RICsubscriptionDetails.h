@@ -13,6 +13,7 @@
 
 /* Including external dependencies */
 #include "RICeventTriggerDefinition.h"
+#include "E2SM-HelloWorld-EventTriggerDefinition.h"
 #include "RICactions-ToBeSetup-List.h"
 #include "constr_SEQUENCE.h"
 
