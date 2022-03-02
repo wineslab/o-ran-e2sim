@@ -41,6 +41,7 @@ extern "C" {
   #include "InitiatingMessage.h"
   #include "srs_connector.h"
   #include "E2SM-HelloWorld-EventTriggerDefinition.h"
+  #include "E2SM-HelloWorld-EventTriggerDefinition-Format1.h"
 }
 
 #include "kpm_callbacks.hpp"
@@ -995,6 +996,15 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				}
 
 				// TODO: process trigger
+				if (triggerDef->present == E2SM_HelloWorld_EventTriggerDefinition_PR_eventDefinition_Format1) {
+					fprintf(stderr, "Processing triggerDef\n");
+
+					// HW_TriggerNature_t trigger_nature = triggerDef->choice.eventDefinition_Format1->triggerNature;
+					std::cout << "Trigger nature " << triggerDef->choice.eventDefinition_Format1->triggerNature << std::endl;
+				}
+
+
+
 				// fprintf(stderr, "Received triggerDef: %s\n", triggerDef.buf);
 
 				break;
