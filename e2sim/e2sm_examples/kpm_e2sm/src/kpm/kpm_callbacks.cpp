@@ -998,7 +998,13 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 				// TODO: process trigger
 				xer_fprint(stderr, &asn_DEF_RICeventTriggerDefinition, triggerDef);
-				std::cout << "Trigger nature " << triggerDef->buf << std::endl;
+
+			  char out[size + 1];
+			  int size = triggerDef->size;
+			  std::memcpy (out, triggerDef->buf, size);
+			  out[size] = '\0';
+
+				std::cout << "Trigger value: " << out << std::endl;
 				// if (triggerDef->present == E2SM_HelloWorld_EventTriggerDefinition_PR_eventDefinition_Format1) {
 				// 	fprintf(stderr, "Processing triggerDef\n");
 
