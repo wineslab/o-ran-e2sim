@@ -1002,6 +1002,10 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					// HW_TriggerNature_t trigger_nature = triggerDef->choice.eventDefinition_Format1->triggerNature;
 					std::cout << "Trigger nature " << triggerDef->choice.eventDefinition_Format1->triggerNature << std::endl;
 				}
+				else {
+					std::cout << "Debug" << std::endl;
+					std::cout << "Trigger nature " << triggerDef->choice.eventDefinition_Format1->triggerNature << std::endl;	
+				}
 
 
 
