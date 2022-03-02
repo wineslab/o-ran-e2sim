@@ -996,6 +996,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				}
 
 				// TODO: process trigger
+				xer_fprint(&asn_DEF_E2SM_HelloWorld_EventTriggerDefinition, triggerDef);
 				if (triggerDef->present == E2SM_HelloWorld_EventTriggerDefinition_PR_eventDefinition_Format1) {
 					fprintf(stderr, "Processing triggerDef\n");
 
