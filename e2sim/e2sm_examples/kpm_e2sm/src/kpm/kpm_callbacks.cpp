@@ -1003,8 +1003,8 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					std::cout << "Trigger nature " << triggerDef->choice.eventDefinition_Format1->triggerNature << std::endl;
 				}
 				else {
-					std::cout << "Debug" << std::endl;
-					std::cout << "Trigger nature " << triggerDef->choice.eventDefinition_Format1->triggerNature << std::endl;	
+					fprintf(stderr, "Unknown triggerDef\n");
+					std::cout << "triggerDef: " << triggerDef->present << std::endl;
 				}
 
 
