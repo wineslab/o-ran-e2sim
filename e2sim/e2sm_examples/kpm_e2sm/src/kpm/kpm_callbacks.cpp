@@ -40,6 +40,7 @@ extern "C" {
   #include "ProtocolIE-SingleContainer.h"
   #include "InitiatingMessage.h"
   #include "srs_connector.h"
+  #include "E2SM-HelloWorld-EventTriggerDefinition.h"
 }
 
 #include "kpm_callbacks.hpp"
@@ -926,7 +927,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	std::vector<long> actionIdsReject;
 
 	long requestorId;
-	RICeventTriggerDefinition_t triggerDef;
+	E2SM_HelloWorld_EventTriggerDefinition_t *triggerDef;
 
 	for (int i=0; i < count; i++) {
 		RICsubscriptionRequest_IEs_t *next_ie = ies[i];
