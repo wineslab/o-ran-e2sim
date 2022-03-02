@@ -1052,6 +1052,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 		long *action_id = (long*) calloc(1, sizeof(long));
 		action_id[0] = reqActionId;
 
+		// TODO: send trigger timer in subscription message
 		try {
 			int trigger_timer = ((int) std::stoi(trigger_str) / 1000.0);
 			fprintf(stderr, "received trigger_timer %d seconds from requestorId %ld\n", trigger_timer, requestorId);
