@@ -930,7 +930,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 	for (int i=0; i < count; i++) {
 		RICsubscriptionRequest_IEs_t *next_ie = ies[i];
-		pres = next_ie->value.present;
+		pres = next_ie->value.present; 
 
 		fprintf(stderr, "The next present value %d\n", pres);
 
@@ -945,6 +945,9 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				fprintf(stderr, "instanceId %ld\n", instanceId);
 				reqRequestorId = requestorId;
 				reqInstanceId = instanceId;
+
+				// debug print
+				xer_fprint(stderr, &asn_DEF_RICsubscriptionRequest, next_ie);	 
 
 				break;
 			}
