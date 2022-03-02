@@ -40,8 +40,6 @@ extern "C" {
   #include "ProtocolIE-SingleContainer.h"
   #include "InitiatingMessage.h"
   #include "srs_connector.h"
-  #include "E2SM-HelloWorld-EventTriggerDefinition.h"
-  #include "E2SM-HelloWorld-EventTriggerDefinition-Format1.h"
 }
 
 #include "kpm_callbacks.hpp"
