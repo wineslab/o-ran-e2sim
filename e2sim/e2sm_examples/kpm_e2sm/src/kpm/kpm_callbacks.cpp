@@ -928,7 +928,8 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	std::vector<long> actionIdsReject;
 
 	long requestorId;
-	E2SM_HelloWorld_EventTriggerDefinition_t *triggerDef;
+	// E2SM_HelloWorld_EventTriggerDefinition_t *triggerDef;
+	RICeventTriggerDefinition_t *triggerDef;
 
 	for (int i=0; i < count; i++) {
 		RICsubscriptionRequest_IEs_t *next_ie = ies[i];
@@ -996,17 +997,18 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				}
 
 				// TODO: process trigger
-				xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_EventTriggerDefinition, triggerDef);
-				if (triggerDef->present == E2SM_HelloWorld_EventTriggerDefinition_PR_eventDefinition_Format1) {
-					fprintf(stderr, "Processing triggerDef\n");
+				xer_fprint(stderr, &asn_DEF_RICeventTriggerDefinition, triggerDef);
+				std::cout << "Trigger nature " << triggerDef->buf << std::endl;
+				// if (triggerDef->present == E2SM_HelloWorld_EventTriggerDefinition_PR_eventDefinition_Format1) {
+				// 	fprintf(stderr, "Processing triggerDef\n");
 
-					// HW_TriggerNature_t trigger_nature = triggerDef->choice.eventDefinition_Format1->triggerNature;
-					std::cout << "Trigger nature " << triggerDef->choice.eventDefinition_Format1->triggerNature << std::endl;
-				}
-				else {
-					fprintf(stderr, "Unknown triggerDef\n");
-					std::cout << "triggerDef: " << triggerDef->present << std::endl;
-				}
+				// 	// HW_TriggerNature_t trigger_nature = triggerDef->choice.eventDefinition_Format1->triggerNature;
+				// 	std::cout << "Trigger nature " << triggerDef->choice.eventDefinition_Format1->triggerNature << std::endl;
+				// }
+				// else {
+				// 	fprintf(stderr, "Unknown triggerDef\n");
+				// 	std::cout << "triggerDef: " << triggerDef->present << std::endl;
+				// }
 
 
 
