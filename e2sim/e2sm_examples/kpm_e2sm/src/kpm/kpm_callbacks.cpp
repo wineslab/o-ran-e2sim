@@ -925,7 +925,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	std::vector<long> actionIdsAccept;
 	std::vector<long> actionIdsReject;
 
-	long requestorId = 0;
+	long requestorId;
 	RICeventTriggerDefinition_t *triggerDef;
 	triggerDef->buf = NULL;
 	triggerDef->size = 0;
@@ -942,6 +942,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				fprintf(stderr,"in case request id\n");	
 				RICrequestID_t reqId = next_ie->value.choice.RICrequestID;
 				requestorId = reqId.ricRequestorID;
+				std::cout << "reqId.ricRequestorID " << reqId.ricRequestorID << std::endl;
 				long instanceId = reqId.ricInstanceID;
 				fprintf(stderr, "requestorId %ld\n", requestorId);
 				fprintf(stderr, "instanceId %ld\n", instanceId);
