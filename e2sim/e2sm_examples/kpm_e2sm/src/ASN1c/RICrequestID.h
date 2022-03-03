@@ -21,7 +21,7 @@ extern "C" {
 
 /* RICrequestID */
 typedef struct RICrequestID {
-	int	 ricRequestorID;
+	long	 ricRequestorID;
 	long	 ricInstanceID;
 	/*
 	 * This type is extensible,
