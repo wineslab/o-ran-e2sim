@@ -124,7 +124,6 @@ int main(int argc, char* argv[]) {
 
   // register callbacks
 	e2sim.register_sm_callback(0,&callback_kpm_subscription_request);
-	e2sim.register_sm_callback(1,&callback_kpm_subscription_request);
 	e2sim.register_sm_callback(300,&callback_kpm_control);
 
 	e2sim.run_loop(argc, argv);
@@ -905,9 +904,6 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	RICsubscriptionRequest_t orig_req =
 	sub_req_pdu->choice.initiatingMessage->value.choice.RICsubscriptionRequest;
 
-	// RICsubscriptionResponse_IEs_t *ricreqid =
-	// (RICsubscriptionResponse_IEs_t*)calloc(1, sizeof(RICsubscriptionResponse_IEs_t));
-
 	int count = orig_req.protocolIEs.list.count;
 	int size = orig_req.protocolIEs.list.size;
 
@@ -1020,7 +1016,6 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 	for (int i=0; i < actionIdsAccept.size(); i++) {
 		fprintf(stderr, "Action ID %d %ld\n", i, actionIdsAccept.at(i));
-
 	}
 
 	E2AP_PDU *e2ap_pdu = (E2AP_PDU*)calloc(1,sizeof(E2AP_PDU));
