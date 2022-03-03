@@ -925,7 +925,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	std::vector<long> actionIdsAccept;
 	std::vector<long> actionIdsReject;
 
-	long requestorId;
+	long requestorId = 0;
 	RICeventTriggerDefinition_t *triggerDef;
 	triggerDef->buf = NULL;
 	triggerDef->size = 0;
