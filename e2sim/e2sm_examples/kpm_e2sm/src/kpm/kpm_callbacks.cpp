@@ -1089,7 +1089,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 	long reqRequestorId;
 	long reqInstanceId;
 	long ranFunctionId;
-	long reqRICcallProcessID;
+	char* reqRICcallProcessID;
 	uint8_t* ricEventTrigger = NULL;
 
 	uint32_t recvBufLen;
@@ -1129,12 +1129,14 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 			case RICcontrolRequest_IEs__value_PR_RANfunctionID: {
 				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RANfunctionID");
 				ranFunctionId = ie->value.choice.RANfunctionID;
+				fprintf(stderr, "ranFunctionId %ld\n", ranFunctionId);
 				break;
 			}
 
 			case RICcontrolRequest_IEs__value_PR_RICcallProcessID: {
 				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcallProcessID");
-				reqRICcallProcessID = ie->value.choice.RICcallProcessID;
+				reqRICcallProcessID = ie->value.choice.RICcallProcessID->buf;
+				fprintf(stderr, "reqRICcallProcessID %s\n", reqRICcallProcessID);
 				break;
 			}
 			case RICcontrolRequest_IEs__value_PR_RICcontrolHeader: {
