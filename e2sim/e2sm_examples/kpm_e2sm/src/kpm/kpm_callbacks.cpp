@@ -1175,13 +1175,20 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 
 				xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_ControlMessage, e2SmControlMessage);
 
+				// get payload
 				if (e2SmControlMessage->present == E2SM_HelloWorld_ControlMessage_PR_controlMessage_Format1)
 				{
 					fprintf(stderr, "[E2SM] E2SM_HelloWorld_ControlMessage_PR_controlMessage_Format1");
 					
 					E2SM_HelloWorld_ControlMessage_Format1_t *e2SmRcControlMessageFormat1 = e2SmControlMessage->choice.controlMessage_Format1;
-					// TODO
-					// m_valuesExtracted = ExtractRANParametersFromControlMessage(e2SmRcControlMessageFormat1);
+					
+					if (e2SmRcControlMessageFormat1->controlMsgParam.size) {
+					  std::string payload(e2SmRcControlMessageFormat1->controlMsgParam.buf);
+					  fprintf(stderr, "Print content of RIC Control Request %s\n", payload.c_str());
+					}
+					else {
+						fprintf(stderr, "No payload in RIC Control Request\n");
+					}
 				}
 				else
 				{
