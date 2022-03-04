@@ -357,29 +357,32 @@ void e2ap_handle_RICControlRequest(E2AP_PDU_t *pdu, int &socket_fd, E2Sim *e2sim
         LOG_E("Error: No RAN Function with this ID exists");
     }
 
-    auto* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
-    encoding::generate_e2apv1_ric_control_acknowledge(res_pdu);
+    // disable RIC Control ACK
+    if (false) {
+      auto* res_pdu = (E2AP_PDU_t*)calloc(1, sizeof(E2AP_PDU));
+      encoding::generate_e2apv1_ric_control_acknowledge(res_pdu);
 
-    LOG_D("[E2AP] Created E2-RIC-CONTROL-ACKNOWLEDGE");
+      LOG_D("[E2AP] Created E2-RIC-CONTROL-ACKNOWLEDGE");
 
-    e2ap_asn1c_print_pdu(res_pdu);
+      e2ap_asn1c_print_pdu(res_pdu);
 
-    auto buffer_size = MAX_SCTP_BUFFER;
-    unsigned char buffer[MAX_SCTP_BUFFER];
+      auto buffer_size = MAX_SCTP_BUFFER;
+      unsigned char buffer[MAX_SCTP_BUFFER];
 
-    sctp_buffer_t data;
-    auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
+      sctp_buffer_t data;
+      auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
 
-    LOG_D("er encoded is %zd\n", er.encoded);
-    data.len = (int) er.encoded;
+      LOG_D("er encoded is %zd\n", er.encoded);
+      data.len = (int) er.encoded;
 
-    memcpy(data.buffer, buffer, er.encoded);
+      memcpy(data.buffer, buffer, er.encoded);
 
-    //send response data over sctp
-    if (sctp_send_data(socket_fd, data) > 0) {
-      LOG_I("[SCTP] Sent E2-SERVICE-UPDATE");
-    } else {
-      LOG_E("[SCTP] Unable to send E2-SERVICE-UPDATE to peer");
+      //send response data over sctp
+      if (sctp_send_data(socket_fd, data) > 0) {
+        LOG_I("[SCTP] Sent E2-SERVICE-UPDATE");
+      } else {
+        LOG_E("[SCTP] Unable to send E2-SERVICE-UPDATE to peer");
+      }
     }
 }
 
