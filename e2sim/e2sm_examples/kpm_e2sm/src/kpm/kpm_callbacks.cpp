@@ -374,7 +374,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 						ATS_ALIGNED_BASIC_PER,
 						&asn_DEF_E2SM_KPM_IndicationMessage,
 						ind_msg_cucp_ue, e2sm_message_buf_cucp_ue, e2sm_message_buf_size_cucp_ue);
-	  			ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_msg_cucp_ue);
+					ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_IndicationMessage, ind_msg_cucp_ue);
 
 					fprintf(stderr, "er encded is %ld\n", er_message_cucp_ue.encoded);
 					fprintf(stderr, "after encoding message\n");
