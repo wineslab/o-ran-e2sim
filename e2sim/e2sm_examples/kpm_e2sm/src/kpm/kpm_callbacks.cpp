@@ -1087,9 +1087,9 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 	long reqRequestorId;
 	long reqInstanceId;
 	long ranFunctionId;
+	long reqRICcallProcessID;
 	uint8_t* ricEventTrigger = NULL;
 
-	uint8_t idx;
 	uint32_t recvBufLen;
 	RICcontrolRequest_t *ricControlRequest;
 
@@ -1098,58 +1098,175 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 
 	fprintf(stderr, "protocolIEs elements %d\n", ricControlRequest->protocolIEs.list.count);
 
-	for (idx = 0; idx < ricControlRequest->protocolIEs.list.count; idx++) {
-		switch(ricControlRequest->protocolIEs.list.array[idx]->id) {
-			case ProtocolIE_ID_id_RICrequestID: {
-        // fprintf(stderr, "ProtocolIE_IDE2_id_RICrequestID\n");
-				reqRequestorId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICrequestID.ricRequestorID;
-				reqInstanceId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICrequestID.ricInstanceID;
+	for (int idx = 0; idx < ricControlRequest->protocolIEs.list.count; idx++) {
+		RICcontrolRequest_IEs_t *ie = request->protocolIEs.list.array[idx];
+		
+		switch (ie->value.present) {
+			case RICcontrolRequest_IEs__value_PR_RICrequestID: {
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICrequestID");
+
+				reqRequestorId = ie->value.choice.RICrequestID.ricRequestorID;
+				reqInstanceId = ie->value.choice.RICrequestID.ricInstanceID;
 
 				fprintf(stderr, "reqRequestorId %ld\n", reqRequestorId);
 				fprintf(stderr, "reqInstanceId %ld\n", reqInstanceId);
+
+				switch (reqRequestorId) {
+					case 1001: {
+						fprintf(stderr, "TS xApp message");
+						break;
+					}
+					case 1002: {
+						fprintf(stderr, "QoS xApp message");
+						break;
+					}
+				}
 				break;
 			}
 
-			case ProtocolIE_ID_id_RANfunctionID: {
-        // fprintf(stderr, "ProtocolIE_IDE2_id_RANfunctionID\n");
-				ranFunctionId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RANfunctionID;
-				fprintf(stderr, "ranFunctionId %ld\n", ranFunctionId);
+			case RICcontrolRequest_IEs__value_PR_RANfunctionID: {
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RANfunctionID");
+				ranFunctionId = ie->value.choice.RANfunctionID
 				break;
 			}
 
-			case ProtocolIE_ID_id_RICcontrolMessage: {
-				fprintf(stderr, "ProtocolIE_ID_id_RICcontrolMessage\n");
-				recvBufLen = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICcontrolMessage.size;
+			case RICcontrolRequest_IEs__value_PR_RICcallProcessID: {
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcallProcessID");
+				reqRICcallProcessID = ie->value.choice.RICcallProcessID;
+				break;
+			}
+			case RICcontrolRequest_IEs__value_PR_RICcontrolHeader: {
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolHeader");
+        // xer_fprint(stderr, &asn_DEF_RICcontrolHeader, &ie->value.choice.RICcontrolHeader);
 
-				ricEventTrigger = (uint8_t*) calloc(1, recvBufLen);
-				if(ricEventTrigger) {
-					memcpy(ricEventTrigger, ricControlRequest->protocolIEs.list.array[idx]\
-						->value.choice.RICcontrolMessage.buf, recvBufLen);
+				E2SM_HelloWorld_ControlHeader_t *e2smControlHeader = (E2SM_HelloWorld_ControlHeader_t *) calloc(1, sizeof(E2SM_HelloWorld_ControlHeader_t));
+				ASN_STRUCT_RESET(asn_DEF_E2SM_HelloWorld_ControlHeader, e2smControlHeader);
+
+				asn_decode (nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_HelloWorld_ControlHeader,
+					(void **) &e2smControlHeader, ie->value.choice.RICcontrolHeader.buf,
+					ie->value.choice.RICcontrolHeader.size);
+
+				xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_ControlHeader, e2smControlHeader);
+
+				if (e2smControlHeader->present == E2SM_HelloWorld_ControlHeader_PR_controlHeader_Format1) {
+					E2SM_HelloWorld_ControlHeader_Format1_t* m_e2SmRcControlHeaderFormat1 = e2smControlHeader->choice.controlHeader_Format1;
+				} else {
+					fprintf(stderr, "[E2SM] Error in checking format of E2SM Control Header");
 				}
-
-				fprintf(stderr, "Print content of ricEventTrigger (which should be the RICcontrolMessage)\n");
-				fprintf(stderr, "%s\n", ricEventTrigger);
-				fprintf(stderr, "ricEventTrigger printed\n");
-
-        // TODO: log and write control
-        // log message on file
-				log_message((char*) ricEventTrigger, (char*) "control", (int) recvBufLen);
-
-        // write policies on config file
-				if (strcmp((char*) ricEventTrigger, "terminate") == 0) {
-					stop_data_reporting_nrt_ric();
-				}
-				else {
-					write_control_policies((char*) ricEventTrigger);
-				}
-
 				break;
 			}
 
-			case ProtocolIE_ID_id_RICcontrolHeader:
-			fprintf(stderr, "ProtocolIE_ID_id_RICcontrolHeader\n");
-        // TODO
-			break;
+			case RICcontrolRequest_IEs__value_PR_RICcontrolMessage: {
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolMessage");
+        // xer_fprint(stderr, &asn_DEF_RICcontrolMessage, &ie->value.choice.RICcontrolMessage);
+
+				E2SM_HelloWorld_ControlMessage_t *e2SmControlMessage = (E2SM_HelloWorld_ControlMessage_t *) calloc(1, sizeof(E2SM_HelloWorld_ControlMessage_t));
+				ASN_STRUCT_RESET(asn_DEF_E2SM_HelloWorld_ControlMessage, e2SmControlMessage);
+
+				asn_decode (nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_HelloWorld_ControlMessage,
+					(void **) &e2SmControlMessage, ie->value.choice.RICcontrolMessage.buf,
+					ie->value.choice.RICcontrolMessage.size);
+
+				xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_ControlMessage, e2SmControlMessage);
+
+				if (e2SmControlMessage->present == E2SM_HelloWorld_ControlMessage_PR_controlMessage_Format1)
+				{
+					fprintf(stderr, "[E2SM] E2SM_HelloWorld_ControlMessage_PR_controlMessage_Format1");
+					
+					E2SM_HelloWorld_ControlMessage_Format1_t *e2SmRcControlMessageFormat1 = e2SmControlMessage->choice.controlMessage_Format1;
+					// TODO
+					// m_valuesExtracted = ExtractRANParametersFromControlMessage(e2SmRcControlMessageFormat1);
+				}
+				else
+				{
+					fprintf(stderr, "[E2SM] Error in checking format of E2SM Control Message");
+				}
+				break;
+			}
+			case RICcontrolRequest_IEs__value_PR_RICcontrolAckRequest: {
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolAckRequest");
+
+				switch (ie->value.choice.RICcontrolAckRequest) {
+					case RICcontrolAckRequest_noAck: {
+						fprintf(stderr, "[E2SM] RIC Control ack value: NO ACK");
+						break;
+					}
+					case RICcontrolAckRequest_ack: {
+						fprintf(stderr, "[E2SM] RIC Control ack value: ACK");
+						break;
+					}
+					case RICcontrolAckRequest_nAck: {
+						fprintf(stderr, "[E2SM] RIC Control ack value: NACK");
+						break;
+					}
+					default: {
+						fprintf(stderr, "[E2SM] RIC Control ack value unknown");
+						break;
+					}
+				}
+				break;
+			}
+			case RICcontrolRequest_IEs__value_PR_NOTHING: {
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_NOTHING");
+				fprintf(stderr, "[E2SM] Nothing");
+				break;
+			}
+			default: {
+				fprintf(stderr, "[E2SM] RIC Control value unknown");
+				break;
+			}
 		}
+	// 	switch(ricControlRequest->protocolIEs.list.array[idx]->id) {
+	// 		case ProtocolIE_ID_id_RICrequestID: {
+ //        // fprintf(stderr, "ProtocolIE_IDE2_id_RICrequestID\n");
+	// 			reqRequestorId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICrequestID.ricRequestorID;
+	// 			reqInstanceId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICrequestID.ricInstanceID;
+
+	// 			fprintf(stderr, "reqRequestorId %ld\n", reqRequestorId);
+	// 			fprintf(stderr, "reqInstanceId %ld\n", reqInstanceId);
+	// 			break;
+	// 		}
+
+	// 		case ProtocolIE_ID_id_RANfunctionID: {
+ //        // fprintf(stderr, "ProtocolIE_IDE2_id_RANfunctionID\n");
+	// 			ranFunctionId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RANfunctionID;
+	// 			fprintf(stderr, "ranFunctionId %ld\n", ranFunctionId);
+	// 			break;
+	// 		}
+
+	// 		case ProtocolIE_ID_id_RICcontrolMessage: {
+	// 			fprintf(stderr, "ProtocolIE_ID_id_RICcontrolMessage\n");
+	// 			recvBufLen = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICcontrolMessage.size;
+
+	// 			ricEventTrigger = (uint8_t*) calloc(1, recvBufLen);
+	// 			if(ricEventTrigger) {
+	// 				memcpy(ricEventTrigger, ricControlRequest->protocolIEs.list.array[idx]\
+	// 					->value.choice.RICcontrolMessage.buf, recvBufLen);
+	// 			}
+
+	// 			fprintf(stderr, "Print content of ricEventTrigger (which should be the RICcontrolMessage)\n");
+	// 			fprintf(stderr, "%s\n", ricEventTrigger);
+	// 			fprintf(stderr, "ricEventTrigger printed\n");
+
+ //        // TODO: log and write control
+ //        // log message on file
+	// 			log_message((char*) ricEventTrigger, (char*) "control", (int) recvBufLen);
+
+ //        // write policies on config file
+	// 			if (strcmp((char*) ricEventTrigger, "terminate") == 0) {
+	// 				stop_data_reporting_nrt_ric();
+	// 			}
+	// 			else {
+	// 				write_control_policies((char*) ricEventTrigger);
+	// 			}
+
+	// 			break;
+	// 		}
+
+	// 		case ProtocolIE_ID_id_RICcontrolHeader:
+	// 		fprintf(stderr, "ProtocolIE_ID_id_RICcontrolHeader\n");
+ //        // TODO
+	// 		break;
+	// 	}
 	}
 }
