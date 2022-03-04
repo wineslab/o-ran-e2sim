@@ -1091,7 +1091,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 	long reqRequestorId;
 	long reqInstanceId;
 	long ranFunctionId;
-	char* reqRICcallProcessID;
+	unsigned char* reqRICcallProcessID;
 	uint8_t* ricEventTrigger = NULL;
 
 	uint32_t recvBufLen;
