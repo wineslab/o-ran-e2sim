@@ -1091,8 +1091,8 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 	long reqRequestorId;
 	long reqInstanceId;
 	long ranFunctionId;
-	unsigned char* reqRICcallProcessID;
-	uint8_t* ricEventTrigger = NULL;
+	uint8_t* reqRICcallProcessID;
+	uint8_t* ricControlRequestPayload = NULL;
 
 	uint32_t recvBufLen;
 	RICcontrolRequest_t *ricControlRequest;
@@ -1182,9 +1182,15 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 					
 					E2SM_HelloWorld_ControlMessage_Format1_t *e2SmRcControlMessageFormat1 = e2SmControlMessage->choice.controlMessage_Format1;
 					
-					if (e2SmRcControlMessageFormat1->controlMsgParam.size) {
-					  std::string payload(e2SmRcControlMessageFormat1->controlMsgParam.buf);
-					  fprintf(stderr, "Print content of RIC Control Request %s\n", payload.c_str());
+					int recvBufLen = e2SmRcControlMessageFormat1->controlMsgParam.size;
+					if (recvBufLen > 0) {
+						ricControlRequestPayload = (uint8_t*) calloc(1, recvBufLen);
+						memcpy(ricControlRequestPayload, e2SmRcControlMessageFormat1->controlMsgParam.buf, recvBufLen);
+
+					  // TODO: process
+					  fprintf(stderr, "Print content of RIC Control Request %s\n", ricControlRequestPayload);
+
+					  free(ricControlRequestPayload);
 					}
 					else {
 						fprintf(stderr, "No payload in RIC Control Request\n");
