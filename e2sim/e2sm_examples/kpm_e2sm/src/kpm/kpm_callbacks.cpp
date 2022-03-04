@@ -1101,7 +1101,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 	fprintf(stderr, "protocolIEs elements %d\n", ricControlRequest->protocolIEs.list.count);
 
 	for (int idx = 0; idx < ricControlRequest->protocolIEs.list.count; idx++) {
-		RICcontrolRequest_IEs_t *ie = request->protocolIEs.list.array[idx];
+		RICcontrolRequest_IEs_t *ie = ricControlRequest->protocolIEs.list.array[idx];
 		
 		switch (ie->value.present) {
 			case RICcontrolRequest_IEs__value_PR_RICrequestID: {
