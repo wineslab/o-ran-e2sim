@@ -1189,7 +1189,6 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 
 					  // TODO: process
 					  fprintf(stderr, "Print content of RIC Control Request %s\n", ricControlRequestPayload);
-					  fprintf(stderr, "Print content of RIC Control Request (buf) %s\n", e2SmRcControlMessageFormat1->controlMsgParam.buf);
 
 					  free(ricControlRequestPayload);
 					}
