@@ -1107,7 +1107,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 		
 		switch (ie->value.present) {
 			case RICcontrolRequest_IEs__value_PR_RICrequestID: {
-				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICrequestID");
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICrequestID\n");
 
 				reqRequestorId = ie->value.choice.RICrequestID.ricRequestorID;
 				reqInstanceId = ie->value.choice.RICrequestID.ricInstanceID;
@@ -1117,11 +1117,11 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 
 				switch (reqRequestorId) {
 					case 1001: {
-						fprintf(stderr, "TS xApp message");
+						fprintf(stderr, "TS xApp message\n");
 						break;
 					}
 					case 1002: {
-						fprintf(stderr, "QoS xApp message");
+						fprintf(stderr, "QoS xApp message\n");
 						break;
 					}
 				}
@@ -1129,20 +1129,20 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 			}
 
 			case RICcontrolRequest_IEs__value_PR_RANfunctionID: {
-				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RANfunctionID");
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RANfunctionID\n");
 				ranFunctionId = ie->value.choice.RANfunctionID;
 				fprintf(stderr, "ranFunctionId %ld\n", ranFunctionId);
 				break;
 			}
 
 			case RICcontrolRequest_IEs__value_PR_RICcallProcessID: {
-				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcallProcessID");
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcallProcessID\n");
 				reqRICcallProcessID = ie->value.choice.RICcallProcessID.buf;
 				fprintf(stderr, "reqRICcallProcessID %s\n", reqRICcallProcessID);
 				break;
 			}
 			case RICcontrolRequest_IEs__value_PR_RICcontrolHeader: {
-				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolHeader");
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolHeader\n");
         // xer_fprint(stderr, &asn_DEF_RICcontrolHeader, &ie->value.choice.RICcontrolHeader);
 
 				E2SM_HelloWorld_ControlHeader_t *e2smControlHeader = (E2SM_HelloWorld_ControlHeader_t *) calloc(1, sizeof(E2SM_HelloWorld_ControlHeader_t));
@@ -1157,13 +1157,13 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 				if (e2smControlHeader->present == E2SM_HelloWorld_ControlHeader_PR_controlHeader_Format1) {
 					E2SM_HelloWorld_ControlHeader_Format1_t* m_e2SmRcControlHeaderFormat1 = e2smControlHeader->choice.controlHeader_Format1;
 				} else {
-					fprintf(stderr, "[E2SM] Error in checking format of E2SM Control Header");
+					fprintf(stderr, "[E2SM] Error in checking format of E2SM Control Header\n");
 				}
 				break;
 			}
 
 			case RICcontrolRequest_IEs__value_PR_RICcontrolMessage: {
-				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolMessage");
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolMessage\n");
         // xer_fprint(stderr, &asn_DEF_RICcontrolMessage, &ie->value.choice.RICcontrolMessage);
 
 				E2SM_HelloWorld_ControlMessage_t *e2SmControlMessage = (E2SM_HelloWorld_ControlMessage_t *) calloc(1, sizeof(E2SM_HelloWorld_ControlMessage_t));
@@ -1178,7 +1178,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 				// get payload
 				if (e2SmControlMessage->present == E2SM_HelloWorld_ControlMessage_PR_controlMessage_Format1)
 				{
-					fprintf(stderr, "[E2SM] E2SM_HelloWorld_ControlMessage_PR_controlMessage_Format1");
+					fprintf(stderr, "[E2SM] E2SM_HelloWorld_ControlMessage_PR_controlMessage_Format1\n");
 					
 					E2SM_HelloWorld_ControlMessage_Format1_t *e2SmRcControlMessageFormat1 = e2SmControlMessage->choice.controlMessage_Format1;
 					
@@ -1189,6 +1189,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 
 					  // TODO: process
 					  fprintf(stderr, "Print content of RIC Control Request %s\n", ricControlRequestPayload);
+					  fprintf(stderr, "Print content of RIC Control Request (buf) %s\n", e2SmRcControlMessageFormat1->controlMsgParam.buf);
 
 					  free(ricControlRequestPayload);
 					}
@@ -1198,40 +1199,40 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 				}
 				else
 				{
-					fprintf(stderr, "[E2SM] Error in checking format of E2SM Control Message");
+					fprintf(stderr, "[E2SM] Error in checking format of E2SM Control Message\n");
 				}
 				break;
 			}
 			case RICcontrolRequest_IEs__value_PR_RICcontrolAckRequest: {
-				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolAckRequest");
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcontrolAckRequest\n");
 
 				switch (ie->value.choice.RICcontrolAckRequest) {
 					case RICcontrolAckRequest_noAck: {
-						fprintf(stderr, "[E2SM] RIC Control ack value: NO ACK");
+						fprintf(stderr, "[E2SM] RIC Control ack value: NO ACK\n");
 						break;
 					}
 					case RICcontrolAckRequest_ack: {
-						fprintf(stderr, "[E2SM] RIC Control ack value: ACK");
+						fprintf(stderr, "[E2SM] RIC Control ack value: ACK\n");
 						break;
 					}
 					case RICcontrolAckRequest_nAck: {
-						fprintf(stderr, "[E2SM] RIC Control ack value: NACK");
+						fprintf(stderr, "[E2SM] RIC Control ack value: NACK\n");
 						break;
 					}
 					default: {
-						fprintf(stderr, "[E2SM] RIC Control ack value unknown");
+						fprintf(stderr, "[E2SM] RIC Control ack value unknown\n");
 						break;
 					}
 				}
 				break;
 			}
 			case RICcontrolRequest_IEs__value_PR_NOTHING: {
-				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_NOTHING");
-				fprintf(stderr, "[E2SM] Nothing");
+				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_NOTHING\n");
+				fprintf(stderr, "[E2SM] Nothing\n");
 				break;
 			}
 			default: {
-				fprintf(stderr, "[E2SM] RIC Control value unknown");
+				fprintf(stderr, "[E2SM] RIC Control value unknown\n");
 				break;
 			}
 		}
