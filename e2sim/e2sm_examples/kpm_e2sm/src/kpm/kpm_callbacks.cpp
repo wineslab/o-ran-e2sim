@@ -42,6 +42,8 @@ extern "C" {
   #include "srs_connector.h"
   #include "E2SM-HelloWorld-ControlMessage.h"
   #include "E2SM-HelloWorld-ControlHeader.h"
+  #include "E2SM-HelloWorld-ControlMessage-Format1.h"
+  #include "E2SM-HelloWorld-ControlHeader-Format1.h"
 }
 
 #include "kpm_callbacks.hpp"
@@ -1135,7 +1137,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 
 			case RICcontrolRequest_IEs__value_PR_RICcallProcessID: {
 				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RICcallProcessID");
-				reqRICcallProcessID = ie->value.choice.RICcallProcessID->buf;
+				reqRICcallProcessID = ie->value.choice.RICcallProcessID.buf;
 				fprintf(stderr, "reqRICcallProcessID %s\n", reqRICcallProcessID);
 				break;
 			}
