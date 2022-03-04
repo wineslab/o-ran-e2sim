@@ -1128,7 +1128,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 
 			case RICcontrolRequest_IEs__value_PR_RANfunctionID: {
 				fprintf(stderr, "[E2SM] RICcontrolRequest_IEs__value_PR_RANfunctionID");
-				ranFunctionId = ie->value.choice.RANfunctionID
+				ranFunctionId = ie->value.choice.RANfunctionID;
 				break;
 			}
 
