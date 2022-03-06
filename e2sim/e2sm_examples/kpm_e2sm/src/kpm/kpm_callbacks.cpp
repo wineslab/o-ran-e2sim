@@ -1187,9 +1187,21 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 						ricControlRequestPayload = (uint8_t*) calloc(1, recvBufLen);
 						memcpy(ricControlRequestPayload, e2SmRcControlMessageFormat1->controlMsgParam.buf, recvBufLen);
 
-					  // TODO: process
+					  // process RIC control request payload
 					  fprintf(stderr, "Print content of RIC Control Request %s\n", ricControlRequestPayload);
 
+					  // log message on file
+						log_message((char*) ricControlRequestPayload, (char*) "control", recvBufLen);
+
+        		// write policies on config file
+						if (strcmp(ricControlRequestPayload, "terminate") == 0) {
+							stop_data_reporting_nrt_ric();
+						}
+						else {
+							write_control_policies((char*) ricEventTrigger);
+						}
+
+						fprintf(stderr, "Freeing received ricControlRequestPayload\n");
 					  free(ricControlRequestPayload);
 					}
 					else {
@@ -1235,57 +1247,5 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 				break;
 			}
 		}
-	// 	switch(ricControlRequest->protocolIEs.list.array[idx]->id) {
-	// 		case ProtocolIE_ID_id_RICrequestID: {
- //        // fprintf(stderr, "ProtocolIE_IDE2_id_RICrequestID\n");
-	// 			reqRequestorId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICrequestID.ricRequestorID;
-	// 			reqInstanceId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICrequestID.ricInstanceID;
-
-	// 			fprintf(stderr, "reqRequestorId %ld\n", reqRequestorId);
-	// 			fprintf(stderr, "reqInstanceId %ld\n", reqInstanceId);
-	// 			break;
-	// 		}
-
-	// 		case ProtocolIE_ID_id_RANfunctionID: {
- //        // fprintf(stderr, "ProtocolIE_IDE2_id_RANfunctionID\n");
-	// 			ranFunctionId = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RANfunctionID;
-	// 			fprintf(stderr, "ranFunctionId %ld\n", ranFunctionId);
-	// 			break;
-	// 		}
-
-	// 		case ProtocolIE_ID_id_RICcontrolMessage: {
-	// 			fprintf(stderr, "ProtocolIE_ID_id_RICcontrolMessage\n");
-	// 			recvBufLen = ricControlRequest->protocolIEs.list.array[idx]->value.choice.RICcontrolMessage.size;
-
-	// 			ricEventTrigger = (uint8_t*) calloc(1, recvBufLen);
-	// 			if(ricEventTrigger) {
-	// 				memcpy(ricEventTrigger, ricControlRequest->protocolIEs.list.array[idx]\
-	// 					->value.choice.RICcontrolMessage.buf, recvBufLen);
-	// 			}
-
-	// 			fprintf(stderr, "Print content of ricEventTrigger (which should be the RICcontrolMessage)\n");
-	// 			fprintf(stderr, "%s\n", ricEventTrigger);
-	// 			fprintf(stderr, "ricEventTrigger printed\n");
-
- //        // TODO: log and write control
- //        // log message on file
-	// 			log_message((char*) ricEventTrigger, (char*) "control", (int) recvBufLen);
-
- //        // write policies on config file
-	// 			if (strcmp((char*) ricEventTrigger, "terminate") == 0) {
-	// 				stop_data_reporting_nrt_ric();
-	// 			}
-	// 			else {
-	// 				write_control_policies((char*) ricEventTrigger);
-	// 			}
-
-	// 			break;
-	// 		}
-
-	// 		case ProtocolIE_ID_id_RICcontrolHeader:
-	// 		fprintf(stderr, "ProtocolIE_ID_id_RICcontrolHeader\n");
- //        // TODO
-	// 		break;
-	// 	}
 	}
 }
