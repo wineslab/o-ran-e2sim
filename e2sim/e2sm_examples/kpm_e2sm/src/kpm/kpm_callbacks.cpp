@@ -1198,7 +1198,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 							stop_data_reporting_nrt_ric();
 						}
 						else {
-							write_control_policies((char*) ricEventTrigger);
+							write_control_policies((char*) ricControlRequestPayload);
 						}
 
 						fprintf(stderr, "Freeing received ricControlRequestPayload\n");
