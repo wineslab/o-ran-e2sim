@@ -43,7 +43,8 @@ void readMetrics(FILE *fp, bs_metrics_t *metrics) {
 // read metrics into bs_metrics structure and assemble line to send
 // done for future extension in which metrics are selectively sent
 // metrics_preset selects which metrics to send. E.g., 0: send all metrics
-void readMetricsInteactive(FILE *fp, char (*output_string)[MAX_BUF_SIZE], int metrics_preset) {
+// json_format: send as json-formatted string if 1
+void readMetricsInteactive(FILE *fp, char (*output_string)[MAX_BUF_SIZE], int metrics_preset, int json_format) {
 
   bs_metrics_t metrics;
   readMetrics(fp, &metrics);
@@ -55,20 +56,86 @@ void readMetricsInteactive(FILE *fp, char (*output_string)[MAX_BUF_SIZE], int me
   if (metrics.sum_requested_prbs > 0 || (metrics.sum_requested_prbs == 0 && metrics.sum_granted_prbs > 0) || CSV_DEBUG) {
     switch(metrics_preset) {
       case 0:
-        sprintf(selected_metrics, "%lu,%d,%llu,%" PRIu16 ","\
-          "%" PRIu8 ",%" PRIu8 ",%" PRIu8 ",%.2f,%" PRIu8 ","\
-          "%.2f,%" PRIu8 ",%" PRIu32 ",%.2lf,%" PRIu16 ",%.2f,%.2f,"\
-          "%.2f,%" PRIu8 ",%" PRIu32 ",%.2lf,%" PRIu16 ",%.2f,%.2f,%.2f,%" PRIu8 ","\
-          "%" PRIu16 ",%" PRIu16 ","\
-          "%" PRIu8 ",%" PRIu8 ",%" PRIu8 ",%.2f",
-          metrics.timestamp, metrics.num_ues, metrics.imsi, metrics.rnti,
-          metrics.slicing_enabled, metrics.slice_id, metrics.slice_prb, metrics.power_multiplier, metrics.scheduling_policy,
-          metrics.dl_mcs, metrics.dl_n_samples, metrics.dl_buffer_bytes, metrics.tx_brate_downlink_Mbps, metrics.tx_pkts_downlink, metrics.tx_errors_downlink_perc, metrics.dl_cqi,
-          metrics.ul_mcs, metrics.ul_n_samples, metrics.ul_buffer_bytes, metrics.rx_brate_downlink_Mbps, metrics.rx_pkts_downlink, metrics.rx_errors_downlink_perc, metrics.ul_rssi, metrics.ul_sinr, metrics.phr,
-          metrics.sum_requested_prbs, metrics.sum_granted_prbs,
-          metrics.dl_pmi, metrics.dl_ri, metrics.ul_n, metrics.ul_turbo_iters);
+        if (json_format == 0) {
+          sprintf(selected_metrics, "%lu,%d,%llu,%" PRIu16 ","\
+            "%" PRIu8 ",%" PRIu8 ",%" PRIu8 ",%.2f,%" PRIu8 ","\
+            "%.2f,%" PRIu8 ",%" PRIu32 ",%.2lf,%" PRIu16 ",%.2f,%.2f,"\
+            "%.2f,%" PRIu8 ",%" PRIu32 ",%.2lf,%" PRIu16 ",%.2f,%.2f,%.2f,%" PRIu8 ","\
+            "%" PRIu16 ",%" PRIu16 ","\
+            "%" PRIu8 ",%" PRIu8 ",%" PRIu8 ",%.2f",
+            metrics.timestamp, metrics.num_ues, metrics.imsi, metrics.rnti,
+            metrics.slicing_enabled, metrics.slice_id, metrics.slice_prb, metrics.power_multiplier, metrics.scheduling_policy,
+            metrics.dl_mcs, metrics.dl_n_samples, metrics.dl_buffer_bytes, metrics.tx_brate_downlink_Mbps, metrics.tx_pkts_downlink, metrics.tx_errors_downlink_perc, metrics.dl_cqi,
+            metrics.ul_mcs, metrics.ul_n_samples, metrics.ul_buffer_bytes, metrics.rx_brate_downlink_Mbps, metrics.rx_pkts_downlink, metrics.rx_errors_downlink_perc, metrics.ul_rssi, metrics.ul_sinr, metrics.phr,
+            metrics.sum_requested_prbs, metrics.sum_granted_prbs,
+            metrics.dl_pmi, metrics.dl_ri, metrics.ul_n, metrics.ul_turbo_iters);
+        }
+        else {
+          sprintf(selected_metrics, "{\"%s\":%lu," \
+            "\"%s\":%d," \
+            "\"%s\":%llu," \
+            "\"%s\":%" PRIu16 "," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%.2f," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%.2f," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu32 "," \
+            "\"%s\":%.2lf," \
+            "\"%s\":%" PRIu16 "," \
+            "\"%s\":%.2f," \
+            "\"%s\":%.2f," \
+            "\"%s\":%.2f," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu32 "," \
+            "\"%s\":%.2lf," \
+            "\"%s\":%" PRIu16 "," \
+            "\"%s\":%.2f," \
+            "\"%s\":%.2f," \
+            "\"%s\":%.2f," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu16 "," \
+            "\"%s\":%" PRIu16 "," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%.2f}",
+            metric_names[TS], metrics.timestamp,
+            metric_names[UE_NUM], metrics.num_ues,
+            metric_names[IMSI], metrics.imsi,
+            metric_names[RNTI], metrics.rnti,
+            metric_names[SL_EN], metrics.slicing_enabled,
+            metric_names[SL_ID], metrics.slice_id,
+            metric_names[SL_PRB], metrics.slice_prb,
+            metric_names[POW_MULT], metrics.power_multiplier,
+            metric_names[SCHED_POL], metrics.scheduling_policy,
+            metric_names[DL_MCS], metrics.dl_mcs,
+            metric_names[DL_SAM], metrics.dl_n_samples,
+            metric_names[DL_BYTES], metrics.dl_buffer_bytes,
+            metric_names[DL_THR], metrics.tx_brate_downlink_Mbps,
+            metric_names[DL_PKTS], metrics.tx_pkts_downlink,
+            metric_names[DL_ERR], metrics.tx_errors_downlink_perc,
+            metric_names[DL_CQI], metrics.dl_cqi,
+            metric_names[UL_MCS], metrics.ul_mcs,
+            metric_names[UL_SAM], metrics.ul_n_samples,
+            metric_names[UL_BYTES], metrics.ul_buffer_bytes,
+            metric_names[UL_THR], metrics.rx_brate_downlink_Mbps,
+            metric_names[UL_PKTS], metrics.rx_pkts_downlink,
+            metric_names[UL_ERR], metrics.rx_errors_downlink_perc,
+            metric_names[UL_RSSI], metrics.ul_rssi,
+            metric_names[UL_SINR], metrics.ul_sinr,
+            metric_names[PHR], metrics.phr,
+            metric_names[SUM_REQ_PRB], metrics.sum_requested_prbs,
+            metric_names[SUM_GRA_PRB], metrics.sum_granted_prbs,
+            metric_names[DL_PMI], metrics.dl_pmi,
+            metric_names[DL_RI], metrics.dl_ri,
+            metric_names[UL_N], metrics.ul_n,
+            metric_names[UL_TURBO_IT], metrics.ul_turbo_iters);
+        }
 
-          break;
+        break;
       case 1:
         if (metrics.sum_requested_prbs > 0) {
           ratio_granted_req_prb = ((float) metrics.sum_granted_prbs) / ((float) metrics.sum_requested_prbs);
@@ -94,11 +161,27 @@ void readMetricsInteactive(FILE *fp, char (*output_string)[MAX_BUF_SIZE], int me
         //
         //////////////////////////////////////////////////////////////////////////
 
-        sprintf(selected_metrics, "%lu,%" PRIu8 ",%" PRIu32 ",%.2lf,%.2f,%" PRIu8 ",%" PRIu16 "",
-          metrics.timestamp, metrics.slice_id, metrics.dl_buffer_bytes, metrics.tx_brate_downlink_Mbps,
-          ratio_granted_req_prb, metrics.slice_prb, metrics.tx_pkts_downlink);
-
-        printf("selected_metrics %s\n", selected_metrics);
+        if (json_format == 0) {
+          sprintf(selected_metrics, "%lu,%" PRIu8 ",%" PRIu32 ",%.2lf,%.2f,%" PRIu8 ",%" PRIu16 "",
+            metrics.timestamp, metrics.slice_id, metrics.dl_buffer_bytes, metrics.tx_brate_downlink_Mbps,
+            ratio_granted_req_prb, metrics.slice_prb, metrics.tx_pkts_downlink);
+        }
+        else {
+          sprintf(selected_metrics, "{\"%s\":%lu," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu32 "," \
+            "\"%s\":%.2lf," \
+            "\"%s\":%.2f," \
+            "\"%s\":%" PRIu8 "," \
+            "\"%s\":%" PRIu16 "}",
+            metric_names[TS], metrics.timestamp,
+            metric_names[SL_ID], metrics.slice_id,
+            metric_names[DL_BYTES], metrics.dl_buffer_bytes,
+            metric_names[DL_THR], metrics.tx_brate_downlink_Mbps,
+            metric_names[RATIO_REQ_GRA_PRB], ratio_granted_req_prb,
+            metric_names[SL_PRB], metrics.slice_prb,
+            metric_names[DL_PKTS], metrics.tx_pkts_downlink);
+        }
 
         break;
       default:
@@ -106,14 +189,14 @@ void readMetricsInteactive(FILE *fp, char (*output_string)[MAX_BUF_SIZE], int me
     }
   }
 
-  // printf("selected_metrics\n%s", selected_metrics);
+  // printf("selected_metrics:\n%s\n", selected_metrics);
 
   strcpy(*output_string, selected_metrics);
 }
 
 
 // read last lines from file
-void readLastMetricsLines(char *file_name, int to_read, char **output_string, int skip_header) {
+void readLastMetricsLines(char *file_name, int to_read, char **output_string, int skip_header, int json_format) {
 
   FILE *fp;
   fp = fopen(file_name, "r");
@@ -124,7 +207,7 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
   long unsigned int curr_ts;
 
   if (CSV_DEBUG) {
-    curr_ts = 1644102906466;
+    curr_ts = 1602706184296;
   }
   else {
     curr_ts = get_time_milliseconds();
@@ -164,11 +247,17 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
         fscanf(fp, "%[^\n]\n", metrics_array[j]);
       }
       else {
-        readMetricsInteactive(fp, &(metrics_array[j]), METRICS_PRESET);
+        readMetricsInteactive(fp, &(metrics_array[j]), METRICS_PRESET, json_format);
       }
 
       int line_len = strlen(metrics_array[j]);
-      metrics_array[j][line_len] = '\n';
+
+      if (json_format == 0) {
+        metrics_array[j][line_len] = '\n';
+      }
+      else {
+        metrics_array[j][line_len] = ',';
+      }
       metrics_array[j][line_len + 1] = '\0';
 
       tot_len += strlen(metrics_array[j++]);
@@ -199,7 +288,12 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
 
     // get metric timestamp
     long unsigned int metric_ts = 0;
-    sscanf(metrics_array[i], "%lu", &metric_ts);
+    if (JSON_FORMAT == 0) {
+      sscanf(metrics_array[i], "%lu", &metric_ts);
+    }
+    else {
+      sscanf(metrics_array[i], "{\"timestamp\":%lu[^,]", &metric_ts);
+    }
 
     // printf("i %d, timestamp %lu, metrics_array[i] %s\n", i, metric_ts, metrics_array[i]);
 
@@ -210,8 +304,8 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
         continue;
       }
 
-      // strip timestamp if METRICS_PRESET is 1
-      if (METRICS_PRESET == 1) {
+      // strip timestamp if METRICS_PRESET is 1 and not JSON-formatted
+      if (METRICS_PRESET == 1 && JSON_FORMAT == 0) {
         char tmp_ts[100];
         sprintf(tmp_ts, "%lu", metric_ts);
         strcat(tmp_ts, ",");
@@ -234,7 +328,7 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
     }
   }
 
-  printf("valid_metrics %d\noutput_string\n---%s---\n", valid_metrics, *output_string);
+  printf("valid_metrics %d\noutput_string---%s---\n", valid_metrics, *output_string);
 
   // CHECKME: put back < 2 if sending garbage
   if (valid_metrics < 1) {
@@ -301,7 +395,7 @@ void get_tx_string(char **send_metrics, int lines_to_read) {
     strcat(file_path, dir_content[i]);
 
     // read metrics, always skip header
-    readLastMetricsLines(file_path, lines_to_read, &metrics_string, 1);
+    readLastMetricsLines(file_path, lines_to_read, &metrics_string, 1, JSON_FORMAT);
 
     if (metrics_string) {
       int metrics_size = strlen(metrics_string);
@@ -323,6 +417,13 @@ void get_tx_string(char **send_metrics, int lines_to_read) {
       metrics_string = NULL;
     }
   }
+
+  // remove final comma
+  if (JSON_FORMAT == 1) {
+    memset(*send_metrics + strlen(*send_metrics) - 1, '\0', sizeof(char));
+  }
+
+  printf("\nFinal metrics to transmit\n---%s---\n\n", *send_metrics);
 }
 
 
@@ -363,8 +464,9 @@ int csv_tester(void) {
   if (send_metrics) {
     printf("len %lu\n%s", strlen(send_metrics), send_metrics);
 
-    // split if more than maximum payload for ric indication report
-    if (strlen(send_metrics) > MAX_REPORT_PAYLOAD) {
+    // split if more than maximum payload for ric indication report.
+    // This shouldn't be necessary anymore in the RIC E release
+    if (strlen(send_metrics) > MAX_REPORT_PAYLOAD && MAX_REPORT_PAYLOAD > 0) {
       char *tmp_buf = NULL;
       tmp_buf = (char*) calloc(MAX_REPORT_PAYLOAD + 1, sizeof(char));
 
