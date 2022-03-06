@@ -1194,7 +1194,7 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 						log_message((char*) ricControlRequestPayload, (char*) "control", recvBufLen);
 
         		// write policies on config file
-						if (strcmp(ricControlRequestPayload, "terminate") == 0) {
+						if (strcmp((char*) ricControlRequestPayload, "terminate") == 0) {
 							stop_data_reporting_nrt_ric();
 						}
 						else {
