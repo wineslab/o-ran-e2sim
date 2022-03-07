@@ -55,7 +55,7 @@ void periodicDataReport(E2Sim* e2sim, int* timer, long seqNum, long* ric_req_id,
   
   if (DEBUG) {
     fprintf(stderr, "DEBUG mode\n");
-    payload = (char*) "0,1,2,3,4,5\n1,6,7,8,9,10\n2,11,12,13,14,15";
+    payload = (char*) "{\"timestamp\":1602706183796,\"slice_id\":0,\"dl_bytes\":53431,\"dl_thr_mbps\":2.39,\"ratio_granted_req_prb\":0.02,\"slice_prb\":6,\"dl_pkts\":200}";
   }
   else {
     get_tx_string(&payload, LINES_TO_READ);
@@ -70,7 +70,7 @@ void periodicDataReport(E2Sim* e2sim, int* timer, long seqNum, long* ric_req_id,
     // e2sim->encode_and_send_sctp_data(e2ap_pdu);
 
     // ASN.1 encode payload and header
-    encode_and_send_ric_indication_report_metrics_buffer(seqNum, requestorId, instanceId, ranFunctionId, actionId);
+    encode_and_send_ric_indication_report_metrics_buffer(payload, seqNum, requestorId, instanceId, ranFunctionId, actionId);
     seqNum++;
   }
   

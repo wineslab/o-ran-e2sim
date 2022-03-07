@@ -806,7 +806,7 @@ void encode_and_send_ric_indication_report_metrics_single(long seqNum, long requ
 
 
 // send buffer metrics through the indication report
-void encode_and_send_ric_indication_report_metrics_buffer(long seqNum, long requestorId, long instanceId, long ranFunctionId, long actionId) {
+void encode_and_send_ric_indication_report_metrics_buffer(char* payload, long seqNum, long requestorId, long instanceId, long ranFunctionId, long actionId) {
 
 	long fqival = 9;
 	long qcival = 9;
@@ -820,7 +820,7 @@ void encode_and_send_ric_indication_report_metrics_buffer(long seqNum, long requ
 	fprintf(stderr, "Setting cell ID to %d\n", nextCellId);
 
     // TODO: substitute with the actual data to send
-	std::string serving_str = "{\"rsrp\": 10, \"rsrq\": 20, \"rssinr\": 30}";
+	std::string serving_str(payload, strlen(payload));
 	const uint8_t *serving_buf = reinterpret_cast<const uint8_t*>(serving_str.c_str());
 
 	// don't send the neightbor_buf
