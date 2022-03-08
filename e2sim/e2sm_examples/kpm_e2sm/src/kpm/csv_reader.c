@@ -251,13 +251,7 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
       }
 
       int line_len = strlen(metrics_array[j]);
-
-      if (json_format == 0) {
-        metrics_array[j][line_len] = '\n';
-      }
-      else {
-        metrics_array[j][line_len] = ',';
-      }
+      metrics_array[j][line_len] = '\n';
       metrics_array[j][line_len + 1] = '\0';
 
       tot_len += strlen(metrics_array[j++]);
@@ -305,7 +299,7 @@ void readLastMetricsLines(char *file_name, int to_read, char **output_string, in
       }
 
       // strip timestamp if METRICS_PRESET is 1 and not JSON-formatted
-      if (METRICS_PRESET == 1 && JSON_FORMAT == 0) {
+      if (METRICS_PRESET == 1 && json_format == 0) {
         char tmp_ts[100];
         sprintf(tmp_ts, "%lu", metric_ts);
         strcat(tmp_ts, ",");
