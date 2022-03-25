@@ -158,16 +158,13 @@ void encoding::generate_e2apv1_service_update(E2AP_PDU_t *e2ap_pdu, std::vector<
 }
 
 void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu, std::vector<ran_func_info> all_funcs) {
-  //						 long ranFunctionId, uint8_t *ranFuncDescEncoded, int ranFuncLength) {
 
-  //  uint8_t *buf = (uint8_t *)"gnb1"
-
-  BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
-  gnb_bstring->buf = (uint8_t*)calloc(1,4);
-  gnb_bstring->size = 4;
+  BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));
+  gnb_bstring->size = 4;  // from 3GPP
+  gnb_bstring->buf = (uint8_t*)calloc(1, gnb_bstring->size);
 
   // build gnb_id from env variable
-  char* gnb_id = std::getenv("GNB_ID");
+  uint8_t* gnb_id = std::getenv("GNB_ID");
 
   if (gnb_id == NULL) {
     fprintf(stderr, "Env variable GNB_ID not set. Using default values to build gNB ID\n");
@@ -181,7 +178,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
     memcpy(gnb_bstring->buf, (uint8_t*) gnb_id, gnb_bstring->size);
   }
 
-  gnb_bstring->bits_unused = 3;
+  gnb_bstring->bits_unused = 8 - gnb_bstring->size;
 
   uint8_t *buf2 = (uint8_t *)"747";
   OCTET_STRING_t *plmn = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
