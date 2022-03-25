@@ -167,7 +167,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   gnb_bstring->size = 4;
 
   // build gnb_id from env variable
-  char* gnb_id = std::getenv('GNB_ID');
+  char* gnb_id = std::getenv("GNB_ID");
 
   if (gnb_id == NULL) {
     fprintf(stderr, "Env variable GNB_ID not set. Using default values to build gNB ID\n");
