@@ -164,7 +164,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   gnb_bstring->buf = (uint8_t*)calloc(1, gnb_bstring->size);
 
   // build gnb_id from env variable
-  uint8_t* gnb_id = std::getenv("GNB_ID");
+  char* gnb_id = std::getenv("GNB_ID");
 
   if (gnb_id == NULL) {
     fprintf(stderr, "Env variable GNB_ID not set. Using default values to build gNB ID\n");
@@ -174,7 +174,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
     gnb_bstring->buf[3] = 0x88;
   }
   else {
-    fprintf(stderr, "Using passed value to build gNB ID: %s\n", gnb_id);
+    fprintf(stderr, "Using passed value to build gNB ID: %s (hex: %x)\n", gnb_id, ((uint8_t*) gnb_id) & 0xff);
     memcpy(gnb_bstring->buf, (uint8_t*) gnb_id, gnb_bstring->size);
   }
 
