@@ -73,14 +73,12 @@ int main(int argc, char* argv[]) {
 
 	fprintf(stderr, "JSON Test\n");
 
-	uint8_t *nrcellid_buf = (uint8_t*)calloc(1,5);
-	nrcellid_buf[0] = 0x22;
-	nrcellid_buf[1] = 0x5B;
-	nrcellid_buf[2] = 0xD6;
-	nrcellid_buf[3] = 0x00;
-	nrcellid_buf[4] = 0x70;
-
-
+	// uint8_t *nrcellid_buf = (uint8_t*)calloc(1,5);
+	// nrcellid_buf[0] = 0x22;
+	// nrcellid_buf[1] = 0x5B;
+	// nrcellid_buf[2] = 0xD6;
+	// nrcellid_buf[3] = 0x00;
+	// nrcellid_buf[4] = 0x70;
 
 	asn_codec_ctx_t *opt_cod;
 

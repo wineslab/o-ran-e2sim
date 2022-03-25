@@ -172,13 +172,24 @@ void generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu, std::vect
 
   //  uint8_t *buf = (uint8_t *)"gnb1"
 
-  BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));;
+  BIT_STRING_t *gnb_bstring = (BIT_STRING_t*)calloc(1, sizeof(BIT_STRING_t));
   gnb_bstring->buf = (uint8_t*)calloc(1,4);
   gnb_bstring->size = 4;
-  gnb_bstring->buf[0] = 0xB5;
-  gnb_bstring->buf[1] = 0xC6;
-  gnb_bstring->buf[2] = 0x77;
-  gnb_bstring->buf[3] = 0x88;
+
+  // build gnb_id from env variable
+  char* gnb_id = std::getenv('GNB_ID');
+
+  if (gnb_id == NULL) {
+    fprintf(stderr, "Env variable GNB_ID not set. Using default values to build gNB ID\n");
+    gnb_bstring->buf[0] = 0xB5;
+    gnb_bstring->buf[1] = 0xC6;
+    gnb_bstring->buf[2] = 0x77;
+    gnb_bstring->buf[3] = 0x88;
+  }
+  else {
+    fprintf(stderr, "Using passed value to build gNB ID: %s\n", gnb_id);
+    memcpy(gnb_bstring->buf, (uint8_t*) gnb_id, gnb_bstring->size);
+  }
 
   gnb_bstring->bits_unused = 3;
 
