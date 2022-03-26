@@ -174,7 +174,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
     gnb_bstring->buf[3] = 0x88;
   }
   else {
-    fprintf(stderr, "Using passed value to build gNB ID: %s (hex: %x)\n", gnb_id, ((uint8_t*) gnb_id) & 0xff);
+    fprintf(stderr, "Using passed value to build gNB ID: %s (hex: %x)\n", gnb_id, (uint8_t*) gnb_id);
     memcpy(gnb_bstring->buf, (uint8_t*) gnb_id, gnb_bstring->size);
   }
 
