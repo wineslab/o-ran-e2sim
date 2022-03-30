@@ -141,9 +141,7 @@ void e2ap_handle_sctp_data(int &socket_fd, sctp_buffer_t &data, E2Sim *e2sim) {
                     break;
                     break;
                 case E2AP_PDU_PR_NOTHING:
-                    break;
                 case E2AP_PDU_PR_successfulOutcome:
-                    break;
                 case E2AP_PDU_PR_unsuccessfulOutcome:
                     break;
                 default: LOG_E("[E2AP] Invalid message index=%d in E2AP-PDU %d", pr_type_of_message,
@@ -332,15 +330,13 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
   e2ap_asn1c_print_pdu(res_pdu);
 
-
   auto buffer_size = MAX_SCTP_BUFFER;
   unsigned char buffer[MAX_SCTP_BUFFER];
 
   sctp_buffer_t data;
   auto er = asn_encode_to_buffer(nullptr, ATS_BASIC_XER, &asn_DEF_E2AP_PDU, res_pdu, buffer, buffer_size);
 
-
-  LOG_D( "er encoded is %zd\n", er.encoded);
+//  LOG_D("er encoded is %zd\n", er.encoded);
   data.len = er.encoded;
 
   //data.len = e2ap_asn1c_encode_pdu(res_pdu, &buf);
@@ -361,7 +357,7 @@ void e2ap_handle_E2SetupRequest(E2AP_PDU_t* pdu, int &socket_fd) {
 
   encoding::generate_e2apv1_subscription_request(pdu_sub);
 
-  xer_fprint(stderr, &asn_DEF_E2AP_PDU, pdu_sub);
+  e2ap_asn1c_print_pdu(pdu_sub);
 
   auto buffer_size2 = MAX_SCTP_BUFFER;
   unsigned char buffer2[MAX_SCTP_BUFFER];

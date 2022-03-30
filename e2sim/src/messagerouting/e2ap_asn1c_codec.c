@@ -21,16 +21,13 @@
 
 void e2ap_asn1c_print_pdu(const E2AP_PDU_t* pdu)
 {
-    if(LOG_LEVEL == LOG_LEVEL_DEBUG) {
-        xer_fprint(stdout, &asn_DEF_E2AP_PDU, pdu);
-        LOG_D("\n");
-    }
+    asn1c_xer_print(&asn_DEF_E2AP_PDU,(void*) pdu);
 }
 
 void asn1c_xer_print(asn_TYPE_descriptor_t *typeDescriptor, void *data)
 {
     if (LOG_LEVEL == LOG_LEVEL_DEBUG) {
-        xer_fprint(stdout, typeDescriptor, (void *) data);
+        xer_fprint(stdout, typeDescriptor,  data);
         LOG_D("\n");
     }
 }
@@ -91,7 +88,7 @@ E2setupRequest_t* smaller_e2ap_xml_to_pdu(char const* xml_message)
   E2AP_PDU_t *pdu = calloc(1, sizeof(E2AP_PDU_t));
 
   //  GlobalE2node_ID_t *globale2nodeid = (GlobalE2node_ID_t*)calloc(1, sizeof(GlobalE2node_ID_t));
-  GlobalE2node_ID_t *globale2nodeid = (GlobalE2node_ID_t*)calloc(1, sizeof(GlobalE2node_ID_t));   
+  GlobalE2node_ID_t *globale2nodeid = (GlobalE2node_ID_t*)calloc(1, sizeof(GlobalE2node_ID_t));
   E2setupRequest_t *e2setuprequest = (E2setupRequest_t*)calloc(1,sizeof(E2setupRequest_t));
 
   uint8_t         buf[MAX_XML_BUFFER];

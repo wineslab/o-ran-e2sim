@@ -10,7 +10,7 @@
 bool SignalHandler::m_running = true;
 
 /**
-* Default Contructor.
+* Default Constructor.
 */
 SignalHandler::SignalHandler() {
     this->setupSIGIOT();
@@ -47,7 +47,7 @@ void SignalHandler::setupSIGIOT() {
 }
 
 /**
-* Set up the signal handlers for SIGINT.
+* Set up the signal handlers for a signal code
 */
 void SignalHandler::setupSignalHandlers(int signal_code, __sighandler_t sig_function) {
     if (signal(signal_code, sig_function) == SIG_ERR) {
