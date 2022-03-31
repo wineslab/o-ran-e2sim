@@ -39,7 +39,6 @@ extern "C" {
   #include "ProtocolIE-Field.h"
   #include "ProtocolIE-SingleContainer.h"
   #include "InitiatingMessage.h"
-  #include "srs_connector.h"
   #include "E2SM-HelloWorld-ControlMessage.h"
   #include "E2SM-HelloWorld-ControlHeader.h"
   #include "E2SM-HelloWorld-ControlMessage-Format1.h"
@@ -58,6 +57,7 @@ extern "C" {
 #include "viavi_connector.hpp"
 
 #include "bs_connector.hpp"
+#include "srs_connector.hpp"
 
 using json = nlohmann::json;
 
@@ -1197,7 +1197,8 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 							stop_data_reporting_nrt_ric();
 						}
 						else {
-							write_control_policies((char*) ricControlRequestPayload);
+							std::string control((char*) ricControlRequestPayload);
+							write_control_policies_json(control);
 						}
 
 						fprintf(stderr, "Freeing received ricControlRequestPayload\n");
