@@ -135,6 +135,6 @@ void log_message(char* message, char* message_type, int len) {
 
 // terminate periodic thread that reports data to near real-time RIC
 void stop_data_reporting_nrt_ric(void) {
-  printf("Terminating data reporting to non real-time RIC\n");
+  printf("Terminating data reporting to near-real-time RIC\n");
   report_data_nrt_ric = 0;
 }
