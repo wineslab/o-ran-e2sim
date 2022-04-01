@@ -38,6 +38,8 @@ void write_control_policies_json(std::string control_msg) {
     }
 
     if (slicing_policies.length() > 0) {
+        std::cout << "Received slicing policies " << slicing_policies << std::endl;
+
         if (!last_slicing_policy_json.empty() && slicing_policies.compare(last_slicing_policy_json) == 0) {
             std::cout << "Slicing policies are the same as last ones" << std::endl;
         }
