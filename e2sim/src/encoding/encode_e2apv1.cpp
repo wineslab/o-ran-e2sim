@@ -164,6 +164,7 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   gnb_bstring->buf = (uint8_t*)calloc(1, gnb_bstring->size);
 
   // build gnb_id from env variable
+  // only the first 4 characters (i.e., 8 hex bits) are considered
   char* gnb_id = std::getenv("GNB_ID");
 
   if (gnb_id == NULL) {
@@ -179,6 +180,9 @@ void encoding::generate_e2apv1_setup_request_parameterized(E2AP_PDU_t *e2ap_pdu,
   }
 
   gnb_bstring->bits_unused = 8 - gnb_bstring->size;
+  if (gnb_bstring->bits_unused < 0) {
+    gnb_bstring->bits_unused = 0;
+  }
 
   uint8_t *buf2 = (uint8_t *)"747";
   OCTET_STRING_t *plmn = (OCTET_STRING_t*)calloc(1, sizeof(OCTET_STRING_t));
