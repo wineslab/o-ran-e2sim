@@ -1060,7 +1060,11 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 		// start thread for report loop
 		try {
-			int trigger_timer = ((int) std::stoi(trigger_str) / 1000.0);
+			// int trigger_timer = ((int) std::stoi(trigger_str) / 1000.0);
+
+			// set fix trigger timer for reports
+			int trigger_timer = 1;
+
 			fprintf(stderr, "received trigger_timer %d seconds from requestorId %ld\n", trigger_timer, requestorId);
 
 			int *report_timer = (int*) calloc(1, sizeof(int));
