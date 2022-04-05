@@ -947,6 +947,8 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				reqRequestorId = requestorId;
 				reqInstanceId = instanceId; 
 
+				fprintf(stderr, "new timer %ld\n", reqid.ricTriggerTimer);
+
 				break;
 			}
 			case RICsubscriptionRequest_IEs__value_PR_RANfunctionID:
