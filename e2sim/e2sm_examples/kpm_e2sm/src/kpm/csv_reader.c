@@ -413,7 +413,7 @@ void get_tx_string(char **send_metrics, int lines_to_read) {
   }
 
   // remove final comma
-  if (send_metrics && JSON_FORMAT == 1) {
+  if (*send_metrics && JSON_FORMAT == 1) {
     memset(*send_metrics + strlen(*send_metrics) - 1, '\0', sizeof(char));
     printf("\nFinal metrics to transmit\n---%s---\n\n", *send_metrics);
   }
