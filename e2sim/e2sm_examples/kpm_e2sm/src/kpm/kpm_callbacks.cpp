@@ -1065,7 +1065,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 			// set fix trigger timer for reports
 			int trigger_timer = 1;
 
-			fprintf(stderr, "received trigger_timer %d seconds from requestorId %ld\n", trigger_timer, requestorId);
+			fprintf(stderr, "setting trigger_timer to %d seconds for requestorId %ld\n", trigger_timer, requestorId);
 
 			int *report_timer = (int*) calloc(1, sizeof(int));
 			report_timer[0] = trigger_timer;
