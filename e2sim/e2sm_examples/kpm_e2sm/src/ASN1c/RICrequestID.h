@@ -27,7 +27,6 @@ typedef struct RICrequestID {
 	 * This type is extensible,
 	 * possible extensions are below.
 	 */
-	long     ricTriggerTimer;
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;
