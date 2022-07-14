@@ -69,15 +69,16 @@ add_definitions(
 # Compiler flags
 #
 set( CMAKE_POSITION_INDEPENDENT_CODE ON )
-if( GPROF )					# if set, we'll set profiling flag on compiles
-	message( "+++ profiling is on" )
-	set( CMAKE_C_FLAGS "-pg " )
-	set( CMAKE_CPP_FLAGS "-pg " )
-else()
-	set( CMAKE_C_FLAGS "-g " )
-	set( CMAKE_CPP_FLAGS "-g " )
-	message( "+++ profiling is off" )
-endif()
+#if( GPROF )					# if set, we'll set profiling flag on compiles
+#	message( "+++ profiling is on" )
+#	set( CMAKE_C_FLAGS "-pg " )
+#	set( CMAKE_CPP_FLAGS "-pg " )
+#else()
+	set( CMAKE_C_FLAGS "-g" )
+	set( CMAKE_CPP_FLAGS "-g -std=c++14 -fpermissive" )
+	set( CMAKE_CXX_FLAGS "-g -std=c++14 -fpermissive" )
+#	message( "+++ profiling is off" )
+#endif()
 unset( GPROF CACHE )					# ensure this does not persist
 
 # each binary is built from a subset

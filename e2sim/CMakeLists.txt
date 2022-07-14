@@ -75,8 +75,8 @@ include_directories( "${srcd}/src/DEF;${srcd}/src/SCTP;${srcd}/src/messageroutin
 #
 set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 set( CMAKE_C_FLAGS "-g " )
-set( CMAKE_CPP_FLAGS "-g " )
-set( CMAKE_CXX_FLAGS "-g " )
+set( CMAKE_CPP_FLAGS "-g -std=gnu++11 -fpermissive" )
+set( CMAKE_CXX_FLAGS "-g -std=gnu++11 -fpermissive" )
 if( GPROF )					# if set, we'll set profiling flag on compiles
 	message( "+++ profiling is on" )
 	set( CMAKE_C_FLAGS "-pg " )
