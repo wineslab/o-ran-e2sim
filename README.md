@@ -4,11 +4,11 @@
 
 This repository is a fork of the OSC [e2sim](https://github.com/o-ran-sc/sim-e2-interface) library with updates to make it work with the [ns3-o-ran-e2](https://github.com/o-ran-sc/sim-ns3-o-ran-e2) ns-3 module.
 
-This module enables the support for running multiple terminations of an O-RAN-compliant E2 interface inside the simulation process. It has been developed as part of a collaborative effort between the [Institute for the Wireless Internet of Things (WIoT)](https://wiot.northeastern.edu) at Northeastern University, Mavenir, and the University of Padova.
+This module enables the support for running multiple terminations of an O-RAN-compliant E2 interface inside the simulation process. It has been developed as part of a collaborative effort between the [Institute for the Wireless Internet of Things (WIoT)](https://wiot.northeastern.edu) at Northeastern University, Mavenir, the University of Padova and Sapienza, University of Rome.
 
 ## How to use
 
-Please refer to this [quick start guide](TODO).
+Please refer to this [quick start guide](https://github.com/open-5g/openrangym/tree/ns-o-ran) to setup the environment.
 
 ## References
 
