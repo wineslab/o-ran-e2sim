@@ -8,7 +8,7 @@ This module enables the support for running multiple terminations of an O-RAN-co
 
 ## How to use
 
-Please refer to this [quick start guide](https://github.com/open-5g/openrangym/tree/ns-o-ran) to setup the environment.
+Please refer to this [quick start guide](https://openrangym.com/tutorials/ns-o-ran) to setup the environment.
 
 ## References
 
