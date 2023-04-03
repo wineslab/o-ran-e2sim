@@ -1058,6 +1058,8 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 		long *action_id = (long*) calloc(1, sizeof(long));
 		action_id[0] = reqActionId;
 
+		int bfsize = (int)triggerDef->size;
+
 		// start thread for report loop
 		try {
 			// int trigger_timer = ((int) std::stoi(trigger_str) / 1000.0);
@@ -1070,7 +1072,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 			int *report_timer = (int*) calloc(1, sizeof(int));
 			report_timer[0] = trigger_timer;
 
-			handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id);
+			handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id, triggerDef->buf, bfsize);
 		}
 		catch (const std::invalid_argument) {
 			fprintf(stderr, "handling exception, no valid trigger. Received %s\n", triggerDef->buf);
@@ -1083,7 +1085,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 				int *report_timer = (int*) calloc(1, sizeof(int));
 				report_timer[0] = trigger_timer;
 
-				handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id);
+				handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id, triggerDef->buf, bfsize);
 			}
 		}
 	}
