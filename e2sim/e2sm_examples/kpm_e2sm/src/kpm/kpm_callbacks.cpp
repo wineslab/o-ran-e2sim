@@ -1018,7 +1018,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					case E2SM_HelloWorld_ActionDefinition_PR_actionDefinition_Format1:
 						E2SM_HelloWorld_ActionDefinition_Format1_t* format1 = test->choice.actionDefinition_Format1;
 						RANparameter_Item_t **list = format1->ranParameter_List.list.array;
-						int countRanParameters = actionList.list.count;
+						int countRanParameters = format1->ranParameter_List.list.count;
 						for (int j = 0; j < countRanParameters; j++)
 						{
 						std::cerr << "counter ran parameters: " << j << std::endl;
@@ -1039,7 +1039,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 						break;
 
 					default:
-						std::cout << "PR NOTHING" << std::endl;
+						std::cout << "default " << std::endl;
 						break;
 					}
 
