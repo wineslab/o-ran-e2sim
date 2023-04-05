@@ -156,7 +156,6 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
     out_socket.send_to(boost::asio::buffer(indication_request_buffer, indication_request_length), remote_endpoint_out, 0, err);
 
     fprintf(stderr, "Waiting for response from gnb...");
-    std::chrono::milliseconds sleep_duration(500);
     std::this_thread::sleep_for(sleep_duration);
     recvlen = in_socket.receive_from(boost::asio::buffer(recvbuf), remote_endpoint_in);
     fprintf(stderr, " recevied %lu bytes\n", recvlen);
@@ -185,7 +184,8 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
       seqNum++;
     }
 
-    std::chrono::seconds sleep_duration(timer[0]);
+    // std::chrono::seconds sleep_duration(timer[0]);
+    std::chrono::milliseconds sleep_duration(500);
     std::this_thread::sleep_for(sleep_duration);
   }
 }
