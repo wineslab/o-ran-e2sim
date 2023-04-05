@@ -47,13 +47,13 @@ void handleTimer(E2Sim* e2sim, int* timer, long* ric_req_id, long* ric_instance_
 
     std::thread(periodicDataReportOaiProtobuf, e2sim, timer, seq_num, ric_req_id, ric_instance_id, 
       ran_function_id, action_id).detach();
+    fprintf(stderr, "periodicDataReportOaiProtobuf thread created successfully\n");
   }
   else {
     std::thread(periodicDataReport, e2sim, timer, seq_num, ric_req_id, ric_instance_id, 
       ran_function_id, action_id).detach();
+    fprintf(stderr, "periodicDataReport thread created successfully\n");
   }
-
-  fprintf(stderr, "periodicDataReport thread created successfully\n");
 }
 
 
