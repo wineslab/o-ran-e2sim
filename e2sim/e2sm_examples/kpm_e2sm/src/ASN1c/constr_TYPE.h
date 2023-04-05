@@ -44,9 +44,12 @@ typedef struct asn_struct_ctx_s {
 #include <asn_random_fill.h>	/* Random structures support */
 
 #ifdef  ASN_DISABLE_OER_SUPPORT
-typedef void (oer_type_decoder_f)(void);
-typedef void (oer_type_encoder_f)(void);
-typedef void asn_oer_constraints_t;
+// typedef void (oer_type_decoder_f)(void);
+// typedef void (oer_type_encoder_f)(void);
+// typedef void asn_oer_constraints_t;
+#include "oer_support.h"
+#include "oer_decoder.h"
+#include "oer_encoder.h"
 #else
 #include <oer_decoder.h>	/* Octet Encoding Rules encoder */
 #include <oer_encoder.h>	/* Octet Encoding Rules encoder */
