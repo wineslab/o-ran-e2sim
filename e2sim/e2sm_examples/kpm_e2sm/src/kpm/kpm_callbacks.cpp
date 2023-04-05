@@ -898,6 +898,7 @@ std::string DecodeOctectString(OCTET_STRING_t* octetString){
   char out[size + 1];
   std::memcpy (out, octetString->buf, size);
   out[size] = '\0';
+  std::cerr << "Size " << size <<std::endl;
 
   return std::string (out);
 }
@@ -1001,6 +1002,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					xer_fprint(stderr, &asn_DEF_OCTET_STRING, actionDef);
 
 					std::string decoded = DecodeOctectString(actionDef);
+					
 					fprintf(stderr, "%s\n", decoded.c_str());
 
 					if (!foundAction && (actionType == RICactionType_report || actionType == RICactionType_insert)) {
