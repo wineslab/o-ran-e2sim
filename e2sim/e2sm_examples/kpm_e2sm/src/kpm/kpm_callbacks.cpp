@@ -907,7 +907,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	RICsubscriptionRequest_t orig_req =
 	sub_req_pdu->choice.initiatingMessage->value.choice.RICsubscriptionRequest;
 
-	xer_fprint(stderr, &asn_DEF_RICsubscriptionRequest, *orig_req);   
+	xer_fprint(stderr, &asn_DEF_RICsubscriptionRequest, &orig_req);   
 
 	int count = orig_req.protocolIEs.list.count;
 	int size = orig_req.protocolIEs.list.size;
