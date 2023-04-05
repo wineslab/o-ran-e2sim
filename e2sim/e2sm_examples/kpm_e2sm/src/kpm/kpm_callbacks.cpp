@@ -989,6 +989,8 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					RICactionID_t actionId = ((RICaction_ToBeSetup_ItemIEs*)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionID;
 					RICactionType_t actionType = ((RICaction_ToBeSetup_ItemIEs*)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionType;
 
+					xer_fprint(stderr, &asn_DEF_OCTET_STRING, ((RICaction_ToBeSetup_ItemIEs *)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionDefinition);
+
 					if (!foundAction && (actionType == RICactionType_report || actionType == RICactionType_insert)) {
 						reqActionId = actionId;
 						actionIdsAccept.push_back(reqActionId);
