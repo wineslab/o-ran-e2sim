@@ -17,6 +17,10 @@
 
 add_executable( kpm_sim kpm_callbacks.cpp encode_kpm.cpp bs_connector.cpp csv_reader.c srs_connector.cpp)
 
+find_package(Boost REQUIRED system)
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+
 add_dependencies( kpm_sim asn1_objects )
 include_directories(.)
 include_directories(../ASN1c)
@@ -27,6 +31,7 @@ target_link_libraries( kpm_sim asn1_objects )
 target_link_libraries( kpm_sim e2sim )
 target_link_libraries( kpm_sim asn1_objects )
 target_link_libraries( kpm_sim pthread)
+target_link_libraries( kpm_sim ${Boost_SYSTEM_LIBRARIES})
 
 install( 
     TARGETS kpm_sim
