@@ -997,21 +997,20 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 				bool foundAction = false;
 
-				for (int i=0; i < actionCount; i++) {
+				for (int j=0; j < actionCount; j++) {
 
-					auto *next_item = item_array[i];
+					auto *next_item = item_array[j];
 					RICactionID_t actionId = ((RICaction_ToBeSetup_ItemIEs*)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionID;
 					RICactionType_t actionType = ((RICaction_ToBeSetup_ItemIEs*)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionType;
 					RICactionDefinition_t *actionDef = ((RICaction_ToBeSetup_ItemIEs *)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionDefinition;
 
-					 E2SM_HelloWorld_ActionDefinition_t *test=(E2SM_HelloWorld_ActionDefinition_t *) calloc(1,
-                                                                             sizeof(E2SM_HelloWorld_ActionDefinition_t));
-
+					E2SM_HelloWorld_ActionDefinition_t *test = (E2SM_HelloWorld_ActionDefinition_t *)calloc(1,
+																											sizeof(E2SM_HelloWorld_ActionDefinition_t));
 
 					ASN_STRUCT_RESET(asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
-                	asn_decode (nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_HelloWorld_ActionDefinition,
-                            (void **) &test, actionDef->buf,actionDef->size);
-					
+					asn_decode(nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_HelloWorld_ActionDefinition,
+							   (void **)&test, actionDef->buf, actionDef->size);
+
 					xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
 
 					if (test->present == E2SM_HelloWorld_ActionDefinition_PR_actionDefinition_Format1)
@@ -1020,16 +1019,16 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					E2SM_HelloWorld_ActionDefinition_Format1_t *format1 = test->choice.actionDefinition_Format1;
 					auto **list = format1->ranParameter_List.list.array;
 					int countRanParameters = format1->ranParameter_List.list.count;
-					for (int j = 0; j < countRanParameters; j++)
+					for (int z = 0; z < countRanParameters; z++)
 					{
-						std::cerr << "counter ran parameters: " << j << std::endl;
-						long parId = list[j]->ranParameter_ID;
+						std::cerr << "counter ran parameters: " << z << std::endl;
+						long parId = list[z]->ranParameter_ID;
 						std::cerr << "parId: " << parId << std::endl;
-						std::string parName = DecodeOctectString(&(list[j]->ranParameter_Name));
+						std::string parName = DecodeOctectString(&(list[z]->ranParameter_Name));
 						std::cerr << "parName: " << parName << std::endl;
-						long parTest = list[j]->ranParameter_Test;
+						long parTest = list[z]->ranParameter_Test;
 						std::cerr << "parTest: " << parTest << std::endl;
-						std::string parValue = DecodeOctectString(&(list[j]->ranParameter_Value));
+						std::string parValue = DecodeOctectString(&(list[z]->ranParameter_Value));
 						std::cerr << "parValue: " << parValue << std::endl;
 					}
 					}
