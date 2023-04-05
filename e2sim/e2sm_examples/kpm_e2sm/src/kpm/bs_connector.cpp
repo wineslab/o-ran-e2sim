@@ -118,6 +118,7 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
   int out_port = 6655;
   int in_port = 6600;
   boost::asio::io_service io_service;
+  std::chrono::milliseconds sleep_duration(500);
 
   // out socket (to gnb)
   boost::asio::ip::udp::socket out_socket(io_service);
@@ -183,10 +184,6 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
       encode_and_send_ric_indication_report_metrics_buffer(recvbuf, seqNum, requestorId, instanceId, ranFunctionId, actionId);
       seqNum++;
     }
-
-    // std::chrono::seconds sleep_duration(timer[0]);
-    std::chrono::milliseconds sleep_duration(500);
-    std::this_thread::sleep_for(sleep_duration);
   }
 }
 
