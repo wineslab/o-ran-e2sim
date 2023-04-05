@@ -173,7 +173,7 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
     fprintf(stderr,"Sending report to ric\n");
 
     // send PDU
-    if (payload) {
+    if (recvlen > 0) {
       fprintf(stderr, "Sending\n%s\n", recvbuf);
       fprintf(stderr, "Encoding RIC Indication Report\n");
       // encoding::generate_e2apv1_indication_report(e2ap_pdu, recvbuf, strlen(recvbuf), ric_req_id[0], 0, 0, 0);
