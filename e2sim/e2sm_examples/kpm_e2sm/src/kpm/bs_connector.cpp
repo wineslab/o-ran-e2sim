@@ -146,13 +146,13 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
     fprintf(stderr, "timer expired for requestorId %ld, instanceId %ld, ranFunctionId %ld, actionId %ld: %d s\n",
             requestorId, instanceId, ranFunctionId, actionId, timer[0]);
     fprintf(stderr, "Sending indication request buffer to gnb, size %d\n", indication_request_length);
-    /*
-    fprintf(stderr,"about to print buffer in periodic data report\n");
-    for(int i=0; i<indication_request_length; i++){
-        fprintf(stderr,"---%hhx\n",indication_request_buffer[i]);
+    
+    fprintf(stderr,"about to print buffer in periodicDataReportOaiProtobuf\n");
+    for(int i = 0; i < indication_request_length; i++){
+      fprintf(stderr,"---%hhx\n", indication_request_buffer[i]);
     }
-    fprintf(stderr,"\n");
-    */
+    fprintf(stderr, "\n");
+    
     // payload = (char*) "{\"timestamp\":1602706183796,\"slice_id\":0,\"dl_bytes\":53431,\"dl_thr_mbps\":2.39,\"ratio_granted_req_prb\":0.02,\"slice_prb\":6,\"dl_pkts\":200}";
     out_socket.send_to(boost::asio::buffer(indication_request_buffer, indication_request_length), remote_endpoint_out, 0, err);
 
