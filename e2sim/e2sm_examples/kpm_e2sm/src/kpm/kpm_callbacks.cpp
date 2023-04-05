@@ -942,8 +942,9 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 	long requestorId;
 	RICeventTriggerDefinition_t *triggerDef;
-	triggerDef->buf = NULL;
-	triggerDef->size = 0;
+	// = (RICeventTriggerDefinition_t *) calloc(1,sizeof(RICeventTriggerDefinition_t));
+	//triggerDef->buf = NULL;
+	//triggerDef->size = 0;
 
 	for (int i=0; i < count; i++) {
 		RICsubscriptionRequest_IEs_t *next_ie = ies[i];
