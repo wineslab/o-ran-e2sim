@@ -1016,8 +1016,9 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					switch (test->present)
 					{
 					case E2SM_HelloWorld_ActionDefinition_PR_actionDefinition_Format1:
+						std::cout << "PR FORMAT 1" << std::endl;
 						E2SM_HelloWorld_ActionDefinition_Format1_t* format1 = test->choice.actionDefinition_Format1;
-						RANparameter_Item_t **list = format1->ranParameter_List.list.array;
+						auto **list = format1->ranParameter_List.list.array;
 						int countRanParameters = format1->ranParameter_List.list.count;
 						for (int j = 0; j < countRanParameters; j++)
 						{
