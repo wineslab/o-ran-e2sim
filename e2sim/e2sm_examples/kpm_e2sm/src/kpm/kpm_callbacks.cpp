@@ -43,6 +43,7 @@ extern "C" {
   #include "E2SM-HelloWorld-ControlHeader.h"
   #include "E2SM-HelloWorld-ControlMessage-Format1.h"
   #include "E2SM-HelloWorld-ControlHeader-Format1.h"
+  #include "E2SM-HelloWorld-ActionDefinition.h"
 }
 
 #include "kpm_callbacks.hpp"
@@ -893,16 +894,6 @@ void encode_and_send_ric_indication_report_metrics_buffer(char* payload, long se
 	fprintf(stderr, "RIC Indication sent\n");                     
 }
 
-std::string DecodeOctectString(OCTET_STRING_t* octetString){
-  int size = octetString->size;
-  char out[size + 1];
-  std::memcpy (out, octetString->buf, size);
-  out[size] = '\0';
-  std::cerr << "Size " << size <<std::endl;
-
-  return std::string (out);
-}
-
 
 void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
@@ -998,18 +989,25 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					auto *next_item = item_array[i];
 					RICactionID_t actionId = ((RICaction_ToBeSetup_ItemIEs*)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionID;
 					RICactionType_t actionType = ((RICaction_ToBeSetup_ItemIEs*)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionType;
-					OCTET_STRING_t* actionDef = ((RICaction_ToBeSetup_ItemIEs *)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionDefinition;
-					xer_fprint(stderr, &asn_DEF_OCTET_STRING, actionDef);
+					RICactionDefinition_t *actionDef = ((RICaction_ToBeSetup_ItemIEs *)next_item)->value.choice.RICaction_ToBeSetup_Item.ricActionDefinition;
 
-					std::string decoded = DecodeOctectString(actionDef);
-					
-					fprintf(stderr, "%s\n", decoded.c_str());
+					 E2SM_HelloWorld_ActionDefinition_t *test=(E2SM_HelloWorld_ActionDefinition_t *) calloc(1,
+                                                                             sizeof(E2SM_HelloWorld_ActionDefinition_t));
 
-					if (!foundAction && (actionType == RICactionType_report || actionType == RICactionType_insert)) {
-						reqActionId = actionId;
-						actionIdsAccept.push_back(reqActionId);
-						fprintf(stderr, "adding accept\n");
-						foundAction = true;
+
+					ASN_STRUCT_RESET(asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
+                	asn_decode (nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_HelloWorld_ActionDefinition,
+                            (void **) &test, actionDef->buf,actionDef->size);
+
+					xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
+					ASN_STRUCT_FREE(asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
+
+					if (!foundAction && (actionType == RICactionType_report || actionType == RICactionType_insert))
+					{
+					reqActionId = actionId;
+					actionIdsAccept.push_back(reqActionId);
+					fprintf(stderr, "adding accept\n");
+					foundAction = true;
 					} else {
 						reqActionId = actionId;
 						fprintf(stderr, "action rejected but not added to vector\n");
