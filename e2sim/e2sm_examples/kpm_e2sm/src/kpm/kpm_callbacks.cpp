@@ -44,6 +44,9 @@ extern "C" {
   #include "E2SM-HelloWorld-ControlMessage-Format1.h"
   #include "E2SM-HelloWorld-ControlHeader-Format1.h"
   #include "E2SM-HelloWorld-ActionDefinition.h"
+  #include "E2SM-HelloWorld-ActionDefinition-Format1.h"
+  #include "RANparameter-List.h"
+  #include "RANparameter-Item.h" 
 }
 
 #include "kpm_callbacks.hpp"
@@ -894,6 +897,16 @@ void encode_and_send_ric_indication_report_metrics_buffer(char* payload, long se
 	fprintf(stderr, "RIC Indication sent\n");                     
 }
 
+std::string DecodeOctectString(OCTET_STRING_t* octetString){
+  int size = octetString->size;
+  char out[size + 1];
+  std::memcpy (out, octetString->buf, size);
+  out[size] = '\0';
+//  std::cerr << "Size " << size <<std::endl;
+
+  return std::string (out);
+}
+
 
 void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
@@ -998,8 +1011,38 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 					ASN_STRUCT_RESET(asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
                 	asn_decode (nullptr, ATS_ALIGNED_BASIC_PER, &asn_DEF_E2SM_HelloWorld_ActionDefinition,
                             (void **) &test, actionDef->buf,actionDef->size);
-
+					
 					xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
+					switch (test->present)
+					{
+					case E2SM_HelloWorld_ActionDefinition_PR_actionDefinition_Format1:
+						E2SM_HelloWorld_ActionDefinition_Format1_t* format1 = test->choice.actionDefinition_Format1;
+						RANparameter_Item_t **list = format1->ranParameter_List.list.array;
+						int countRanParameters = actionList.list.count;
+						for (int j = 0; j < countRanParameters; j++)
+						{
+						std::cerr << "counter ran parameters: " << j << std::endl;
+						long parId = list[j]->ranParameter_ID;
+						std::cerr << "parId: " << parId << std::endl;
+						std::string parName = DecodeOctectString(&(list[j]->ranParameter_Name));
+						std::cerr << "parName: " << parName << std::endl;
+						long parTest = list[j]->ranParameter_Test;
+						std::cerr << "parTest: " << parTest << std::endl;
+						std::string parValue = DecodeOctectString(&(list[j]->ranParameter_Value));
+						std::cerr << "parValue: " << parValue << std::endl;
+						}
+
+						break;
+
+					case E2SM_HelloWorld_ActionDefinition_PR_NOTHING:
+						std::cout << "PR NOTHING" << std::endl;
+						break;
+
+					default:
+						std::cout << "PR NOTHING" << std::endl;
+						break;
+					}
+
 					ASN_STRUCT_FREE(asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
 
 					if (!foundAction && (actionType == RICactionType_report || actionType == RICactionType_insert))
