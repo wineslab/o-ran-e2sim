@@ -1013,15 +1013,15 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
                             (void **) &test, actionDef->buf,actionDef->size);
 					
 					xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
-					switch (test->present)
+
+					if (test->present == E2SM_HelloWorld_ActionDefinition_PR_actionDefinition_Format1)
 					{
-					case E2SM_HelloWorld_ActionDefinition_PR_actionDefinition_Format1:
-						std::cout << "PR FORMAT 1" << std::endl;
-						E2SM_HelloWorld_ActionDefinition_Format1_t* format1 = test->choice.actionDefinition_Format1;
-						auto **list = format1->ranParameter_List.list.array;
-						int countRanParameters = format1->ranParameter_List.list.count;
-						for (int j = 0; j < countRanParameters; j++)
-						{
+					std::cout << "PR FORMAT 1" << std::endl;
+					E2SM_HelloWorld_ActionDefinition_Format1_t *format1 = test->choice.actionDefinition_Format1;
+					auto **list = format1->ranParameter_List.list.array;
+					int countRanParameters = format1->ranParameter_List.list.count;
+					for (int j = 0; j < countRanParameters; j++)
+					{
 						std::cerr << "counter ran parameters: " << j << std::endl;
 						long parId = list[j]->ranParameter_ID;
 						std::cerr << "parId: " << parId << std::endl;
@@ -1031,17 +1031,11 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 						std::cerr << "parTest: " << parTest << std::endl;
 						std::string parValue = DecodeOctectString(&(list[j]->ranParameter_Value));
 						std::cerr << "parValue: " << parValue << std::endl;
-						}
-
-						break;
-
-					case E2SM_HelloWorld_ActionDefinition_PR_NOTHING:
-						std::cout << "PR NOTHING" << std::endl;
-						break;
-
-					default:
-						std::cout << "default " << std::endl;
-						break;
+					}
+					}
+					else
+					{
+					std::cout << "PR NOTHING or default" << std::endl;
 					}
 
 					ASN_STRUCT_FREE(asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
