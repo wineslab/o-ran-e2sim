@@ -1032,9 +1032,9 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 							long parTest = list[z]->ranParameter_Test;
 							std::cerr << "parTest: " << parTest << std::endl;
 
-							// OCTET_STRING_t parValueOct = list[z]->ranParameter_Value.buf;
-							// std::string parValue = DecodeOctectString(&parValueOct);
-							// std::cerr << "ranParameter_Name: " << parValue << std::endl;
+							OCTET_STRING_t parValueOct = list[z]->ranParameter_Value;
+							std::string parValue = DecodeOctectString(&parValueOct);
+							std::cerr << "ranParameter_Name: " << parValue << std::endl;
 
 							// OCTET_STRING_t parNameOct = list[z]->ranParameter_Name;
 							// xer_fprint(stderr, &asn_DEF_OCTET_STRING, &parNameOct);
