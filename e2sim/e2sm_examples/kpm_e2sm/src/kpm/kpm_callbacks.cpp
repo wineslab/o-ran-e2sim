@@ -1014,32 +1014,39 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 					xer_fprint(stderr, &asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
 
-					if (test->present == E2SM_HelloWorld_ActionDefinition_PR_actionDefinition_Format1)
-					{
-					std::cout << "PR FORMAT 1" << std::endl;
-					E2SM_HelloWorld_ActionDefinition_Format1_t *format1 = test->choice.actionDefinition_Format1;
-					auto **list = format1->ranParameter_List.list.array;
-					int countRanParameters = format1->ranParameter_List.list.count;
-					for (int z = 0; z < countRanParameters; z++)
-					{
-						std::cerr << "counter ran parameters: " << z << std::endl;
-						long parId = list[z]->ranParameter_ID;
-						std::cerr << "parId: " << parId << std::endl;
-						OCTET_STRING_t parNameOct = list[z]->ranParameter_Name;
-						xer_fprint(stderr, &asn_DEF_OCTET_STRING, &parNameOct);
-						//std::string parName = DecodeOctectString(&());
-						//std::cerr << "parName: " << parName << std::endl;
-						long parTest = list[z]->ranParameter_Test;
-						std::cerr << "parTest: " << parTest << std::endl;
-						OCTET_STRING_t parValueOct = list[z]->ranParameter_Value;
-						// std::string parValue = DecodeOctectString(&(list[z]->ranParameter_Value));
-						xer_fprint(stderr, &asn_DEF_OCTET_STRING, &parValueOct);
-						//std::cerr << "parValue: " << parValue << std::endl;
+					if (test->present == E2SM_HelloWorld_ActionDefinition_PR_actionDefinition_Format1) {
+						std::cout << "PR FORMAT 1" << std::endl;
+						E2SM_HelloWorld_ActionDefinition_Format1_t *format1 = test->choice.actionDefinition_Format1;
+						auto **list = format1->ranParameter_List.list.array;
+						int countRanParameters = format1->ranParameter_List.list.count;
+						for (int z = 0; z < countRanParameters; z++) {
+							std::cerr << "counter ran parameters: " << z << std::endl;
+							long parId = list[z]->ranParameter_ID;
+							std::cerr << "parId: " << parId << std::endl;
+
+							OCTET_STRING_t parNameOct = list[z]->ranParameter_Name.buf;
+							std::string parName = DecodeOctectString(&parNameOct);
+							std::cerr << "ranParameter_Name: " << parName << std::endl;
+
+							std::cerr << "parTest: " << parTest << std::endl;
+
+							OCTET_STRING_t parValueOct = list[z]->ranParameter_Value.buf;
+							std::string parValue = DecodeOctectString(&parValueOct);
+							std::cerr << "ranParameter_Name: " << parValue << std::endl;
+
+							// OCTET_STRING_t parNameOct = list[z]->ranParameter_Name;
+							// xer_fprint(stderr, &asn_DEF_OCTET_STRING, &parNameOct);
+							// std::string parName = DecodeOctectString(&parNameOct);
+							// std::cerr << "parName: " << parName << std::endl;
+							// long parTest = list[z]->ranParameter_Test;
+							// OCTET_STRING_t parValueOct = list[z]->ranParameter_Value;
+							// std::string parValue = DecodeOctectString(&parValueOct);
+							// xer_fprint(stderr, &asn_DEF_OCTET_STRING, &parValueOct);
+							// std::cerr << "parValue: " << parValue << std::endl;
+						 }
 					}
-					}
-					else
-					{
-					std::cout << "PR NOTHING or default" << std::endl;
+					else {
+					  std::cout << "PR NOTHING or default" << std::endl;
 					}
 
 					ASN_STRUCT_FREE(asn_DEF_E2SM_HelloWorld_ActionDefinition, test);
