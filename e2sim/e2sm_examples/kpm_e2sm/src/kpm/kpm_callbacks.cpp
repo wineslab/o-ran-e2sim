@@ -1044,7 +1044,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 							if (strcmp(parName.c_str(), "ProtobufMessage") == 0) {
 								protobuf_payload_len = parValue.length();
 								protobuf_payload = (uint8_t*) calloc(sizeof(uint8_t), protobuf_payload_len);
-								memcpy(protobuf_payload, parValue, protobuf_payload_len);
+								memcpy(protobuf_payload, parValue.c_str(), protobuf_payload_len);
 							}
 
 							// OCTET_STRING_t parNameOct = list[z]->ranParameter_Name;
