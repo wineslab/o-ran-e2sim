@@ -937,6 +937,9 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 	long reqInstanceId;
 	long reqActionId;
 
+	uint8_t* protobuf_payload = NULL;
+	int protobuf_payload_len = 0;
+
 	std::vector<long> actionIdsAccept;
 	std::vector<long> actionIdsReject;
 
@@ -1036,6 +1039,14 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 							std::string parValue = DecodeOctectString(&parValueOct);
 							std::cerr << "ranParameter_Value: " << parValue << std::endl;
 
+							// TODO: need a way to bring out parameter value if parameter name is ProtobufMessage
+							// this should be saved in a uint8_t* buffer
+							if (strcmp(parName, "ProtobufMessage") == 0) {
+								protobuf_payload_len = strlen(parValue);
+								protobuf_payload = (uint8_t*) calloc(sizeof(uint8_t), protobuf_payload_len);
+								memcpy(protobuf_payload, parValue, protobuf_payload_len);
+							}
+
 							// OCTET_STRING_t parNameOct = list[z]->ranParameter_Name;
 							// xer_fprint(stderr, &asn_DEF_OCTET_STRING, &parNameOct);
 							// std::string parName = DecodeOctectString(&parNameOct);
@@ -1110,7 +1121,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
   //  loop_thread = std::thread(&run_report_loop);
 
   // start report loop in a dedicated thread
-	if (triggerDef->buf) {
+	if (triggerDef->buf || (OAI_PROTOBUF && protobuf_payload_len > 0)) {
 		std::string trigger_str((char*) triggerDef->buf);
 
 		long *ric_req_id = (long*) calloc(1, sizeof(long));
@@ -1139,7 +1150,12 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 			int *report_timer = (int*) calloc(1, sizeof(int));
 			report_timer[0] = trigger_timer;
 
-			handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id, triggerDef->buf, bfsize);
+			if (OAI_PROTOBUF && protobuf_payload_len > 0) {
+				handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id, protobuf_payload, protobuf_payload_len);
+			}
+			else{
+				handleTimer(&e2sim, report_timer, ric_req_id, ric_instance_id, ran_function_id, action_id, triggerDef->buf, bfsize);
+			}
 		}
 		catch (const std::invalid_argument) {
 			fprintf(stderr, "handling exception, no valid trigger. Received %s\n", triggerDef->buf);

@@ -12,7 +12,6 @@
 // send dummy data instead of reading BS metrics
 #define DEBUG 0
 #define LINES_TO_READ 2
-#define OAI_PROTOBUF 1
 
 void handleTimer(E2Sim* e2sim, int* timer, long* ric_req_id, long* ric_instance_id,
   long* ran_function_id, long* action_id, uint8_t *indreq_buff, int indreq_buflen);

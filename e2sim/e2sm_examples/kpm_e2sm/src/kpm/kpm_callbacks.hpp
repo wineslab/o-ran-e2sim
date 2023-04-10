@@ -19,6 +19,8 @@
 
 #include "e2sim.hpp"
 
+#define OAI_PROTOBUF 1
+
 void callback_kpm_subscription_request(E2AP_PDU_t *pdu);
 void callback_kpm_control(E2AP_PDU_t *pdu);
 
