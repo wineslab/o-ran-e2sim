@@ -89,7 +89,7 @@ void periodicDataReport(E2Sim* e2sim, int* timer, long seqNum, long* ric_req_id,
     // e2sim->encode_and_send_sctp_data(e2ap_pdu);
 
     // ASN.1 encode payload and header
-    encode_and_send_ric_indication_report_metrics_buffer(payload, seqNum, requestorId, instanceId, ranFunctionId, actionId);
+    encode_and_send_ric_indication_report_metrics_buffer(payload, strlen(payload), seqNum, requestorId, instanceId, ranFunctionId, actionId);
     seqNum++;
   }
   
@@ -174,9 +174,6 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
 
     // send PDU
     if (recvlen > 0) {
-      // char* payload = (char*) calloc(recvlen, sizeof(char));
-      // memcpy(payload, recvbuf, recvlen);
-
       // fprintf(stderr, "Sending\n%s\n", recvbuf);
       fprintf(stderr, "Encoding RIC Indication Report\n");
       // encoding::generate_e2apv1_indication_report(e2ap_pdu, recvbuf, strlen(recvbuf), ric_req_id[0], 0, 0, 0);
@@ -184,12 +181,8 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
       // e2sim->encode_and_send_sctp_data(e2ap_pdu);
 
       // ASN.1 encode payload and header
-      encode_and_send_ric_indication_report_metrics_buffer(recvbuf, seqNum, requestorId, instanceId, ranFunctionId, actionId);
+      encode_and_send_ric_indication_report_metrics_buffer(recvbuf, recvlen, seqNum, requestorId, instanceId, ranFunctionId, actionId);
       seqNum++;
-
-      // if (payload) {
-      //   free(payload);
-      // }
     }
   }
 }
