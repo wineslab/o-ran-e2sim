@@ -495,7 +495,7 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
 				 uint8_t *nrcellid_buf,
 				 uint8_t *crnti_buf,
 				 const uint8_t *serving_buf,
-         int serving_buf_len;
+         int serving_buf_len,
 				 const uint8_t *neighbor_buf) {
   uint8_t *buf = (uint8_t*)"2020.06.13 13:01:05.222";
   Timestamp_t *ts = (Timestamp_t*)calloc(1,sizeof(Timestamp_t));
