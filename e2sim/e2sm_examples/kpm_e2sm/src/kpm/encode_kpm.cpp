@@ -495,6 +495,7 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
 				 uint8_t *nrcellid_buf,
 				 uint8_t *crnti_buf,
 				 const uint8_t *serving_buf,
+         int serving_buf_len;
 				 const uint8_t *neighbor_buf) {
   uint8_t *buf = (uint8_t*)"2020.06.13 13:01:05.222";
   Timestamp_t *ts = (Timestamp_t*)calloc(1,sizeof(Timestamp_t));
@@ -554,7 +555,7 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
 
   //  uint8_t *buf_serving = (uint8_t*)"RSRP10";
 
-  int serving_buf_len = strlen((char*)serving_buf);
+  // int serving_buf_len = strlen((char*)serving_buf);
   OCTET_STRING_t *servingstr = (OCTET_STRING_t*)calloc(1,sizeof(OCTET_STRING_t));
   servingstr->buf = (uint8_t*)calloc(serving_buf_len,1);
   servingstr->size = serving_buf_len;
@@ -832,12 +833,14 @@ void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessag
 						       uint8_t *nrcellid_buf,
 						       uint8_t *crnti_buf,
 						       const uint8_t *serving_buf,
+                   int serving_buf_len,
 						       const uint8_t *neighbor_buf) {
 
   RAN_Container_t *ranco = (RAN_Container_t*)calloc(1,sizeof(RAN_Container_t));
   encode_kpm_ocucp_user_level(ranco, plmnid_buf,
 			      nrcellid_buf, crnti_buf,
-			      serving_buf, neighbor_buf);
+			      serving_buf, serving_buf_len,
+            neighbor_buf);
 
   printf("After creating RAN container, xer printing it\n");
   xer_fprint(stderr, &asn_DEF_RAN_Container, ranco);

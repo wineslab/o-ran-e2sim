@@ -56,7 +56,7 @@ void encode_kpm_report_style1(E2SM_KPM_IndicationMessage_t* indicationmessage);
 
 void encode_kpm_report_rancontainer_du_parameterized(E2SM_KPM_IndicationMessage_t *indMsg, uint8_t *plmnid_buf, uint8_t *nrcellid_buf, uint8_t *crnti_buf, long prb_usage_dl, long prb_usage_ul);
 
-void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessage_t* indicationmessage,uint8_t *plmnid_buf,uint8_t *nrcellid_buf,uint8_t *crnti_buf,const uint8_t *serving_buf, const uint8_t *neighbor_buf);
+void encode_kpm_report_rancontainer_cucp_parameterized(E2SM_KPM_IndicationMessage_t* indicationmessage,uint8_t *plmnid_buf,uint8_t *nrcellid_buf,uint8_t *crnti_buf,const uint8_t *serving_buf, int serving_buf_len, const uint8_t *neighbor_buf);
 
 void encode_kpm_report_rancontainer_cuup_parameterized(E2SM_KPM_IndicationMessage_t* indicationmessage, uint8_t *plmnid_buf, uint8_t *nrcellid_buf, uint8_t *crnti_buf,int pdcp_bytesdl, int pdcp_bytesul);
 

@@ -370,7 +370,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 					E2SM_KPM_IndicationMessage_t *ind_msg_cucp_ue =
 					(E2SM_KPM_IndicationMessage_t*)calloc(1,sizeof(E2SM_KPM_IndicationMessage_t));
 
-					encode_kpm_report_rancontainer_cucp_parameterized(ind_msg_cucp_ue, plmnid_buf, nrcellid_buf, crnti_buf, serving_buf, neighbor_buf);
+					encode_kpm_report_rancontainer_cucp_parameterized(ind_msg_cucp_ue, plmnid_buf, nrcellid_buf, crnti_buf, serving_buf, strlen(serving_buf) neighbor_buf);
 
 					uint8_t e2sm_message_buf_cucp_ue[8192] = {0, };
 					size_t e2sm_message_buf_size_cucp_ue = 8192;
@@ -824,6 +824,7 @@ void encode_and_send_ric_indication_report_metrics_buffer(char* payload, int pay
     // TODO: substitute with the actual data to send
 	std::string serving_str(payload, payload_len);
 	const uint8_t *serving_buf = reinterpret_cast<const uint8_t*>(serving_str.c_str());
+	int serving_buf_len = payload_len;
 
 	// don't send the neightbor_buf
 	std::string neighbor_str = "";
@@ -861,7 +862,7 @@ void encode_and_send_ric_indication_report_metrics_buffer(char* payload, int pay
 	E2SM_KPM_IndicationHeader_t* ind_header_cucp_ue = (E2SM_KPM_IndicationHeader_t*) calloc(1, sizeof(E2SM_KPM_IndicationHeader_t));
 	E2AP_PDU *pdu_cucp_ue = (E2AP_PDU*) calloc(1, sizeof(E2AP_PDU));
 
-	encode_kpm_report_rancontainer_cucp_parameterized(ind_msg_cucp_ue, plmnid_buf, nrcellid_buf, crnti_buf, serving_buf, neighbor_buf);
+	encode_kpm_report_rancontainer_cucp_parameterized(ind_msg_cucp_ue, plmnid_buf, nrcellid_buf, crnti_buf, serving_buf, serving_buf_len, neighbor_buf);
 
 	uint8_t e2sm_message_buf_cucp_ue[8192] = {0, };
 	size_t e2sm_message_buf_size_cucp_ue = 8192;
