@@ -561,6 +561,18 @@ void encode_kpm_ocucp_user_level(RAN_Container_t *ranco,
   servingstr->size = serving_buf_len;
   memcpy(servingstr->buf, serving_buf, servingstr->size);
 
+  fprintf(stderr,"printing serving_buf (len %d) recevied from gnb:\n", serving_buf_len);
+  for(int i = 0; i < serving_buf_len; i++){
+    fprintf(stderr, " %hhx ", serving_buf[i]);
+  }
+  fprintf(stderr, "\n");
+
+  fprintf(stderr,"printing servingstr->buf (len %d) recevied from gnb:\n", servingstr->size);
+  for(int i = 0; i < servingstr->size; i++){
+    fprintf(stderr, " %hhx ", servingstr->buf[i]);
+  }
+  fprintf(stderr, "\n");
+
   // need to free buffer here since it's reallocated after
   if (ts->buf) free(ts->buf);
 
