@@ -1041,6 +1041,7 @@ void callback_kpm_subscription_request(E2AP_PDU_t *sub_req_pdu) {
 
 							// TODO: need a way to bring out parameter value if parameter name is ProtobufMessage
 							// this should be saved in a uint8_t* buffer
+							// also need to free this after using it
 							if (strcmp(parName.c_str(), "ProtobufMessage") == 0) {
 								protobuf_payload_len = parValue.length();
 								protobuf_payload = (uint8_t*) calloc(sizeof(uint8_t), protobuf_payload_len);

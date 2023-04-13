@@ -162,7 +162,7 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
     fprintf(stderr, " recevied %lu bytes\n", recvlen);
 
     // append null terminator to payload such that the buffer can be processed by the kind-of-stupid following encoders
-    recvbuf[recvlen] = '\0';
+    recvbuf[recvlen++] = '\0';
 
     fprintf(stderr,"printing buf recevied from gnb:\n");
     for(int i=0; i<recvlen; i++){
@@ -174,15 +174,22 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
 
     // send PDU
     if (recvlen > 0) {
-      fprintf(stderr, "Sending\n%s\n", recvbuf);
+      char* payload = (char*) calloc(recvlen, sizeof(char));
+      memcpy(payload, recvbuf, recvlen);
+
+      fprintf(stderr, "Sending\n%s\n", payload);
       fprintf(stderr, "Encoding RIC Indication Report\n");
       // encoding::generate_e2apv1_indication_report(e2ap_pdu, recvbuf, strlen(recvbuf), ric_req_id[0], 0, 0, 0);
       // fprintf(stderr, "RIC Indication Report successfully encoded\n");
       // e2sim->encode_and_send_sctp_data(e2ap_pdu);
 
       // ASN.1 encode payload and header
-      encode_and_send_ric_indication_report_metrics_buffer(recvbuf, seqNum, requestorId, instanceId, ranFunctionId, actionId);
+      encode_and_send_ric_indication_report_metrics_buffer(payload, seqNum, requestorId, instanceId, ranFunctionId, actionId);
       seqNum++;
+
+      if (payload) {
+        free(payload);
+      }
     }
   }
 }
