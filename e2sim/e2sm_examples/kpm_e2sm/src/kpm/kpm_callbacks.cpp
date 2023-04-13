@@ -370,7 +370,7 @@ void run_report_loop(long requestorId, long instanceId, long ranFunctionId, long
 					E2SM_KPM_IndicationMessage_t *ind_msg_cucp_ue =
 					(E2SM_KPM_IndicationMessage_t*)calloc(1,sizeof(E2SM_KPM_IndicationMessage_t));
 
-					encode_kpm_report_rancontainer_cucp_parameterized(ind_msg_cucp_ue, plmnid_buf, nrcellid_buf, crnti_buf, serving_buf, strlen(serving_buf) neighbor_buf);
+					encode_kpm_report_rancontainer_cucp_parameterized(ind_msg_cucp_ue, plmnid_buf, nrcellid_buf, crnti_buf, serving_buf, strlen(serving_buf), neighbor_buf);
 
 					uint8_t e2sm_message_buf_cucp_ue[8192] = {0, };
 					size_t e2sm_message_buf_size_cucp_ue = 8192;
