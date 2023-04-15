@@ -1280,16 +1280,26 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 					  // process RIC control request payload
 					  fprintf(stderr, "Print content of RIC Control Request %s\n", ricControlRequestPayload);
 
-					  // log message on file
-						log_message((char*) ricControlRequestPayload, (char*) "control", recvBufLen);
-
         		// write policies on config file
 						if (strcmp((char*) ricControlRequestPayload, "terminate") == 0) {
+							log_message((char*) ricControlRequestPayload, (char*) "control", recvBufLen);  // log message on file
 							stop_data_reporting_nrt_ric();
 						}
 						else {
-							std::string control((char*) ricControlRequestPayload);
-							write_control_policies_json(control);
+							if (OAI_PROTOBUF) {
+								// TODO: need to handle case with protobuf, probably this can be taken from Eugenio's e2sim
+								for (int i = 0; i < recvBufLen; i++) {
+									fprintf(stderr, " %hhx ", ricControlRequestPayload[i]);
+								}
+								fprintf(stderr, "\n");
+
+								send_msg_buffer_to_bs(ricControlRequestPayload, recvBufLen);
+							}
+							else{
+								std::string control((char*) ricControlRequestPayload);
+								log_message((char*) ricControlRequestPayload, (char*) "control", recvBufLen);  // log message on file
+								write_control_policies_json(control);
+							}
 						}
 
 						fprintf(stderr, "Freeing received ricControlRequestPayload\n");

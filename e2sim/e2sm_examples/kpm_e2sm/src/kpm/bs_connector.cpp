@@ -242,3 +242,16 @@ void stop_data_reporting_nrt_ric(void) {
   printf("Terminating data reporting to near-real-time RIC\n");
   report_data_nrt_ric = 0;
 }
+
+// send udp datagrams containing buffers to gnb (was send_ricindi_to_bs)
+void send_msg_buffer_to_bs(uint8_t *buffer, int buflen) {
+  fprintf(stderr, "sending udp datagram\n");
+  boost::asio::io_service io_service;
+  boost::asio::ip::udp::socket socket(io_service);
+  boost::asio::ip::udp::endpoint remote_endpoint;
+  socket.open(boost::asio::ip::udp::v4());
+  int out_port = 6655;
+  remote_endpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), out_port);
+  boost::system::error_code err;
+  socket.send_to(boost::asio::buffer(buffer, buflen), remote_endpoint, 0, err);
+}
