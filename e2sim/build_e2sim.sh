@@ -3,6 +3,9 @@
 ## dependencies
 set -x
 
+DEBUG=0
+OAI_PROTOBUF=1
+
 root_folder=$(pwd)
 
 function build_json_from_source(){
@@ -68,7 +71,6 @@ done
 cd $root_folder
 
 CURR_DIR=$(pwd)
-DEBUG=0
 
 # build e2sim
 rm -Rf build
@@ -93,6 +95,10 @@ dpkg --install $(pwd)/e2sim*
 # setup debug field
 echo -e "\n[`date`] Setting metrics DEBUG field to ${DEBUG}\n"
 sed -i "s/^#define DEBUG.*/#define DEBUG ${DEBUG}/g" ${CURR_DIR}/e2sm_examples/kpm_e2sm/src/kpm/bs_connector.hpp
+
+# setup protobuf field
+echo -e "\n[`date`] Setting OAI_PROTOBUF field to ${OAI_PROTOBUF}\n"
+sed -i "s/^#define OAI_PROTOBUF.*/#define OAI_PROTOBUF ${OAI_PROTOBUF}/g" ${CURR_DIR}/e2sm_examples/kpm_e2sm/src/kpm/kpm_callbacks.hpp
 
 # build example
 cd ${CURR_DIR}/e2sm_examples/kpm_e2sm/
