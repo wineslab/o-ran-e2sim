@@ -1287,7 +1287,6 @@ void callback_kpm_control(E2AP_PDU_t *control_pdu) {
 						}
 						else {
 							if (OAI_PROTOBUF) {
-								// TODO: need to handle case with protobuf, probably this can be taken from Eugenio's e2sim
 								for (int i = 0; i < recvBufLen; i++) {
 									fprintf(stderr, " %hhx ", ricControlRequestPayload[i]);
 								}
