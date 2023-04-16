@@ -183,9 +183,6 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
       // ASN.1 encode payload and header
       encode_and_send_ric_indication_report_metrics_buffer(recvbuf, recvlen, seqNum, requestorId, instanceId, ranFunctionId, actionId);
       seqNum++;
-
-      fprintf(stderr, "DEBUG---setting report_data_nrt_ric to false to break indication loop---\n");
-      report_data_nrt_ric = false;
     }
   }
 }
