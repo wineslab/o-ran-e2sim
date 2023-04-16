@@ -184,7 +184,7 @@ void periodicDataReportOaiProtobuf(E2Sim *e2sim, int *timer, long seqNum, long *
       encode_and_send_ric_indication_report_metrics_buffer(recvbuf, recvlen, seqNum, requestorId, instanceId, ranFunctionId, actionId);
       seqNum++;
 
-      fprintf("DEBUG --- setting report_data_nrt_ric to false to break indication loop ---\n");
+      fprintf(stderr, "DEBUG---setting report_data_nrt_ric to false to break indication loop---\n");
       report_data_nrt_ric = false;
     }
   }
