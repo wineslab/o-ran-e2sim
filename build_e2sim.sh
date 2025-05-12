@@ -13,7 +13,7 @@ git submodule init && git submodule update
 cd $root_folder/e2sm_examples/kpm_e2sm/nlohmann_json_release
 mkdir build || true
 cd build/
-cmake ..
+cmake .. -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_CXX_COMPILER=g++-9
 make -j ${nproc}
 make install
 ldconfig
@@ -25,6 +25,8 @@ rm -rf $root_folder/build
 
 function install_dependencies(){
 apt-get update && apt-get install -y \
+  gcc-9 \
+  g++-9 \
   build-essential \
   git \
   cmake \
@@ -36,6 +38,10 @@ apt-get update && apt-get install -y \
   bison \
   flex \
   libboost-all-dev
+
+  update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
+  update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+
 build_json_from_source
 }
 
@@ -76,7 +82,7 @@ CURR_DIR=$(pwd)
 rm -Rf build
 mkdir build
 cd build
-cmake ..
+cmake .. -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_CXX_COMPILER=g++-9
 make -j ${nproc} package
 cmake .. -DDEV_PKG=1
 make -j ${nproc} package
@@ -105,6 +111,6 @@ cd ${CURR_DIR}/e2sm_examples/kpm_e2sm/
 rm -Rf build
 mkdir build
 cd build
-cmake ..
+cmake .. -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_CXX_COMPILER=g++-9
 make -j ${nproc}
 
