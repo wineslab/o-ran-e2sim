@@ -14,5 +14,4 @@ Please refer to this [quick start guide](https://openrangym.com/tutorials/ns-o-r
 
 More information can be found in the paper
 
-> A. Lacava, M. Polese, R. Sivaraj, R. Soundrarajan, B. S. Bhati, T. Singh, T. Zugno, F. Cuomo, T. Melodia "Programmable and Customized Intelligence for Traffic Steering in 5G Networks Using Open RAN Architectures" in arXiv:2209.14171 October 2022 [pdf](https://arxiv.org/pdf/2209.14171.pdf) [bibtex](https://ece.northeastern.edu/wineslab/wines_bibtex/andrea/LacavaAMC22.txt)
-
+> A. Lacava, M. Polese, R. Sivaraj, R. Soundrarajan, B. S. Bhati, T. Singh, T. Zugno, F. Cuomo, T. Melodia "Programmable and Customized Intelligence for Traffic Steering in 5G Networks Using Open RAN Architectures" in arXiv:2209.14171 October 2022 [pdf](https://arxiv.org/pdf/2209.14171.pdf)
