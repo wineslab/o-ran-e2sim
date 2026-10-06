@@ -49,7 +49,7 @@ void SignalHandler::setupSIGIOT() {
 /**
 * Set up the signal handlers for a signal code
 */
-void SignalHandler::setupSignalHandlers(int signal_code, __sighandler_t sig_function) {
+void SignalHandler::setupSignalHandlers(int signal_code, void (*sig_function)(int)) {
     if (signal(signal_code, sig_function) == SIG_ERR) {
         throw SignalException("[SIG] Error in setting up");
     }
