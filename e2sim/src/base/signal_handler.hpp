@@ -28,7 +28,7 @@ public:
 
     static bool isRunning();
 
-    void setupSignalHandlers(int signal_code, __sighandler_t sig_function);
+    void setupSignalHandlers(int signal_code, void (*sig_function)(int));
 
     static void stopRun(int _ignored);
 
