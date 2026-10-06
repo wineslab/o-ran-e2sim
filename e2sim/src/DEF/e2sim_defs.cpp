@@ -18,6 +18,7 @@
 ******************************************************************************/
 
 #include "e2sim_defs.h"
+#include <cstdlib>
 #include <cstring>
 #include <getopt.h>
 #include <sys/time.h>
