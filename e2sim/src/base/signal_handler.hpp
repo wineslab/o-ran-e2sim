@@ -7,6 +7,7 @@
 
 #include <stdexcept>
 #include <csignal>
+#include <string>
 
 using std::runtime_error;
 
